@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YastCleaner.Data.Data;
+using YastCleaner.Data.Interfaces;
 
 namespace YastCleaner.Data.UnitOfWork
 {
@@ -13,11 +14,18 @@ namespace YastCleaner.Data.UnitOfWork
     {
         private readonly AppDbContext _appDbContext;
         private IDbContextTransaction? _transaction;
+        public IUsuarioRepository UsuarioRepository { get; }
 
-        public UnitOfWork(AppDbContext appDbContext)
+        public UnitOfWork(
+            AppDbContext appDbContext,
+            IUsuarioRepository usuarioRepository
+            )
         {
             _appDbContext = appDbContext;
+            UsuarioRepository = usuarioRepository;
         }
+
+
 
         public async Task BeginTransactionAsync()
         {

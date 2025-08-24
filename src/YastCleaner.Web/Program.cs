@@ -11,6 +11,13 @@ var cn1 = builder.Configuration.GetConnectionString("cn1");
 builder.Services.AddDbContext<AppDbContext>(
     option => option.UseSqlServer(cn1));
 
+//Sesion
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(8);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 
 
@@ -32,6 +39,10 @@ using (var scope = app.Services.CreateScope())
 }
 
 
+
+// Usar sesiones
+app.UseSession();
+
 app.UseHttpsRedirection();
 app.UseRouting();
 
@@ -40,8 +51,8 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    name: "start",
+    pattern: "{controller=Auth}/{action=Login}/{id?}")
     .WithStaticAssets();
 
 

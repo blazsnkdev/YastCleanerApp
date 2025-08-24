@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\YastCleaner.Data\YastCleaner.Data.csproj" />
+    <ProjectReference Include="..\YastCleaner.Business\YastCleaner.Business.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,8 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using YastCleaner.Entities.Enums;
+using YastCleaner.Web.Filters;
 using YastCleaner.Web.Models;
 
 namespace YastCleaner.Web.Controllers
@@ -13,11 +16,13 @@ namespace YastCleaner.Web.Controllers
             _logger = logger;
         }
 
+        [RoleAuthorize(Rol.Trabajador)]
         public IActionResult Index()
         {
             return View();
         }
 
+        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]//TODO : ejemplo para un action con 2 roles
         public IActionResult Privacy()
         {
             return View();

@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YastCleaner.Data\YastCleaner.Data.csproj" />
+    <ProjectReference Include="..\YastCleaner.Entities\YastCleaner.Entities.csproj" />
   </ItemGroup>
 
 </Project>
