@@ -9,7 +9,7 @@ using YastCleaner.Data.UnitOfWork;
 
 namespace YastCleaner.Business.Services
 {
-    internal class AuthService : IAuthService
+    public class AuthService : IAuthService
     {
         private readonly IUnitOfWork _UoW;
 

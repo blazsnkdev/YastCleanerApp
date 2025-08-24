@@ -20,10 +20,21 @@ namespace YastCleaner.Web.Filters
             public void OnAuthorization(AuthorizationFilterContext context)
             {
                 var sesion = SessionHelper.GetUsuario(context.HttpContext);
-                if (sesion == null || !_roles.Contains(sesion.Rol))
+
+                // Caso 1: Usuario NO autenticado → Redirigir al Login
+                if (sesion == null)
                 {
                     context.Result = new RedirectToActionResult("Login", "Auth", null);
+                    return;
                 }
+
+
+                if (!_roles.Contains(sesion.Rol))
+                {
+                    context.Result = new RedirectResult("/acceso-denegado");
+                    return;
+                }
+
             }
         }
     }

@@ -10,7 +10,7 @@ using YastCleaner.Data.Interfaces;
 
 namespace YastCleaner.Data.UnitOfWork
 {
-    internal class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _appDbContext;
         private IDbContextTransaction? _transaction;

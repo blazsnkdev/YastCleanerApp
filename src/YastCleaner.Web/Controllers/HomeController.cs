@@ -16,7 +16,7 @@ namespace YastCleaner.Web.Controllers
             _logger = logger;
         }
 
-        [RoleAuthorize(Rol.Trabajador)]
+        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         public IActionResult Index()
         {
             return View();
@@ -32,6 +32,18 @@ namespace YastCleaner.Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet("error/{statusCode}")]//TODO : la verdad no se que hace pero me re sirve xd
+        public IActionResult Error(int statusCode)
+        {
+            return statusCode switch
+            {
+                401 => View("Unauthorized"),
+                403 => View("AccessDenied"),
+                404 => View("NotFound"),
+                _ => View("Error")
+            };
         }
     }
 }

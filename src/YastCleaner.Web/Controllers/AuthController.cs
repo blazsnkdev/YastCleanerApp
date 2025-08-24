@@ -42,11 +42,32 @@ namespace YastCleaner.Web.Controllers
                 return RedirectToAction("Index", "Home");
         }
 
-        [HttpPost]
+
         public IActionResult Logout()
         {
             SessionHelper.Clear(HttpContext); 
             return RedirectToAction("Login", "Auth");
+        }
+
+
+        [Route("acceso-denegado")]
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
+        }
+
+
+        [Route("no-autorizado")]
+        public IActionResult UnauthorizedPage()
+        {
+            return View("UnauthorizedPage");
+        }
+
+
+        [Route("no-encontrado")]
+        public IActionResult NotFoundPage()
+        {
+            return View("NotFoundPage");
         }
 
     }
