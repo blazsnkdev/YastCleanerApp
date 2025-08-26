@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
+using YastCleaner.Business.Utils;
 using YastCleaner.Data.UnitOfWork;
 using YastCleaner.Entities.Entidades;
 using YastCleaner.Entities.Enums;
@@ -41,11 +42,11 @@ namespace YastCleaner.Business.Services
             }).ToList();
         }
 
-        public async Task<bool> RegistrarTrabajador(TrabajadorDto dto)
+        public async Task<Result> RegistrarTrabajador(TrabajadorDto dto)
         {
             var existe = await _UoW.UsuarioRepository.UsuarioDniExiste(dto.Dni);
-            if (existe)//si si esxiste devolver true pq el dni ya esta ocupado 
-                return false;
+            if (existe)
+                return Result.Fail("El dni Ya existe");
             string encriptado = _authService.HashPassword(dto.Password);//esto ya llega del viewModel
             var trabajador = new Usuario()
             {
@@ -62,7 +63,7 @@ namespace YastCleaner.Business.Services
             };
             await _UoW.UsuarioRepository.AddAsync(trabajador);
             await _UoW.SaveChangesAsync();
-            return true;//TODO : flaco, aqui posiblemente a futuro se debera realizar un object Result
+            return Result.Ok();
         }
         public string GenerarPassword(string nombre, string apellidoPaterno, string apellidoMaterno)
         {
@@ -75,44 +76,68 @@ namespace YastCleaner.Business.Services
             return $"{parteNombre}{parteApePat}{parteApeMat}{numerosAleatorios}{fechaHoraActual}";
         }
 
-        public async Task<bool> ActualizarTrabajador(TrabajadorDto dto)
+        public async Task<Result> ActualizarTrabajador(TrabajadorDto dto)
         {
+            if (dto.TrabajadorId <= 0)
+                return Result.Fail("El id es invalido");
             var seleccionado = await _UoW.UsuarioRepository.GetById(dto.TrabajadorId);
             if (seleccionado is null)
-                return false;
+                return Result.Fail("El trabajador no existe");
             try
             {
                 seleccionado.Nombre = dto.Nombre;
                 seleccionado.ApellidoPaterno = dto.ApellidoPaterno;
                 seleccionado.ApellidoMaterno = dto.ApellidoMaterno;
+                seleccionado.Dni = dto.Dni;
                 seleccionado.Direccion = dto.Direccion;
                 seleccionado.Email = dto.Email;
-                _UoW.UsuarioRepository.UpdateAsync(seleccionado);
+                _UoW.UsuarioRepository.Update(seleccionado);
                 await _UoW.SaveChangesAsync();
-                return true;
+                return Result.Ok();
             }
             catch (Exception ex) 
             {
-                Console.WriteLine(ex);
-                return false;
+                return Result.Fail($"{ex}");
             }
         }
 
-        public async Task<TrabajadorDto?> ObtenerTrabajador(int trabajdorId)
+        public async Task<TrabajadorDto?> ObtenerTrabajador(int trabajadorId)
         {
-            var trabajador = await _UoW.UsuarioRepository.GetById(trabajdorId);
+            var trabajador = await _UoW.UsuarioRepository.GetByIdUsuario(trabajadorId);
             if (trabajador is null)
                 return null;
             return new TrabajadorDto()
             {
-                TrabajadorId = trabajdorId,
+                TrabajadorId = trabajador.UsuarioId,
                 Nombre = trabajador.Nombre,
                 ApellidoPaterno = trabajador.ApellidoPaterno,
                 ApellidoMaterno = trabajador.ApellidoMaterno,
                 Dni = trabajador.Dni,
                 Direccion = trabajador.Direccion,
-                Email = trabajador.Email
+                Email = trabajador.Email,
+                FechaRegistro = trabajador.FechaRegistro
             };
+        }
+
+        public async Task<Result> EliminarTrabajador(int trabajadorId)
+        {
+            if(trabajadorId <=0)
+                return Result.Fail("id Invalido");
+            var trabajador = await _UoW.UsuarioRepository.GetById(trabajadorId);
+            if (trabajador is null)
+                return Result.Fail("el usuario es null");
+            try
+            {
+                _UoW.UsuarioRepository.Delete(trabajador);
+                await _UoW.SaveChangesAsync();
+                return Result.Ok();
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex);
+                return Result.Fail("Error al actualizar");
+            }
+            
         }
     }
 }

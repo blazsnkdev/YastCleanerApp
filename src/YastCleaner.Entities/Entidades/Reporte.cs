@@ -1,7 +1,10 @@
-﻿namespace YastCleaner.Entities.Entidades
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace YastCleaner.Entities.Entidades
 {
     public class Reporte
     {
+        [Key]
         public int ReporteId { get; set; }
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; }

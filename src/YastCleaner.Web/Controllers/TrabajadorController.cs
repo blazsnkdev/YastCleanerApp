@@ -47,10 +47,12 @@ namespace YastCleaner.Web.Controllers
             return View(new InsertarTrabajadorViewModel());
         }
         [HttpPost]
+        [RoleAuthorize(Rol.Administrador)]
         public async Task<IActionResult> Registrar(InsertarTrabajadorViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
+                ModelState.AddModelError("", "No se pudo actualizar el trabajador. Verifica los datos.");
                 return View(viewModel);
             }
             string password = _trabajadorService.GenerarPassword(viewModel.Nombre, viewModel.ApellidoPaterno, viewModel.ApellidoMaterno);
@@ -65,9 +67,11 @@ namespace YastCleaner.Web.Controllers
                 Password = password
             };
             var result = await _trabajadorService.RegistrarTrabajador(trabajadorDto);
-            if (!result)
-                return View(viewModel);
-
+            if (!result.Success)
+                {
+                    ViewBag.Error = result.ErrorMessage;
+                    return View(viewModel);
+                }
             _enviarCorreo.EnviarCorreo(trabajadorDto.Email, password,"Registrada");
             return RedirectToAction("Trabajadores");
         }
@@ -91,6 +95,7 @@ namespace YastCleaner.Web.Controllers
             return View(trabajadorViewModel);
         }
         [HttpPost]
+        [RoleAuthorize(Rol.Administrador)]
         public async Task<IActionResult> Actualizar(InsertarTrabajadorViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -109,10 +114,38 @@ namespace YastCleaner.Web.Controllers
                 Email = viewModel.Email
             };
             var result = await _trabajadorService.ActualizarTrabajador(trabajadorDto);
-            if (!result)
-                return View(viewModel);
+            if (!result.Success)
+                {
+                    ViewBag.Error = result.ErrorMessage;
+                    return View(viewModel);
+                }
             return RedirectToAction("Trabajadores");
         }
-
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> Detalle(int id)
+        {
+            var trabajadorDto = await _trabajadorService.ObtenerTrabajador(id);
+            if(trabajadorDto is null)
+                return RedirectToAction("Trabajadores");
+            var trabajadorViewModel =  new TrabajadorViewModel()
+            {
+                TrabajadorId = id,
+                Nombre = trabajadorDto.Nombre,
+                Apellidos = trabajadorDto.ApellidoPaterno+" "+trabajadorDto.ApellidoMaterno,
+                Dni = trabajadorDto.Dni,
+                Direccion = trabajadorDto.Direccion,
+                Email = trabajadorDto.Email,
+                FechaRegistro = trabajadorDto.FechaRegistro
+            };
+            return View(trabajadorViewModel);
+        }
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            var result = await _trabajadorService.EliminarTrabajador(id);
+            if (!result.Success)
+                return View(Detalle(id));
+            return RedirectToAction("Trabajadores");
+        }
     } 
 }

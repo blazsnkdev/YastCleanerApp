@@ -11,7 +11,7 @@ namespace YastCleaner.Data.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetById(int id);
         Task AddAsync(T entity);
-        void UpdateAsync(T entity);
-        void DeleteAsync(T entity);
+        void Update(T entity);
+        void Delete(T entity);
     }
 }

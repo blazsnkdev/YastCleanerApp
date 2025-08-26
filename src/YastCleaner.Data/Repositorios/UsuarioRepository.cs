@@ -30,6 +30,11 @@ namespace YastCleaner.Data.Repositorios
             return await _appDbContext.TblUsuario.FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public async Task<Usuario?> GetByIdUsuario(int usuarioId)
+        {
+            return await _appDbContext.TblUsuario.FirstOrDefaultAsync(u => u.UsuarioId == usuarioId);
+        }
+
         public async Task<bool> UsuarioDniExiste(string dni)
         {
             var existe = await _appDbContext.TblUsuario.FirstOrDefaultAsync(u => u.Dni == dni);
