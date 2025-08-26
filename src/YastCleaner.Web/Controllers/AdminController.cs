@@ -12,5 +12,11 @@ namespace YastCleaner.Web.Controllers
         {
             return View();
         }
+
+        [RoleAuthorize(Rol.Administrador)]
+        public IActionResult Trabajadores()
+        {
+            return View();
+        }
     }
 }

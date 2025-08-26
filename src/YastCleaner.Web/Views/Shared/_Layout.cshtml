@@ -26,6 +26,17 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" hred="#" id="navBarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Mantenimiento</a>
+                            <ul class="dropdown-menu" aria-labelledby="navBarDropdown">
+                                <li><a class="dropdown-item" asp-controller="Trabajador" asp-action="Trabajadores">Trabajadores</a></li>
+                            </ul>
+                            <ul class="dropdown-menu" aria-labelledby="navBarDropdown">
+                                <li><a class="dropdown-item" asp-controller="Cliente" asp-action="Clientes">Clientes</a></li>
+                            </ul>
+                        </li>
+
                     </ul>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">

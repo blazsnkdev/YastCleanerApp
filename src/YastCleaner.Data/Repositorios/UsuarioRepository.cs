@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using YastCleaner.Data.Data;
 using YastCleaner.Data.Interfaces;
 using YastCleaner.Entities.Entidades;
+using YastCleaner.Entities.Enums;
 
 namespace YastCleaner.Data.Repositorios
 {
@@ -17,10 +18,24 @@ namespace YastCleaner.Data.Repositorios
         {
             _appDbContext = appDbContext;
         }
-         //NOTE : obtiene el usuario partir del email de la bd
+        //NOTE : obtiene la lista de todos los usuarios con rol trabajador
+        public async Task<IEnumerable<Usuario>> GetAllByRolTrabajador()
+        {
+            return await _appDbContext.TblUsuario.Where(u=>u.Rol == Rol.Trabajador).ToListAsync();
+        }
+
+        //NOTE : obtiene el usuario partir del email de la bd
         public async Task<Usuario?> GetByEmail(string email)
         {
             return await _appDbContext.TblUsuario.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> UsuarioDniExiste(string dni)
+        {
+            var existe = await _appDbContext.TblUsuario.FirstOrDefaultAsync(u => u.Dni == dni);
+            if (existe == null)
+                return false;
+            return true;
         }
     }
 }

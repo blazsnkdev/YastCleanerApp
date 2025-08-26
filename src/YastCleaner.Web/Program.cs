@@ -7,6 +7,7 @@ using YastCleaner.Data.Repositorios;
 using YastCleaner.Data.UnitOfWork;
 using YastCleaner.Entities.Entidades;
 using YastCleaner.Entities.Enums;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,10 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 //Servicios
+builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITrabajadorService, TrabajadorService>();
+builder.Services.AddScoped<IEnviarCorreoSmtp, EnviarCorreoSmtp>();
 
 //DbContext
 var cn1 = builder.Configuration.GetConnectionString("cn1");

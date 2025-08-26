@@ -1,0 +1,71 @@
+﻿@model YastCleaner.Web.Utils.PaginaResult<YastCleaner.Web.ViewModels.TrabajadorViewModel>
+
+@{
+    ViewData["Title"] = "Trabajadores";
+}
+
+<h1>Trabajadores</h1>
+
+<p>
+    <a asp-action="Registrar">Agregar</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Apellidos Completos
+            </th>
+            <th>
+                Número Dni
+            </th>
+            <th>
+                Dirección
+            </th>
+            <th>
+                Correo Electronico
+            </th>
+            <th>
+                Fecha de Registro
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Items) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrabajadorId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apellidos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dni)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaRegistro)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

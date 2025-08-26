@@ -10,5 +10,8 @@ namespace YastCleaner.Data.Interfaces
     public interface IUsuarioRepository : IRepository<Usuario> //TODO : hereda los metodos sin impl de repositorio generico
     {
         Task<Usuario?> GetByEmail(string email);//TODO : aqui solo el email pq el password hash se hace en el servicio
+
+        Task<IEnumerable<Usuario>> GetAllByRolTrabajador();
+        Task<bool> UsuarioDniExiste(string dni);
     }
 }
