@@ -75,6 +75,44 @@ namespace YastCleaner.Business.Services
             return $"{parteNombre}{parteApePat}{parteApeMat}{numerosAleatorios}{fechaHoraActual}";
         }
 
+        public async Task<bool> ActualizarTrabajador(TrabajadorDto dto)
+        {
+            var seleccionado = await _UoW.UsuarioRepository.GetById(dto.TrabajadorId);
+            if (seleccionado is null)
+                return false;
+            try
+            {
+                seleccionado.Nombre = dto.Nombre;
+                seleccionado.ApellidoPaterno = dto.ApellidoPaterno;
+                seleccionado.ApellidoMaterno = dto.ApellidoMaterno;
+                seleccionado.Direccion = dto.Direccion;
+                seleccionado.Email = dto.Email;
+                _UoW.UsuarioRepository.UpdateAsync(seleccionado);
+                await _UoW.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
 
+        public async Task<TrabajadorDto?> ObtenerTrabajador(int trabajdorId)
+        {
+            var trabajador = await _UoW.UsuarioRepository.GetById(trabajdorId);
+            if (trabajador is null)
+                return null;
+            return new TrabajadorDto()
+            {
+                TrabajadorId = trabajdorId,
+                Nombre = trabajador.Nombre,
+                ApellidoPaterno = trabajador.ApellidoPaterno,
+                ApellidoMaterno = trabajador.ApellidoMaterno,
+                Dni = trabajador.Dni,
+                Direccion = trabajador.Direccion,
+                Email = trabajador.Email
+            };
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace YastCleaner.Business.Services
 {
     public class EnviarCorreoSmtp : IEnviarCorreoSmtp
     {
-        public void EnviarCorreo(string email, string password)
+        public void EnviarCorreo(string email, string password,string accion)
         {
             var mensaje = new MimeMessage();
             mensaje.From.Add(new MailboxAddress("Lavandería Yast Cleaner", "blasasto0914@gmail.com"));//aqui el correo debe cambiar
@@ -15,7 +15,7 @@ namespace YastCleaner.Business.Services
 
             mensaje.Body = new TextPart("plain")
             {
-                Text = $"Su contraseña única de trabajador es: {password}"
+                Text = $"Su contraseña {accion}: {password}"
             };
 
             using (var cliente = new SmtpClient())

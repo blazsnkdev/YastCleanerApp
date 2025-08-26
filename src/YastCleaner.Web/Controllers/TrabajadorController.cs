@@ -1,5 +1,6 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Threading.Tasks;
 using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
@@ -15,13 +16,12 @@ namespace YastCleaner.Web.Controllers
     {
         private readonly ITrabajadorService _trabajadorService;
         private readonly IEnviarCorreoSmtp _enviarCorreo;
-        private readonly IDateTimeProvider _dateTimeProvider;
+        
 
-        public TrabajadorController(ITrabajadorService trabajadorService, IEnviarCorreoSmtp enviarCorreo, IDateTimeProvider dateTimeProvider)
+        public TrabajadorController(ITrabajadorService trabajadorService, IEnviarCorreoSmtp enviarCorreo)
         {
             _trabajadorService = trabajadorService;
             _enviarCorreo = enviarCorreo;
-            _dateTimeProvider = dateTimeProvider;
         }
         [RoleAuthorize(Rol.Administrador)]
         public async Task<IActionResult> Trabajadores(int pagina = 1, int tamanioPagina =10)//este es el total
@@ -44,10 +44,10 @@ namespace YastCleaner.Web.Controllers
         [RoleAuthorize(Rol.Administrador)]
         public IActionResult Registrar()
         {
-            return View(new RegistrarTrabajadorViewModel());
+            return View(new InsertarTrabajadorViewModel());
         }
         [HttpPost]
-        public async Task<IActionResult> Registrar(RegistrarTrabajadorViewModel viewModel)
+        public async Task<IActionResult> Registrar(InsertarTrabajadorViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -68,8 +68,51 @@ namespace YastCleaner.Web.Controllers
             if (!result)
                 return View(viewModel);
 
-            _enviarCorreo.EnviarCorreo(trabajadorDto.Email, password);
+            _enviarCorreo.EnviarCorreo(trabajadorDto.Email, password,"Registrada");
             return RedirectToAction("Trabajadores");
         }
-    }
+
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> Actualizar(int id)
+        {
+            var trabajadorDto =await _trabajadorService.ObtenerTrabajador(id);
+            if (trabajadorDto is null)
+                return View("Trabajadores");
+            var trabajadorViewModel = new InsertarTrabajadorViewModel()
+            {
+                TrabajadorId = trabajadorDto.TrabajadorId,
+                Nombre = trabajadorDto.Nombre,
+                ApellidoPaterno = trabajadorDto.ApellidoPaterno,
+                ApellidoMaterno = trabajadorDto.ApellidoMaterno,
+                Dni = trabajadorDto.Dni,
+                Direccion = trabajadorDto.Direccion,
+                Email = trabajadorDto.Email
+            };
+            return View(trabajadorViewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Actualizar(InsertarTrabajadorViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "No se pudo actualizar el trabajador. Verifica los datos.");
+                return View(viewModel);
+            }
+            var trabajadorDto = new TrabajadorDto()
+            {
+                TrabajadorId = viewModel.TrabajadorId,
+                Nombre = viewModel.Nombre,
+                ApellidoPaterno = viewModel.ApellidoPaterno,
+                ApellidoMaterno = viewModel.ApellidoMaterno,
+                Dni = viewModel.Dni,
+                Direccion = viewModel.Direccion,
+                Email = viewModel.Email
+            };
+            var result = await _trabajadorService.ActualizarTrabajador(trabajadorDto);
+            if (!result)
+                return View(viewModel);
+            return RedirectToAction("Trabajadores");
+        }
+
+    } 
 }

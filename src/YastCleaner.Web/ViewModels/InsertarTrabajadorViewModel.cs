@@ -2,8 +2,10 @@
 
 namespace YastCleaner.Web.ViewModels
 {
-    public class RegistrarTrabajadorViewModel
+    public class InsertarTrabajadorViewModel
     {
+        public int TrabajadorId { get; set; }
+
         [Display(Name ="Nombre"),
             Required(ErrorMessage ="Requerido"),
             StringLength(30,ErrorMessage ="No puede superar los 30 caracteres")]

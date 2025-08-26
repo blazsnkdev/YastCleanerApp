@@ -8,6 +8,6 @@ namespace YastCleaner.Business.Interfaces
 {
     public interface IEnviarCorreoSmtp
     {
-        void EnviarCorreo(string emailAsociado, string estadoSolicitud);
+        void EnviarCorreo(string emailAsociado, string estadoSolicitud,string accion);
     }
 }
