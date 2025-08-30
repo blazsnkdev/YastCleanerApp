@@ -1,0 +1,56 @@
+﻿@model YastCleaner.Web.Utils.PaginaResult<YastCleaner.Web.ViewModels.ServicioViewModel>
+
+@{
+    ViewData["Title"] = "Servicios";
+}
+
+<h1>Servicios</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Precio 
+            </th>
+            <th>
+                Descripcion
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Seleccionar
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Items) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServicioId)<!-- che esto quisiera que sea un hidden-->
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Precio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                <a asp-controller="Servicio" asp-action="SeleccionarServicio" asp-route-servicioId="@item.ServicioId" class="btn btn-warning">Seleccionar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

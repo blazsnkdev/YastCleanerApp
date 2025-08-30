@@ -14,15 +14,28 @@ namespace YastCleaner.Data.UnitOfWork
     {
         private readonly AppDbContext _appDbContext;
         private IDbContextTransaction? _transaction;
+        //Repositorios
         public IUsuarioRepository UsuarioRepository { get; }
+        public IServicioRepository ServicioRepository { get; }
+        public IPedidoRepository PedidoRepository { get; }
+        public IPedidoDetalleRepository PedidoDetalleRepository { get; }
+        public IClienteRepository ClienteRepository { get; }
 
         public UnitOfWork(
             AppDbContext appDbContext,
-            IUsuarioRepository usuarioRepository
+            IUsuarioRepository usuarioRepository,
+            IServicioRepository servicioRepository,
+            IPedidoRepository pedidoRepository,
+            IPedidoDetalleRepository pedidoDetalleRepository,
+            IClienteRepository clienteRepository
             )
         {
             _appDbContext = appDbContext;
             UsuarioRepository = usuarioRepository;
+            ServicioRepository = servicioRepository;
+            PedidoRepository = pedidoRepository;
+            PedidoDetalleRepository = pedidoDetalleRepository;
+            ClienteRepository = clienteRepository;
         }
 
 

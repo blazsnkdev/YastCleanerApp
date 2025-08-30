@@ -13,6 +13,10 @@ namespace YastCleaner.Data.UnitOfWork
     {
         //TODO : aqui falta agregar los repositorios
         public IUsuarioRepository UsuarioRepository { get; }
+        public IServicioRepository ServicioRepository { get; }
+        public IPedidoRepository PedidoRepository { get; }
+        public IPedidoDetalleRepository PedidoDetalleRepository { get; }
+        public IClienteRepository ClienteRepository { get; }
         //
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();

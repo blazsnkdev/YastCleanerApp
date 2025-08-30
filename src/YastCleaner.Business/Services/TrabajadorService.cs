@@ -80,7 +80,7 @@ namespace YastCleaner.Business.Services
         {
             if (dto.TrabajadorId <= 0)
                 return Result.Fail("El id es invalido");
-            var seleccionado = await _UoW.UsuarioRepository.GetById(dto.TrabajadorId);
+            var seleccionado = await _UoW.UsuarioRepository.GetByIdAsync(dto.TrabajadorId);
             if (seleccionado is null)
                 return Result.Fail("El trabajador no existe");
             try
@@ -123,7 +123,7 @@ namespace YastCleaner.Business.Services
         {
             if(trabajadorId <=0)
                 return Result.Fail("id Invalido");
-            var trabajador = await _UoW.UsuarioRepository.GetById(trabajadorId);
+            var trabajador = await _UoW.UsuarioRepository.GetByIdAsync(trabajadorId);
             if (trabajador is null)
                 return Result.Fail("el usuario es null");
             try

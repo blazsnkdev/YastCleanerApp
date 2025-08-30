@@ -23,6 +23,7 @@ namespace YastCleaner.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel viewModel) {
             if (!ModelState.IsValid)
             {

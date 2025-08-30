@@ -9,5 +9,8 @@
         public string Direccion { get; set; }
         public string Email { get; set; }
         public DateTime FechaRegistro { get; set; }
+
+        public TrabajadorViewModel(int id, string nombre, string apellidos,string dni, string direccion, string email) { 
+        }
     }
 }

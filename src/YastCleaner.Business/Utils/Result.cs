@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace YastCleaner.Business.Utils
+﻿namespace YastCleaner.Business.Utils
 {
     public class Result
     {
@@ -15,4 +9,14 @@ namespace YastCleaner.Business.Utils
         public static Result Fail(string message) => new Result { Success = false, ErrorMessage = message };
     }
 
+    public class Result<T> : Result
+    {
+        public T? Value { get; set; }
+
+        public static Result<T> Ok(T value) =>
+            new Result<T> { Success = true, Value = value };
+
+        public static Result<T> Fail(string message) =>
+            new Result<T> { Success = false, ErrorMessage = message };
+    }
 }
