@@ -8,5 +8,6 @@
         public int Cantidad { get; set; }
         public double Precio { get; set; }
         public double SubTotal { get; set; }
+        public ServicioViewModel Servicio { get; set; }
     }
 }

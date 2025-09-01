@@ -30,7 +30,7 @@ namespace YastCleaner.Web.Controllers
         public IActionResult Temporal()
         {
             var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
-            if (pedidosTemporalDto.Count == 0)
+            if (pedidosTemporalDto.Count == 0 || pedidosTemporalDto is null || !pedidosTemporalDto.Any())
                 return RedirectToAction("Servicios","Servicio");
             var pedidoTemporalViewModel = pedidosTemporalDto.Select(p=> new PedidosTemporalViewModel()
             {
@@ -65,6 +65,11 @@ namespace YastCleaner.Web.Controllers
             await CargarCombos();
 
             var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
+            if (pedidosTemporalDto is null || !pedidosTemporalDto.Any())
+            {
+                //await CargarCombos();//TODO : esto ah modificar, si en caso no hay lista no debe haber esto
+                return RedirectToAction("Servicios", "Servicio");
+            }
             var pedidoTemporalViewModel = pedidosTemporalDto.Select(p => new PedidosTemporalViewModel()
             {
                 Id = p.Id,
@@ -86,8 +91,8 @@ namespace YastCleaner.Web.Controllers
             var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
             if(pedidosTemporalDto is null || !pedidosTemporalDto.Any())
             {
-                await CargarCombos();
-                return View();
+                //await CargarCombos();//TODO : esto ah modificar, si en caso no hay lista no debe haber esto
+                return RedirectToAction("Servicios", "Servicio");
             }
 
             var pedidoDto = new PedidoDto()
@@ -121,7 +126,7 @@ namespace YastCleaner.Web.Controllers
         {
             var pedidoDto = await _pedidoService.VerDetallePedido(pedidoId);
             if (pedidoDto.Value is null)
-                return View("NotFoundPage", "Auth");
+                return RedirectToAction("NotFoundPage", "Auth");
 
             var pedido = pedidoDto.Value; 
             var clienteDto = await _clienteService.ObtenerCliente(pedido.ClienteId);
