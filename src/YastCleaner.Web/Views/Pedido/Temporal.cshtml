@@ -1,0 +1,74 @@
+﻿@model IEnumerable<YastCleaner.Web.ViewModels.PedidosTemporalViewModel>
+
+@{
+    ViewData["Title"] = "Temporal";
+}
+
+<h1>Temporal</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Importe)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+                <form asp-controller="Pedido" asp-action="ModificarCantidad" method="post">
+                    @Html.Hidden("servicioId", item.Id)
+                <td>
+                    @Html.TextBox("cantidad", item.Cantidad,
+                    new { @type = "number", min = 1 })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Precio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Importe)
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-success">Modificar</button>
+                </td>
+            </form>
+            <form asp-controller="Pedido" asp-action="EliminarServicio" method="post">
+            <td>
+                @Html.Hidden("servicioId", item.Id)
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Estas seguro de Eliminar el Articulo?')">
+                    Eliminar
+                </button>
+
+            </td>
+            </form>
+        </tr>
+}
+    </tbody>
+</table>
+<div>
+    <h3><b>Total a Pagar: @ViewBag.Importe</b></h3>
+</div>

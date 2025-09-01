@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YastCleaner.Entities.Enums;
 
 namespace YastCleaner.Business.Interfaces
 {
-    public interface IEnviarCorreoSmtp
+    public interface IMetodoPagoService
     {
-        void EnviarCorreo(string email, string password);
+        Task<List<MetodoPago>> ListarMetodosPago();
     }
 }

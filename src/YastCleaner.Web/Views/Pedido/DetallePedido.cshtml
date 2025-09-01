@@ -1,0 +1,93 @@
+﻿@model YastCleaner.Web.ViewModels.DetallePedidoViewModel
+
+@{
+    ViewData["Title"] = "Detalle del Pedido";
+}
+
+<h2>Detalle del Pedido</h2>
+
+<hr />
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Pedido: @Model.CodigoPedido</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Fecha</dt>
+            <dd class="col-sm-9">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">@Model.Estado</dd>
+
+            <dt class="col-sm-3">Método de Pago</dt>
+            <dd class="col-sm-9">@Model.MetodoPago</dd>
+
+            <dt class="col-sm-3">Monto Adelantado</dt>
+            <dd class="col-sm-9">@Model.MontoAdelantado.ToString("C")</dd>
+
+            <dt class="col-sm-3">Monto Faltante</dt>
+            <dd class="col-sm-9">@Model.MontoFaltante.ToString("C")</dd>
+
+            <dt class="col-sm-3">Monto Total</dt>
+            <dd class="col-sm-9">
+                @(Model.Detalles.Sum(d => d.SubTotal).ToString("C"))
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Cliente</h5>
+            </div>
+            <div class="card-body">
+                <p><b>ID:</b> @Model.Cliente.ClienteId</p>
+                <p><b>Nombre:</b> @Model.Cliente.Nombre</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Trabajador</h5>
+            </div>
+            <div class="card-body">
+                <p><b>ID:</b> @Model.Trabajador.TrabajadorId</p>
+                <p><b>Nombre:</b> @Model.Trabajador.Nombre @Model.Trabajador.Apellidos</p>
+                <p><b>DNI:</b> @Model.Trabajador.Dni</p>
+                <p><b>Email:</b> @Model.Trabajador.Email</p>
+                <p><b>Dirección:</b> @Model.Trabajador.Direccion</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>Servicios del Pedido</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Servicio Id</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var detalle in Model.Detalles)
+        {
+            <tr>
+                <td>@detalle.ServicioId</td>
+                <td>@detalle.Cantidad</td>
+                <td>@detalle.Precio.ToString("C")</td>
+                <td>@detalle.SubTotal.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="mt-4">
+    <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-secondary">Volver</a>
+</div>

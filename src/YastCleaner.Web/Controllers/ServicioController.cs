@@ -32,7 +32,7 @@ namespace YastCleaner.Web.Controllers
             var paginacion = PaginacionHelper.Paginacion(viewModel, indicePagina, tamanioPagina);
             return View(paginacion);
         }
-
+        [RoleAuthorize(Rol.Trabajador)]
         public async Task<IActionResult> Seleccionar(int servicioId)
         {
             var servicioDto = await _servicioService.ObtenerServicio(servicioId);
@@ -49,6 +49,7 @@ namespace YastCleaner.Web.Controllers
             return View(viewModel);
         }
         [HttpPost]
+        [RoleAuthorize(Rol.Trabajador)]
         public async Task<IActionResult> Seleccionar(int servicioId, int cantidad)
         {
             var result = await _servicioService.AgregarServicioAlPedido(servicioId,cantidad);

@@ -6,7 +6,7 @@ namespace YastCleaner.Business.Services
 {
     public class EnviarCorreoSmtp : IEnviarCorreoSmtp
     {
-        public void EnviarCorreo(string email, string password,string accion)
+        public void EnviarCorreo(string email, string password)
         {
             var mensaje = new MimeMessage();
             mensaje.From.Add(new MailboxAddress("Lavandería Yast Cleaner", "blasasto0914@gmail.com"));//aqui el correo debe cambiar
@@ -15,13 +15,13 @@ namespace YastCleaner.Business.Services
 
             mensaje.Body = new TextPart("plain")
             {
-                Text = $"Su contraseña {accion}: {password}"
+                Text = $"Su contraseña: {password}"
             };
 
             using (var cliente = new SmtpClient())
             {
                 cliente.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                cliente.Authenticate("blasasto0914@gmail.com", "fetv ozub yhym gouj");
+                cliente.Authenticate("blasasto0914@gmail.com", "fetv ozub yhym gouj");//TODO: che esto si se va el internet se cae
 
                 cliente.Send(mensaje);
                 cliente.Disconnect(true);

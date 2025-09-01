@@ -48,7 +48,7 @@
                 @Html.DisplayFor(modelItem => item.Estado)
             </td>
             <td>
-                <a asp-controller="Servicio" asp-action="SeleccionarServicio" asp-route-servicioId="@item.ServicioId" class="btn btn-warning">Seleccionar</a>
+                    <a asp-controller="Servicio" asp-action="Seleccionar" asp-route-servicioId="@item.ServicioId" class="btn btn-warning">Seleccionar</a>
             </td>
         </tr>
 }

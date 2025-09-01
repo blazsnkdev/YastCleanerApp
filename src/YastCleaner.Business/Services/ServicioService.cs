@@ -10,7 +10,7 @@ using YastCleaner.Data.UnitOfWork;
 
 namespace YastCleaner.Business.Services
 {
-    internal class ServicioService : IServicioService
+    public class ServicioService : IServicioService
     {
         private readonly IUnitOfWork _UoW;
         private readonly IPedidoStorage _pedidoStorage;

@@ -28,6 +28,7 @@ namespace YastCleaner.Data.Repositorios
         public async Task<Usuario?> GetByEmail(string email)
         {
             return await _appDbContext.TblUsuario.FirstOrDefaultAsync(u => u.Email == email);
+            
         }
 
         public async Task<Usuario?> GetByIdUsuario(int usuarioId)

@@ -1,0 +1,83 @@
+﻿@model IEnumerable<YastCleaner.Web.ViewModels.PedidosTemporalViewModel>
+
+@{
+    ViewData["Title"] = "RegistrarPedido";
+}
+
+<h1>RegistrarPedido</h1>
+
+<form asp-controller="Pedido" asp-action="RegistrarPedido" method="post">
+
+    <div>
+        <div class="form-group mb-3">
+            <label for="fecha">Fecha</label>
+            <input type="date" id="fecha" name="fecha" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+        </div>
+        <div class="form-group mb-3">
+            <label for="clienteId">Cliente</label>
+            <select id="clienteId" name="clienteId" asp-items="@ViewBag.Clientes" class="form-control" required>
+                <option value="">Seleccione</option>
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label for="montoAdelanto">Monto Adelantado</label>
+            <input type="number" id="montoAdelanto" name="montoAdelanto" class="form-control" step="0.01" min="0" value="0" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="metodoPago">Método de Pago</label>
+            <select id="metodoPago" name="metodoPago" asp-items="@ViewBag.MetodosPago" class="form-control" required>
+                <option value="">Seleccione un método</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Pagar</button>
+        <a asp-controller="Pedido" asp-action="RegistrarPedido" class="btn btn-success">Modificar</a>
+        <a asp-controller="Servicio" asp-action="Servicio" class="btn btn-warning">Agregar Servicio</a>
+
+    </div>
+
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Importe)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cantidad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Precio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Importe)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<div>
+    <h3><b>Total a Pagar: @ViewBag.Importe</b></h3>
+</div>

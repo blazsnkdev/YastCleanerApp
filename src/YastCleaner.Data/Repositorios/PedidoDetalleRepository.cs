@@ -9,7 +9,7 @@ using YastCleaner.Entities.Entidades;
 
 namespace YastCleaner.Data.Repositorios
 {
-    public class PedidoDetalleRepository : Repository<DetallePedido>
+    public class PedidoDetalleRepository : Repository<DetallePedido>, IPedidoDetalleRepository
     {
         public PedidoDetalleRepository(AppDbContext appDbContext) : base(appDbContext)
         {

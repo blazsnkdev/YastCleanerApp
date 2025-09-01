@@ -28,7 +28,7 @@ namespace YastCleaner.Web.Controllers
         {
             var trabajadoresDto = await _trabajadorService.ListaTrabajadores();
             //TODO : utilizar esto para la paginacion
-            var viewModel = trabajadoresDto.Select(t => new TrabajadorViewModel
+            var viewModel = trabajadoresDto.Select(t => new TrabajadorViewModel()
             {
                 TrabajadorId = t.TrabajadorId,
                 Nombre = t.Nombre,
@@ -72,7 +72,7 @@ namespace YastCleaner.Web.Controllers
                     ViewBag.Error = result.ErrorMessage;
                     return View(viewModel);
                 }
-            _enviarCorreo.EnviarCorreo(trabajadorDto.Email, password,"Registrada");
+            _enviarCorreo.EnviarCorreo(trabajadorDto.Email, password);
             return RedirectToAction("Trabajadores");
         }
 

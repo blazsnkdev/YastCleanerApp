@@ -26,7 +26,8 @@ namespace YastCleaner.Business.Services
         public async Task<SesionDto?> LoginAsync(string email, string password)
         {
             var usuario = await _UoW.UsuarioRepository.GetByEmail(email);
-            if (usuario == null || !ValidarPassword(password,usuario.Password))
+            var passwordValido= ValidarPassword(password, usuario?.Password ?? "");
+            if (usuario == null || !passwordValido)
                 return null;
 
             return new SesionDto

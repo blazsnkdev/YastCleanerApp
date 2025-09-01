@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YastCleaner.Data.Data;
+using YastCleaner.Data.Interfaces;
 using YastCleaner.Entities.Entidades;
 
 namespace YastCleaner.Data.Repositorios
 {
-    public class ClienteRepository : Repository<Cliente>
+    public class ClienteRepository : Repository<Cliente>,IClienteRepository
     {
         public ClienteRepository(AppDbContext appDbContext) : base(appDbContext)
         {

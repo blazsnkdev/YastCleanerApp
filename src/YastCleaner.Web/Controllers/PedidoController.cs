@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
 using YastCleaner.Data.Interfaces;
+using YastCleaner.Entities.Enums;
+using YastCleaner.Web.Filters;
 using YastCleaner.Web.Helpers;
 using YastCleaner.Web.ViewModels;
 
@@ -15,13 +17,16 @@ namespace YastCleaner.Web.Controllers
         private readonly IPedidoService _pedidoService;
         private readonly IClienteService _clienteService;
         private readonly ITrabajadorService _trabajadorService;
+        private readonly IMetodoPagoService _metodoPagoService;
 
-        public PedidoController(IPedidoService pedidoService, IClienteService clienteService, ITrabajadorService trabajadorService)
+        public PedidoController(IPedidoService pedidoService, IClienteService clienteService, ITrabajadorService trabajadorService, IMetodoPagoService metodoPagoService)
         {
             _pedidoService = pedidoService;
             _clienteService = clienteService;
             _trabajadorService = trabajadorService;
+            _metodoPagoService = metodoPagoService;
         }
+        [RoleAuthorize(Rol.Trabajador)]
         public IActionResult Temporal()
         {
             var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
@@ -37,33 +42,72 @@ namespace YastCleaner.Web.Controllers
             ViewBag.Importe = _pedidoService.ImporteTotalPedido();
             return View(pedidoTemporalViewModel);
         }
-
-        public async Task<IActionResult> RegistrarPedido()
+        [HttpPost]
+        public IActionResult EliminarServicio(int servicioId)
         {
-            ViewBag.Clientes = new SelectList(await _clienteService.ListarClientes(), "ClienteId","Nombre");//TODO :esto es una lista de clienteDto
-            ViewBag.Importe = _pedidoService.ImporteTotalPedido();
-            return View(Temporal());
+            var result = _pedidoService.EliminarServicioDelPedido(servicioId);
+            if (!result.Success)
+                return View("Temporal");
+            return RedirectToAction("Temporal");
+        }
+        [HttpPost]
+        public IActionResult ModificarCantidad(int servicioId, int cantidad)
+        {
+            var result = _pedidoService.ModificarCantidadServicioDelPedido(servicioId,cantidad);
+            if (!result.Success)
+                return View("Temporal");
+            return RedirectToAction("Temporal");
         }
 
-        public async Task<IActionResult> RegistrarPedido(RegistrarPedidoViewModel viewModel)
+        [RoleAuthorize(Rol.Trabajador)]
+        public async Task<IActionResult> RegistrarPedido()
+        {
+            await CargarCombos();
+            return View(Temporal());
+        }
+        [HttpPost]
+        [RoleAuthorize(Rol.Trabajador)]
+        public async Task<IActionResult> RegistrarPedido(int clienteId,DateTime fecha,double montoAdelanto, string metodoPago)
         {
             //Aqui necesito construir un pedidoDto apartir de un viewModel
             var trabajadorId = SessionHelper.GetUsuarioId(HttpContext);
             if (trabajadorId is null)
                 return RedirectToAction("UnauthorizedPage", "Auth");
+
+            var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
+            if(pedidosTemporalDto is null || !pedidosTemporalDto.Any())
+            {
+                await CargarCombos();
+                return View();
+            }
+
             var pedidoDto = new PedidoDto()
             {
-                ClienteId = viewModel.ClienteId,
-                Fecha = viewModel.Fecha,
+                ClienteId = clienteId,
+                Fecha = fecha,
                 UsuarioId = trabajadorId.Value,
-                MontoAdelantado = viewModel.MontoAdelantado,
-                MetodoPago = viewModel.MetodoPago,
+                MontoAdelantado = montoAdelanto,
+                MetodoPago = metodoPago,
+                Detalles = pedidosTemporalDto.Select(p => new DetallePedidoDto()
+                {
+                    ServicioId = p.Id,
+                    Cantidad = p.Cantidad,
+                    Precio = p.Precio,
+                    SubTotal = p.Cantidad * p.Precio
+                }).ToList()
             };
+
             var result = await _pedidoService.RegistrarPedido(pedidoDto);
             if (!result.Success)
-                return View(viewModel);
+            {
+                await CargarCombos();
+                return View(pedidosTemporalDto);
+            }
             return RedirectToAction("DetallePedido", new {pedidoId = result.Value});
         }
+
+
+        [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
         public async Task<IActionResult> DetallePedido(int pedidoId)
         {
             var pedidoDto = await _pedidoService.VerDetallePedido(pedidoId);
@@ -79,8 +123,16 @@ namespace YastCleaner.Web.Controllers
 
 
             var clienteViewModel = new ClienteViewModel(clienteDto.Value.ClienteId, clienteDto.Value.Nombre);
-            var trabajadorViewModel = new TrabajadorViewModel(trabajadorDto.TrabajadorId, trabajadorDto.Nombre, trabajadorDto.ApellidoPaterno, trabajadorDto.Dni, trabajadorDto.Direccion, trabajadorDto.Email);
-            var pedidoViewModel = new DetallePedidoViewModel()
+            var trabajadorViewModel = new TrabajadorViewModel()
+            {
+                TrabajadorId = trabajadorDto.TrabajadorId,
+                Nombre = trabajadorDto.Nombre,
+                Apellidos = trabajadorDto.ApellidoPaterno + " " + trabajadorDto.ApellidoMaterno,
+                Dni = trabajadorDto.Dni,
+                Direccion = trabajadorDto.Direccion,
+                Email = trabajadorDto.Email
+            };
+            var detallePedidoViewModel = new DetallePedidoViewModel()
             {
                 PedidoId = pedidoId,
                 Cliente =clienteViewModel,
@@ -101,7 +153,15 @@ namespace YastCleaner.Web.Controllers
                     SubTotal = d.SubTotal
                 }).ToList()
             };
-            return View(pedidoViewModel);
+            return View(detallePedidoViewModel);
         }
+
+        private async Task CargarCombos()//TODO : aqui este metodo privado carga todos los combos de selectList para el registro de pedido
+        {
+            ViewBag.Clientes = new SelectList(await _clienteService.ListarClientes(), "ClienteId", "Nombre");
+            ViewBag.Importe = _pedidoService.ImporteTotalPedido();
+            ViewBag.MetodosPago = new SelectList(await _metodoPagoService.ListarMetodosPago());
+        }
+
     }
 }
