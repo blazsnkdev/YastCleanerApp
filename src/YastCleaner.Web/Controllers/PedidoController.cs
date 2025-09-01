@@ -63,7 +63,16 @@ namespace YastCleaner.Web.Controllers
         public async Task<IActionResult> RegistrarPedido()
         {
             await CargarCombos();
-            return View(Temporal());
+
+            var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
+            var pedidoTemporalViewModel = pedidosTemporalDto.Select(p => new PedidosTemporalViewModel()
+            {
+                Id = p.Id,
+                Nombre = p.Nombre,
+                Cantidad = p.Cantidad,
+                Precio = p.Precio
+            });
+            return View(pedidoTemporalViewModel);
         }
         [HttpPost]
         [RoleAuthorize(Rol.Trabajador)]

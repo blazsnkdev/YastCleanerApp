@@ -35,11 +35,16 @@ namespace YastCleaner.Business.Services
 
         public async Task<string> GenerarCodigoPedido()
         {
-            var ultimoPedido = await _UoW.PedidoRepository.GetAllAsync();
-            var ultimoList = ultimoPedido.ToList().Max(p=>p.CodigoPedido);
-            int numero = int.Parse(ultimoList.Substring(1)) + 1;
-            return "P" + numero.ToString("0000");
+            var pedidos = await _UoW.PedidoRepository.GetAllAsync();
+            if (pedidos == null || !pedidos.Any())
+            {
+                return "P00000001";
+            }
+            var ultimoCodigo = pedidos.Max(p => p.CodigoPedido);
+            int numero = int.Parse(ultimoCodigo.Substring(1)) + 1;
+            return "P" + numero.ToString("D8");
         }
+
 
         public double ImporteTotalPedido()
         {
@@ -108,7 +113,9 @@ namespace YastCleaner.Business.Services
                         SubTotal = item.Importe
                     };
                     await _UoW.PedidoDetalleRepository.AddAsync(pedidoDetalle);
+                    await _UoW.SaveChangesAsync();
                 }
+                //await _UoW.SaveChangesAsync();
                 _pedidoStorage.LimpiarCarrito();
                 return Result<int>.Ok(nuevoPedido.PedidoId);
             }
