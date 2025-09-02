@@ -9,5 +9,6 @@ namespace YastCleaner.Data.Interfaces
 {
     public interface IServicioRepository :IRepository<Servicio>
     {
+        Task<Servicio?> GetByNameAsync(string nombre);
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
+using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
+using YastCleaner.Business.Services;
 using YastCleaner.Entities.Enums;
 using YastCleaner.Web.Filters;
 using YastCleaner.Web.Helpers;
@@ -20,7 +23,7 @@ namespace YastCleaner.Web.Controllers
         [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
         public async Task<IActionResult> Servicios(int indicePagina =1,int tamanioPagina =10)
         {
-            var serviciosDto = await _servicioService.ListaServicios();
+            var serviciosDto = await _servicioService.ListaServiciosDisponibles();
             var viewModel = serviciosDto.Select(p => new ServicioViewModel()
             {
                 ServicioId = p.ServicioId,
@@ -57,6 +60,101 @@ namespace YastCleaner.Web.Controllers
                 return View(result);
             return RedirectToAction("Temporal","Pedido");//TODO: ojito aqui cambiar che el temp
 
+        }
+
+        [RoleAuthorize(Rol.Administrador)]
+        public IActionResult RegistrarServicio()
+        {
+            return View(new ServicioViewModel());
+        }
+        [HttpPost]
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> RegistrarServicio([FromBody]ServicioViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+            var servicioDto = new ServicioDto()
+            {
+                Nombre = viewModel.Nombre,
+                Descripcion = viewModel.Descripcion,
+                Precio = viewModel.Precio
+            };
+            var result = await _servicioService.RegistrarServicio(servicioDto);
+            if (!result.Success)
+            {
+                return View(viewModel);
+            }
+            return RedirectToAction("Servicios", "Servicio");
+        }
+
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> EditarServicio(int servicioId)
+        {
+            var servicioDto = await _servicioService.ObtenerServicio(servicioId);
+            if (servicioDto is null)
+                return RedirectToAction("Servicios","Servicio");
+            var viewModel = new ServicioViewModel()
+            {
+                ServicioId = servicioDto.ServicioId,
+                Nombre = servicioDto.Nombre,
+                Descripcion = servicioDto.Descripcion,
+                Precio = servicioDto.Precio,
+                Estado = servicioDto.Estado
+            };
+            await CargarEstadoServicio();
+            return View(viewModel);
+        }
+        [HttpPost]
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> EditarServicio(int servicioId,[FromBody]ServicioViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                await CargarEstadoServicio();
+                return View(viewModel);
+            }
+            var servicioDto = new ServicioDto()
+            {
+                ServicioId = viewModel.ServicioId,
+                Nombre = viewModel.Nombre,
+                Descripcion = viewModel.Descripcion,
+                Precio = viewModel.Precio,
+                Estado = viewModel.Estado
+            };
+            var result = await _servicioService.EditarServicio(servicioId, servicioDto);
+            if (!result.Success)
+            {
+                await CargarEstadoServicio();
+                return View(viewModel);
+            }
+            return RedirectToAction("Servicios", "Servicio");
+        }
+
+        [HttpPost]
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> DesactivarServicio(int servicioId)
+        {
+            try
+            {
+                var result = await _servicioService.DesactivarServicio(servicioId);
+                if (!result.Success)
+                {
+                    ViewBag.Error = "No se pudo desactivar el servicio.";
+                }
+                return RedirectToAction("Servicios", "Servicio");
+            }
+            catch (Exception ex) 
+            {
+                ViewBag.Error = ex.Message;
+                return RedirectToAction("Servicios", "Servicio");
+            }
+        }
+
+        private async Task CargarEstadoServicio()
+        {
+            ViewBag.Estados = new SelectList(await _servicioService.ListarEstadoServicios());
         }
     }
 }

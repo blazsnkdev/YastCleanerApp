@@ -79,7 +79,7 @@
         @foreach (var detalle in Model.Detalles)
         {
             <tr>
-                <td>@detalle.Servicio.Nombre</td>
+                <td>@detalle.NombreServicio</td>
                 <td>@detalle.Cantidad</td>
                 <td>@detalle.Precio.ToString("C")</td>
                 <td>@detalle.SubTotal.ToString("C")</td>

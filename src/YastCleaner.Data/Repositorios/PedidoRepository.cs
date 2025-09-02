@@ -25,6 +25,7 @@ namespace YastCleaner.Data.Repositorios
                 .Include(c => c.Cliente)
                 .Include(u =>u.Usuario)
                 .Include(d=>d.DetallePedidos)
+                .ThenInclude(d => d.Servicio)
                 .FirstOrDefaultAsync();
 
             return pedido;

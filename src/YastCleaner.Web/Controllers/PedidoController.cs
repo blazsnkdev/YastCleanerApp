@@ -18,14 +18,22 @@ namespace YastCleaner.Web.Controllers
         private readonly IClienteService _clienteService;
         private readonly ITrabajadorService _trabajadorService;
         private readonly IMetodoPagoService _metodoPagoService;
+        private readonly IServicioService _servicioService;
 
-        public PedidoController(IPedidoService pedidoService, IClienteService clienteService, ITrabajadorService trabajadorService, IMetodoPagoService metodoPagoService)
+        public PedidoController(
+            IPedidoService pedidoService,
+            IClienteService clienteService,
+            ITrabajadorService trabajadorService,
+            IMetodoPagoService metodoPagoService,
+            IServicioService servicioService)
         {
             _pedidoService = pedidoService;
             _clienteService = clienteService;
             _trabajadorService = trabajadorService;
             _metodoPagoService = metodoPagoService;
+            _servicioService = servicioService;
         }
+
         [RoleAuthorize(Rol.Trabajador)]
         public IActionResult Temporal()
         {
@@ -43,6 +51,7 @@ namespace YastCleaner.Web.Controllers
             return View(pedidoTemporalViewModel);
         }
         [HttpPost]
+        [RoleAuthorize(Rol.Trabajador)]
         public IActionResult EliminarServicio(int servicioId)
         {
             var result = _pedidoService.EliminarServicioDelPedido(servicioId);
@@ -51,6 +60,7 @@ namespace YastCleaner.Web.Controllers
             return RedirectToAction("Temporal");
         }
         [HttpPost]
+        [RoleAuthorize(Rol.Trabajador)]
         public IActionResult ModificarCantidad(int servicioId, int cantidad)
         {
             var result = _pedidoService.ModificarCantidadServicioDelPedido(servicioId,cantidad);
@@ -91,7 +101,6 @@ namespace YastCleaner.Web.Controllers
             var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
             if(pedidosTemporalDto is null || !pedidosTemporalDto.Any())
             {
-                //await CargarCombos();//TODO : esto ah modificar, si en caso no hay lista no debe haber esto
                 return RedirectToAction("Servicios", "Servicio");
             }
 
@@ -120,7 +129,6 @@ namespace YastCleaner.Web.Controllers
             return RedirectToAction("DetallePedido", new {pedidoId = result.Value});
         }
 
-
         [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
         public async Task<IActionResult> DetallePedido(int pedidoId)
         {
@@ -131,12 +139,12 @@ namespace YastCleaner.Web.Controllers
             var pedido = pedidoDto.Value; 
             var clienteDto = await _clienteService.ObtenerCliente(pedido.ClienteId);
             var trabajadorDto = await _trabajadorService.ObtenerTrabajador(pedido.UsuarioId);
-
+            
             if (pedidoDto.Value is null || clienteDto.Value is null || trabajadorDto is null)
                 return View();
 
-
             var clienteViewModel = new ClienteViewModel(clienteDto.Value.ClienteId, clienteDto.Value.Nombre);
+
             var trabajadorViewModel = new TrabajadorViewModel()
             {
                 TrabajadorId = trabajadorDto.TrabajadorId,
@@ -149,12 +157,12 @@ namespace YastCleaner.Web.Controllers
             var detallePedidoViewModel = new DetallePedidoViewModel()
             {
                 PedidoId = pedidoId,
-                Cliente =clienteViewModel,
+                Cliente = clienteViewModel,
                 Trabajador = trabajadorViewModel,
                 Fecha = pedido.Fecha,
                 MontoAdelantado = pedido.MontoAdelantado,
                 MetodoPago = pedido.MetodoPago,
-                MontoFaltante =pedido.MontoFaltante,
+                MontoFaltante = pedido.MontoFaltante,
                 CodigoPedido = pedido.CodigoPedido,
                 Estado = pedido.Estado,
                 Detalles = pedido.Detalles.Select(d => new DetallePedidoDetalleViewModel()
@@ -162,9 +170,10 @@ namespace YastCleaner.Web.Controllers
                     PedidoDetalleId = d.DetallePedidoId,
                     PedidoId = pedidoId,
                     ServicioId = d.ServicioId,
-                    Cantidad =d.Cantidad,
+                    Cantidad = d.Cantidad,
                     Precio = d.Precio,
-                    SubTotal = d.SubTotal
+                    SubTotal = d.SubTotal,
+                    NombreServicio = d.Servicio.Nombre
                 }).ToList()
             };
             return View(detallePedidoViewModel);
@@ -176,6 +185,6 @@ namespace YastCleaner.Web.Controllers
             ViewBag.Importe = _pedidoService.ImporteTotalPedido();
             ViewBag.MetodosPago = new SelectList(await _metodoPagoService.ListarMetodosPago());
         }
-
+        
     }
 }

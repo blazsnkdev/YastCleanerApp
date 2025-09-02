@@ -9,5 +9,6 @@
         public double Precio { get; set; }
         public double SubTotal { get; set; }
         public ServicioViewModel Servicio { get; set; }
+        public string NombreServicio { get; set; }
     }
 }

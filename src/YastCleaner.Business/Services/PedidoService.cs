@@ -12,12 +12,14 @@ namespace YastCleaner.Business.Services
         private readonly IUnitOfWork _UoW;
         private readonly IPedidoStorage _pedidoStorage;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IServicioService _servicioService;
 
-        public PedidoService(IUnitOfWork uow, IPedidoStorage pedidoStorage,IDateTimeProvider dateTimeProvider)
+        public PedidoService(IUnitOfWork uow, IPedidoStorage pedidoStorage,IDateTimeProvider dateTimeProvider, IServicioService servicioService)
         {
             _UoW = uow;
             _pedidoStorage = pedidoStorage;
             _dateTimeProvider = dateTimeProvider;
+            _servicioService = servicioService;
         }
         public Result EliminarServicioDelPedido(int servicioId)
         {
@@ -143,14 +145,20 @@ namespace YastCleaner.Business.Services
                 MontoTotal = pedido.MontoTotal,
                 MetodoPago = pedido.MetodoPago.ToString(),
                 Estado = pedido.Estado.ToString(),
-                Detalles = pedido.DetallePedidos.Select(d => new DetallePedidoDto()
+                Detalles = pedido.DetallePedidos.Select(  d => new DetallePedidoDto()
                 {
                     DetallePedidoId =d.DetallePedidoId,
                     PedidoId =pedido.PedidoId,
                     ServicioId = d.ServicioId,
                     Cantidad =d.Cantidad,
                     Precio = d.PrecioUnitario,
-                    SubTotal =d.SubTotal
+                    SubTotal =d.SubTotal,
+                    Servicio = new ServicioDto
+                    {
+                        ServicioId = d.Servicio.ServicioId,
+                        Nombre = d.Servicio.Nombre,
+                        Precio = d.Servicio.Precio
+                    }
                 }).ToList()
             };
             return Result<PedidoDto>.Ok(pedidoDto);

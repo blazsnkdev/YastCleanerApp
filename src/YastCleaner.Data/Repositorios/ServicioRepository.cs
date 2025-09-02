@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,12 +10,17 @@ using YastCleaner.Entities.Entidades;
 
 namespace YastCleaner.Data.Repositorios
 {
-    public class ServicioRepository : Repository<Servicio>,IServicioRepository
+    public class ServicioRepository : Repository<Servicio>, IServicioRepository
     {
         private readonly AppDbContext _appDbContext;
         public ServicioRepository(AppDbContext appDbContext) : base(appDbContext)
         {
             _appDbContext = appDbContext;
+        }
+
+        public async Task<Servicio?> GetByNameAsync(string nombre)
+        {
+            return await _appDbContext.TblServicio.Where(s => s.Nombre == nombre).FirstOrDefaultAsync();
         }
     }
 }
