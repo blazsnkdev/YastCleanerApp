@@ -128,7 +128,7 @@ namespace YastCleaner.Web.Controllers
             }
             return RedirectToAction("DetallePedido", new {pedidoId = result.Value});
         }
-
+        //Ruido de Mate....
         [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
         public async Task<IActionResult> DetallePedido(int pedidoId)
         {
