@@ -35,7 +35,6 @@ namespace YastCleaner.Business.Services
             };
             return Result<ClienteDto>.Ok(clienteDto);
         }
-
         public async Task<List<ClienteDto>> ListarClientes()
         {
             var clientes = await _UoW.ClienteRepository.GetAllAsync();
@@ -45,7 +44,6 @@ namespace YastCleaner.Business.Services
                 Nombre = c.Nombre
             }).ToList();
         }
-
         public async Task<Result> CrearCliente(ClienteDto clienteDto)
         {
             //validaciones
@@ -53,7 +51,8 @@ namespace YastCleaner.Business.Services
                 || string.IsNullOrEmpty(clienteDto.ApellidoMaterno)
                 || string.IsNullOrEmpty(clienteDto.ApellidoPaterno)
                 || string.IsNullOrEmpty(clienteDto.NumeroCelular)
-                || string.IsNullOrEmpty(clienteDto.Direccion)) 
+                || string.IsNullOrEmpty(clienteDto.Direccion)
+                || string.IsNullOrEmpty(clienteDto.Email)) 
             {
                 return Result.Fail("Todos los campos son obligatorios");
             }
@@ -65,6 +64,7 @@ namespace YastCleaner.Business.Services
                 ApellidoMaterno = clienteDto.ApellidoMaterno,
                 NumeroCelular = clienteDto.NumeroCelular,
                 Direccion = clienteDto.Direccion,
+                Email = clienteDto.Email,
                 Estado = EstadoCliente.Activo,
                 FechaRegistro = _dateTimeProvider.DateTimeActual()
             };
@@ -72,7 +72,6 @@ namespace YastCleaner.Business.Services
             await _UoW.SaveChangesAsync();
             return Result.Ok();
         }
-
         public async Task<List<ClienteDto>> ObtenerClientesActivos()
         {
             var clientesAll = await _UoW.ClienteRepository.GetAllAsync();

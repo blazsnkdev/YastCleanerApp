@@ -34,11 +34,11 @@ namespace YastCleaner.Web.Controllers
         }
         public IActionResult Registrar()
         {
-            return View(new RegistrarClienteViewModel());
+            return View(new InsertarClienteViewModel());
         }
 
         [HttpPost]
-        public IActionResult Registrar(RegistrarClienteViewModel viewModel)
+        public IActionResult Registrar(InsertarClienteViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -60,7 +60,7 @@ namespace YastCleaner.Web.Controllers
                 ModelState.AddModelError(string.Empty, result.ErrorMessage!);
                 return View(viewModel);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
         }
     }
 }
