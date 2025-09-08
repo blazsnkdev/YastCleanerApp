@@ -1,0 +1,77 @@
+﻿@model YastCleaner.Web.Utils.PaginaResult<YastCleaner.Web.ViewModels.ClienteViewModel>
+
+@{
+    ViewData["Title"] = "Activos";
+}
+
+<h1>Activos</h1>
+
+<p>
+    <a asp-action="Registrar">Agregar</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Apellido Paterno
+            </th>
+            <th>
+                Apellido Materno
+            </th>
+            <th>
+                Número Celular
+            </th>
+            <th>
+                Dirección
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Fecha de Registro
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Items) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApellidoPaterno)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApellidoMaterno)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumeroCelular)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaRegistro)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -72,7 +72,7 @@ namespace YastCleaner.Web.Controllers
                     ViewBag.Error = result.ErrorMessage;
                     return View(viewModel);
                 }
-            _enviarCorreo.EnviarCorreo(trabajadorDto.Email, password);
+            _enviarCorreo.RegistroTrabajador(trabajadorDto.Email, password);
             return RedirectToAction("Trabajadores");
         }
 

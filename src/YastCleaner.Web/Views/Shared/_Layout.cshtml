@@ -3,51 +3,79 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - YastCleaner.Web</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - YastCleaner</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/YastCleaner.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">YastCleaner.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" hred="#" id="navBarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Mantenimiento</a>
-                            <ul class="dropdown-menu" aria-labelledby="navBarDropdown">
-                                <li><a class="dropdown-item" asp-controller="Trabajador" asp-action="Trabajadores">Trabajadores</a></li>
-                            </ul>
-                            <ul class="dropdown-menu" aria-labelledby="navBarDropdown">
-                                <li><a class="dropdown-item" asp-controller="Cliente" asp-action="Clientes">Clientes</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Servicio" asp-action="Servicios">Nuevo Pedido</a>
-                        </li>
-
-                    </ul>
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="dropdown-item" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
-                        </li>
-                    </ul>
-                </div>
+        <nav class="main-menu">
+            <div class="brand-area">
+                <h2>YastCleaner</h2>
+                <p>Cleaning Services</p>
             </div>
+            <ul>
+                <li>
+                    <a asp-controller="Home" asp-action="Index" >
+                        <i class="fas fa-home"></i>
+                        <span class="nav-text">
+                            Dashboard
+                        </span>
+                    </a>
+                </li>
+
+                <!-- Combobox de Mantenimiento -->
+                <li class="maintenance-combobox">
+                    <div class="maintenance-header" onclick="toggleMaintenance()">
+                        <i class="fas fa-cogs"></i>
+                        <span>Mantenimiento</span>
+                        <span class="arrow"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="maintenance-options" id="maintenanceOptions">
+                        <a asp-controller="Servicio" asp-action="Servicios">
+                            <i class="fas fa-concierge-bell"></i>
+                            <span class="nav-text">Servicios</span>
+                        </a>
+                        <a asp-controller="Trabajador" asp-action="Trabajadores">
+                            <i class="fas fa-users"></i>
+                            <span class="nav-text">Trabajadores</span>
+                        </a>
+                        <a asp-controller="Reporte" asp-action="CerrarCaja">
+                            <i class="fas fa-chart-bar"></i>
+                            <span class="nav-text">Reportes</span>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <a asp-controller="Cliente" asp-action="Activos">
+                        <i class="fas fa-user-friends"></i>
+                        <span class="nav-text">
+                            Clientes
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Servicio" asp-action="Servicios">
+                        <i class="fas fa-concierge-bell"></i>
+                        <span class="nav-text">
+                            Nuevo Pedido
+                        </span>
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="logout">
+                <li>
+                    <a asp-controller="Auth" asp-action="Logout">
+                        <i class="fas fa-power-off"></i>
+                        <span class="nav-text">
+                            Cerrar Sesión
+                        </span>
+                    </a>
+                </li>
+            </ul>
         </nav>
     </header>
     <div class="container">
@@ -58,12 +86,14 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - YastCleaner.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - YastCleaner - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

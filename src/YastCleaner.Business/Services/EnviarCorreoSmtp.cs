@@ -6,7 +6,7 @@ namespace YastCleaner.Business.Services
 {
     public class EnviarCorreoSmtp : IEnviarCorreoSmtp
     {
-        public void EnviarCorreo(string email, string password)
+        public void RegistroTrabajador(string email, string password)
         {
             var mensaje = new MimeMessage();
             mensaje.From.Add(new MailboxAddress("Lavandería Yast Cleaner", "blasasto0914@gmail.com"));//aqui el correo debe cambiar
@@ -16,6 +16,28 @@ namespace YastCleaner.Business.Services
             mensaje.Body = new TextPart("plain")
             {
                 Text = $"Su contraseña: {password}"
+            };
+
+            using (var cliente = new SmtpClient())
+            {
+                cliente.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                cliente.Authenticate("blasasto0914@gmail.com", "fetv ozub yhym gouj");//TODO: che esto si se va el internet se cae
+
+                cliente.Send(mensaje);
+                cliente.Disconnect(true);
+            }
+        }
+
+        public void RegistroPedido(string email)
+        {
+            var mensaje = new MimeMessage();
+            mensaje.From.Add(new MailboxAddress("Lavandería Yast Cleaner", "blasasto0914@gmail.com"));//aqui el correo debe cambiar
+            mensaje.To.Add(new MailboxAddress("Destino", email));
+            mensaje.Subject = "Lavandería Yast Cleaner - Confirmación de Pedido";
+
+            mensaje.Body = new TextPart("plain")
+            {
+                Text = $"Su pedido ha sido registrado con éxito."
             };
 
             using (var cliente = new SmtpClient())

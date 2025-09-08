@@ -1,4 +1,22 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function toggleMaintenance() {
+    const options = document.getElementById('maintenanceOptions');
+    const arrow = document.querySelector('.maintenance-header .arrow i');
 
-// Write your JavaScript code.
+    options.classList.toggle('show');
+
+    if (options.classList.contains('show')) {
+        arrow.classList.remove('fa-chevron-down');
+        arrow.classList.add('fa-chevron-up');
+    } else {
+        arrow.classList.remove('fa-chevron-up');
+        arrow.classList.add('fa-chevron-down');
+    }
+}
+
+// Marcar elemento activo al hacer clic
+document.querySelectorAll('.main-menu a').forEach(link => {
+    link.addEventListener('click', function () {
+        document.querySelectorAll('.main-menu a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+    });
+});

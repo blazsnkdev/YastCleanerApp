@@ -19,19 +19,22 @@ namespace YastCleaner.Web.Controllers
         private readonly ITrabajadorService _trabajadorService;
         private readonly IMetodoPagoService _metodoPagoService;
         private readonly IServicioService _servicioService;
+        private readonly IEnviarCorreoSmtp _enviarCorreoSmtp;
 
         public PedidoController(
             IPedidoService pedidoService,
             IClienteService clienteService,
             ITrabajadorService trabajadorService,
             IMetodoPagoService metodoPagoService,
-            IServicioService servicioService)
+            IServicioService servicioService,
+            IEnviarCorreoSmtp enviarCorreoSmtp)
         {
             _pedidoService = pedidoService;
             _clienteService = clienteService;
             _trabajadorService = trabajadorService;
             _metodoPagoService = metodoPagoService;
             _servicioService = servicioService;
+            _enviarCorreoSmtp = enviarCorreoSmtp;
         }
 
         [RoleAuthorize(Rol.Trabajador)]
@@ -126,6 +129,7 @@ namespace YastCleaner.Web.Controllers
                 await CargarCombos();
                 return View(pedidosTemporalDto);
             }
+            //_enviarCorreoSmtp.RegistroPedido(); //TODO: aqui tengo que manejar la logica para enviar el correo electronico, recuperar el email del cliente seleccinado
             return RedirectToAction("DetallePedido", new {pedidoId = result.Value});
         }
         //Ruido de Mate....

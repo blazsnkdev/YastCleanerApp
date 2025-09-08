@@ -8,6 +8,7 @@ namespace YastCleaner.Business.Interfaces
 {
     public interface IEnviarCorreoSmtp
     {
-        void EnviarCorreo(string email, string password);
+        void RegistroTrabajador(string email, string password);
+        void RegistroPedido(string email);
     }
 }

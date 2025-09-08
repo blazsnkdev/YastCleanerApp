@@ -17,6 +17,7 @@ namespace YastCleaner.Entities.Entidades
         public string ApellidoMaterno { get; set; }
         public string NumeroCelular { get; set; }
         public string Direccion { get; set; }
+        public string Email { get; set; }
         public EstadoCliente Estado { get; set; }
         public DateTime FechaRegistro { get; set; }
         public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
