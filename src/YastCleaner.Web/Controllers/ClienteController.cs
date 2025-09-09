@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
+using YastCleaner.Business.Utils;
 using YastCleaner.Entities.Entidades;
 using YastCleaner.Entities.Enums;
 using YastCleaner.Web.Filters;
@@ -157,17 +158,26 @@ namespace YastCleaner.Web.Controllers
         }
 
         [HttpPost]
-        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
+        [RoleAuthorize(Rol.Administrador)]
         public async Task<IActionResult> Desactivar(int clientId)
         {
-            var result = await _clienteService.DesactivarCliente(clientId);
-            if (!result.Success)
+            try
             {
-                TempData["Error"] = $"Error: {result.ErrorMessage}";//TODO: Notificaciones
-                return RedirectToAction("Activos", "Cliente");
+                var result = await _clienteService.DesactivarCliente(clientId);
+                if (!result.Success)
+                {
+                    TempData["Error"] = $"Error: {result.ErrorMessage}";//TODO: Notificaciones
+                    return RedirectToAction("Activos", "Cliente");
+                }
+                ViewData["Mensaje"] = "Cliente desactivado correctamente";//TODO: esto lo tengo que manejar con js
+                return RedirectToAction("Detalle", new { clienteId = clientId });
             }
-            ViewData["Mensaje"] = "Cliente desactivado correctamente";//TODO: esto lo tengo que manejar con js
-            return RedirectToAction("Detalle",new { clienteId = clientId});
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error: {ex.Message}";//TODO: Notificaciones
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+            
         }
     }
 }
