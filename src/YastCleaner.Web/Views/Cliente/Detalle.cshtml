@@ -1,43 +1,57 @@
 ﻿@model YastCleaner.Web.ViewModels.ClienteViewModel
 
-<div class="container mt-4">
+@{
+    ViewData["Title"] = "Detalle del Cliente";
+}
 
-    <!-- Datos del Cliente -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <h3 class="card-title">@Model.Nombre @Model.ApellidoPaterno @Model.ApellidoMaterno</h3>
-            <p class="card-text"><strong>Email:</strong> @Model.Email</p>
-            <p class="card-text"><strong>Celular:</strong> @Model.NumeroCelular</p>
-            <p class="card-text"><strong>Dirección:</strong> @Model.Direccion</p>
-            <p class="card-text"><strong>Estado:</strong> @Model.Estado</p>
-            <p class="card-text"><strong>Fecha Registro:</strong> @Model.FechaRegistro.ToString("dd/MM/yyyy")</p>
-        </div>
-    </div>
+<h2>Detalle del Cliente</h2>
 
-    <!-- Pedidos -->
-    <h4>Pedidos del Cliente</h4>
-    <div class="row">
-        @foreach (var pedido in Model.Pedidos)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Pedido: @pedido.CodigoPedido</h5>
-                        <p class="card-text"><strong>Fecha:</strong> @pedido.Fecha.ToString("dd/MM/yyyy")</p>
-                        <p class="card-text"><strong>Estado:</strong> @pedido.Estado</p>
-                        <p class="card-text"><strong>Monto Total:</strong> S/. @pedido.MontoTotal</p>
-                        <p class="card-text"><strong>Monto Adelantado:</strong> S/. @pedido.MontoAdelantado</p>
-                        <p class="card-text"><strong>Monto Faltante:</strong> S/. @pedido.MontoFaltante</p>
-
-                        <hr />
-
-                        <!-- Datos del Trabajador -->
-                        <h6>Trabajador Asignado</h6>
-                        <p class="mb-0">@pedido.Trabajador.Nombre @pedido.Trabajador.Apellidos</p>
-                        <small class="text-muted">ID: @pedido.Trabajador.TrabajadorId</small>
-                    </div>
-                </div>
-            </div>
-        }
+<div class="card mb-4">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Nombre @Model.ApellidoPaterno @Model.ApellidoMaterno</h4>
+        <p><strong>Celular:</strong> @Model.NumeroCelular</p>
+        <p><strong>Dirección:</strong> @Model.Direccion</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Estado:</strong> @Model.Estado</p>
+        <p><strong>Fecha Registro:</strong> @Model.FechaRegistro.ToString("dd/MM/yyyy")</p>
     </div>
 </div>
+
+<h3>Pedidos</h3>
+
+@if (Model.Pedidos != null && Model.Pedidos.Any())
+{
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <th>Código</th>
+                <th>Fecha</th>
+                <th>Monto Total</th>
+                <th>Adelanto</th>
+                <th>Faltante</th>
+                <th>Método de Pago</th>
+                <th>Estado</th>
+                <th>Trabajador</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pedido in Model.Pedidos)
+            {
+                <tr>
+                    <td>@pedido.CodigoPedido</td>
+                    <td>@pedido.Fecha.ToString("dd/MM/yyyy")</td>
+                    <td>S/. @pedido.MontoTotal</td>
+                    <td>S/. @pedido.MontoAdelantado</td>
+                    <td>S/. @pedido.MontoFaltante</td>
+                    <td>@pedido.MetodoPago</td>
+                    <td>@pedido.Estado</td>
+                    <td>@pedido.Trabajador.Nombre @pedido.Trabajador.Apellidos</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No tiene pedidos registrados.</p>
+}
