@@ -185,7 +185,7 @@ namespace YastCleaner.Web.Controllers
 
         private async Task CargarCombos()//TODO : aqui este metodo privado carga todos los combos de selectList para el registro de pedido
         {
-            ViewBag.Clientes = new SelectList(await _clienteService.ListarClientes(), "ClienteId", "Nombre");
+            ViewBag.Clientes = new SelectList(await _clienteService.ObtenerClientesActivos(), "ClienteId", "Nombre");
             ViewBag.Importe = _pedidoService.ImporteTotalPedido();
             ViewBag.MetodosPago = new SelectList(await _metodoPagoService.ListarMetodosPago());
         }

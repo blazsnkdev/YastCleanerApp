@@ -164,5 +164,24 @@ namespace YastCleaner.Business.Services
                 return Result.Fail($"Error al actualizar el cliente: {ex.Message}");
             }
         }
+
+        public async Task<Result> DesactivarCliente(int clienteId)
+        {
+            var cliente = await _UoW.ClienteRepository.GetByIdAsync(clienteId);
+            if (cliente is null) { 
+                return Result.Fail("El cliente no existe");
+            }
+            try
+            {
+                cliente.Estado = EstadoCliente.Desactivo;
+                _UoW.ClienteRepository.Update(cliente);
+                await _UoW.SaveChangesAsync();
+                return Result.Ok();
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail($"Error al desactivar el cliente: {ex.Message}");
+            }
+        }
     }
 }

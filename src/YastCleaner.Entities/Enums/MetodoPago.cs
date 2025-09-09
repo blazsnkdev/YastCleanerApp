@@ -2,6 +2,7 @@
 {
     public enum MetodoPago
     {
+        Pendiente,
         Efectivo,
         Débito,
         Crédito,

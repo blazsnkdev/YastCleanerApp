@@ -16,6 +16,9 @@
         <p><strong>Fecha Registro:</strong> @Model.FechaRegistro.ToString("dd/MM/yyyy")</p>
     </div>
 </div>
+<form asp-action="Desactivar" asp-controller="Cliente" asp-route-clientId="@Model.ClienteId" method="post">
+    <button type="submit" class="btn btn-danger">Desactivar Cliente</button>
+</form>
 
 <h3>Pedidos</h3>
 

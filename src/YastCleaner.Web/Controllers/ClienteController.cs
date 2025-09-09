@@ -2,6 +2,9 @@
 using System.Threading.Tasks;
 using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
+using YastCleaner.Entities.Entidades;
+using YastCleaner.Entities.Enums;
+using YastCleaner.Web.Filters;
 using YastCleaner.Web.Helpers;
 using YastCleaner.Web.ViewModels;
 
@@ -15,6 +18,7 @@ namespace YastCleaner.Web.Controllers
         {
             _clienteService = clienteService;
         }
+        [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
         public async Task<IActionResult> Activos(int pagina = 1, int tamanioPagina = 10)
         {
             var clientesActivosDto = await _clienteService.ObtenerClientesActivos();
@@ -33,12 +37,14 @@ namespace YastCleaner.Web.Controllers
             var paginacion = PaginacionHelper.Paginacion(viewModel, pagina, tamanioPagina);
             return View(paginacion);
         }
+        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         public IActionResult Registrar()
         {
             return View(new InsertarClienteViewModel());
         }
 
         [HttpPost]
+        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         public IActionResult Registrar(InsertarClienteViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -63,7 +69,7 @@ namespace YastCleaner.Web.Controllers
             }
             return RedirectToAction("Index", "Home");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
         }
-        
+        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         public async Task<IActionResult> Detalle(int clienteId)
         {
             var result = await _clienteService.ObtenerDetalleCliente(clienteId);
@@ -105,7 +111,7 @@ namespace YastCleaner.Web.Controllers
 
             return View(viewModel);
         }
-
+        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         public async Task<IActionResult> Actualizar(int clienteId)
         {
             var clienteDto = await _clienteService.ObtenerCliente(clienteId);
@@ -125,6 +131,7 @@ namespace YastCleaner.Web.Controllers
             return View(clienteViewModel);
         }
         [HttpPost]
+        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         public async Task<IActionResult> Actualizar(InsertarClienteViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -149,6 +156,18 @@ namespace YastCleaner.Web.Controllers
             return RedirectToAction("Index", "Home");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
         }
 
-
+        [HttpPost]
+        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
+        public async Task<IActionResult> Desactivar(int clientId)
+        {
+            var result = await _clienteService.DesactivarCliente(clientId);
+            if (!result.Success)
+            {
+                TempData["Error"] = $"Error: {result.ErrorMessage}";//TODO: Notificaciones
+                return RedirectToAction("Activos", "Cliente");
+            }
+            ViewData["Mensaje"] = "Cliente desactivado correctamente";//TODO: esto lo tengo que manejar con js
+            return RedirectToAction("Detalle",new { clienteId = clientId});
+        }
     }
 }
