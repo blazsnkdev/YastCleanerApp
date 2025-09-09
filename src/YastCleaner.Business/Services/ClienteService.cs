@@ -22,7 +22,6 @@ namespace YastCleaner.Business.Services
             _UoW = uoW;
             _dateTimeProvider = dateTimeProvider;
         }
-
         public async Task<Result<ClienteDto>> ObtenerCliente(int clienteId)
         {
             var cliente = await _UoW.ClienteRepository.GetByIdAsync(clienteId);
@@ -88,6 +87,47 @@ namespace YastCleaner.Business.Services
                 Estado = c.Estado.ToString(),
                 FechaRegistro = c.FechaRegistro
             }).ToList();
+        }
+
+        public async Task<Result<ClienteDto>> ObtenerDetalleCliente(int clienteId)
+        {
+            var cliente = await _UoW.ClienteRepository.GetClienteById(clienteId);
+            if(cliente is null)
+            {
+                return Result<ClienteDto>.Fail("El cliente no existe");
+            }
+            var clienteDto = new ClienteDto()
+            {
+                ClienteId = cliente.ClienteId,
+                Nombre = cliente.Nombre,
+                ApellidoPaterno = cliente.ApellidoPaterno,
+                ApellidoMaterno = cliente.ApellidoMaterno,
+                NumeroCelular = cliente.NumeroCelular,
+                Direccion = cliente.Direccion,
+                Email = cliente.Email,
+                Estado = cliente.Estado.ToString(),
+                FechaRegistro = cliente.FechaRegistro,
+                Pedidos = cliente.Pedidos.Select(p => new PedidoDto()
+                {
+                    PedidoId = p.PedidoId,
+                    CodigoPedido = p.CodigoPedido,
+                    Fecha = p.Fecha,
+                    UsuarioId = p.UsuarioId,
+                    MontoAdelantado = p.MontoAdelantado,
+                    MontoFaltante = p.MontoFaltante,
+                    MontoTotal = p.MontoTotal,
+                    MetodoPago = p.MetodoPago.ToString(),
+                    Estado = p.Estado.ToString(),
+                    Trabajador = new TrabajadorDto()
+                    {
+                        TrabajadorId = p.UsuarioId,
+                        Nombre = p.Usuario.Nombre,
+                        ApellidoPaterno = p.Usuario.ApellidoPaterno,
+                        ApellidoMaterno = p.Usuario.ApellidoMaterno
+                    }
+                }).ToList()
+            };
+            return Result<ClienteDto>.Ok(clienteDto);
         }
     }
 }

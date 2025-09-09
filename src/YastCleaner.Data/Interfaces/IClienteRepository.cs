@@ -9,5 +9,6 @@ namespace YastCleaner.Data.Interfaces
 {
     public interface IClienteRepository :IRepository<Cliente>
     {
+        Task<Cliente?> GetClienteById(int clienteId);
     }
 }

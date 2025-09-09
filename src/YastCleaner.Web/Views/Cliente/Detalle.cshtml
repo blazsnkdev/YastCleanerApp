@@ -1,0 +1,43 @@
+﻿@model YastCleaner.Web.ViewModels.ClienteViewModel
+
+<div class="container mt-4">
+
+    <!-- Datos del Cliente -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h3 class="card-title">@Model.Nombre @Model.ApellidoPaterno @Model.ApellidoMaterno</h3>
+            <p class="card-text"><strong>Email:</strong> @Model.Email</p>
+            <p class="card-text"><strong>Celular:</strong> @Model.NumeroCelular</p>
+            <p class="card-text"><strong>Dirección:</strong> @Model.Direccion</p>
+            <p class="card-text"><strong>Estado:</strong> @Model.Estado</p>
+            <p class="card-text"><strong>Fecha Registro:</strong> @Model.FechaRegistro.ToString("dd/MM/yyyy")</p>
+        </div>
+    </div>
+
+    <!-- Pedidos -->
+    <h4>Pedidos del Cliente</h4>
+    <div class="row">
+        @foreach (var pedido in Model.Pedidos)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Pedido: @pedido.CodigoPedido</h5>
+                        <p class="card-text"><strong>Fecha:</strong> @pedido.Fecha.ToString("dd/MM/yyyy")</p>
+                        <p class="card-text"><strong>Estado:</strong> @pedido.Estado</p>
+                        <p class="card-text"><strong>Monto Total:</strong> S/. @pedido.MontoTotal</p>
+                        <p class="card-text"><strong>Monto Adelantado:</strong> S/. @pedido.MontoAdelantado</p>
+                        <p class="card-text"><strong>Monto Faltante:</strong> S/. @pedido.MontoFaltante</p>
+
+                        <hr />
+
+                        <!-- Datos del Trabajador -->
+                        <h6>Trabajador Asignado</h6>
+                        <p class="mb-0">@pedido.Trabajador.Nombre @pedido.Trabajador.Apellidos</p>
+                        <small class="text-muted">ID: @pedido.Trabajador.TrabajadorId</small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

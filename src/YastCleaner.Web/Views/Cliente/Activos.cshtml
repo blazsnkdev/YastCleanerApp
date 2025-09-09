@@ -67,9 +67,7 @@
                 @Html.DisplayFor(modelItem => item.FechaRegistro)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                <a asp-controller="Cliente" asp-action="Detalle" asp-route-clienteId="@item.ClienteId" class="btn btn-primary">Detalle</a>
             </td>
         </tr>
 }

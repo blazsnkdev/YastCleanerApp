@@ -62,5 +62,47 @@ namespace YastCleaner.Web.Controllers
             }
             return RedirectToAction("Index", "Home");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
         }
+        
+        public async Task<IActionResult> Detalle(int clienteId)
+        {
+            var result = await _clienteService.ObtenerDetalleCliente(clienteId);
+            if (!result.Success)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            var viewModel = new ClienteViewModel
+            {
+                ClienteId = result.Value!.ClienteId,
+                Nombre = result.Value.Nombre,
+                ApellidoPaterno = result.Value.ApellidoPaterno,
+                ApellidoMaterno = result.Value.ApellidoMaterno,
+                NumeroCelular = result.Value.NumeroCelular,
+                Direccion = result.Value.Direccion,
+                Email = result.Value.Email,
+                Estado = result.Value.Estado,
+                FechaRegistro = result.Value.FechaRegistro,
+                Pedidos = result.Value.Pedidos.Select(p => new PedidoViewModel
+                {
+                    PedidoId = p.PedidoId,
+                    CodigoPedido = p.CodigoPedido,
+                    Fecha = p.Fecha,
+                    UsuarioId = p.UsuarioId,
+                    MontoAdelantado = p.MontoAdelantado,
+                    MontoFaltante = p.MontoFaltante,
+                    MontoTotal = p.MontoTotal,
+                    MetodoPago = p.MetodoPago,
+                    Estado = p.Estado,
+                    Trabajador = new TrabajadorViewModel
+                    {
+                        TrabajadorId = p.Trabajador.TrabajadorId,
+                        Nombre = p.Trabajador.Nombre,
+                        Apellidos = p.Trabajador.ApellidoPaterno+" "+p.Trabajador.ApellidoMaterno,
+                    }
+                }).ToList()
+            };
+
+            return View(viewModel);
+        }
     }
 }

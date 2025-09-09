@@ -17,5 +17,7 @@ namespace YastCleaner.Business.DTOs
         public string Email { get; set; } = string.Empty;
         public string Estado { get; set; } = string.Empty;
         public DateTime FechaRegistro { get; set; }
+        //Añadido para relacionar con pedidos
+        public List<PedidoDto> Pedidos { get; set; } = new List<PedidoDto>();
     }
 }
