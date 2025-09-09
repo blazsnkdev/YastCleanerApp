@@ -4,20 +4,21 @@ namespace YastCleaner.Web.ViewModels
 {
     public class InsertarClienteViewModel
     {
+        public int ClienteId { get; set; }
         [Display(Name ="Nombre Completo"),
             Required(ErrorMessage ="Este campo es obligatorio"),
             StringLength(30, ErrorMessage = "No puede superar los 30 caracteres"),
-            RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "El campo solo debe contener letras y espacios.")]
+            RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$",ErrorMessage = "El campo solo debe contener letras y espacios.")]
         public string Nombre { get; set; }
         [Display(Name ="Apellido Paterno"),
             Required(ErrorMessage = "Este campo es obligatorio"),
             StringLength(30, ErrorMessage = "No puede superar los 30 caracteres"),
-            RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "El campo solo debe contener letras.")]
+            RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$", ErrorMessage = "El campo solo debe contener letras y espacios.")]
         public string ApellidoPaterno { get; set; }
         [Display(Name = "Apellido Materno"),
             Required(ErrorMessage = "Este campo es obligatorio"),
             StringLength(30, ErrorMessage = "No puede superar los 30 caracteres"),
-            RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "El campo solo debe contener letras.")]
+            RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$", ErrorMessage = "El campo solo debe contener letras y espacios.")]
         public string ApellidoMaterno { get; set; }
         [Display(Name ="Número de Celular"),
             Required(ErrorMessage = "Este campo es obligatorio"),

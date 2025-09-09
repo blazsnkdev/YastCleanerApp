@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
 using YastCleaner.Web.Helpers;
@@ -104,5 +105,50 @@ namespace YastCleaner.Web.Controllers
 
             return View(viewModel);
         }
+
+        public async Task<IActionResult> Actualizar(int clienteId)
+        {
+            var clienteDto = await _clienteService.ObtenerCliente(clienteId);
+            if (!clienteDto.Success || clienteDto.Value is null)
+            {
+                return RedirectToAction("NotFoundPage","Auth");
+            }
+            var clienteViewModel = new InsertarClienteViewModel
+            {
+                Nombre = clienteDto.Value.Nombre,
+                ApellidoPaterno = clienteDto.Value.ApellidoPaterno,
+                ApellidoMaterno = clienteDto.Value.ApellidoMaterno,
+                NumeroCelular = clienteDto.Value.NumeroCelular,
+                Direccion = clienteDto.Value.Direccion,
+                Email = clienteDto.Value.Email
+            };
+            return View(clienteViewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Actualizar(InsertarClienteViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+            var clienteDto = new ClienteDto
+            {
+                Nombre = viewModel.Nombre,
+                ApellidoPaterno = viewModel.ApellidoPaterno,
+                ApellidoMaterno = viewModel.ApellidoMaterno,
+                NumeroCelular = viewModel.NumeroCelular,
+                Direccion = viewModel.Direccion,
+                Email = viewModel.Email
+            };
+            var result = await _clienteService.ActualizarCliente(viewModel.ClienteId, clienteDto);
+            if (!result.Success)
+            {
+                ModelState.AddModelError(string.Empty, result.ErrorMessage!);
+                return View(viewModel);
+            }
+            return RedirectToAction("Index", "Home");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
+        }
+
+
     }
 }

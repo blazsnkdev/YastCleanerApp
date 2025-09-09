@@ -30,7 +30,12 @@ namespace YastCleaner.Business.Services
             var clienteDto = new ClienteDto()
             {
                 ClienteId = clienteId,
-                Nombre = cliente.Nombre
+                Nombre = cliente.Nombre,
+                ApellidoPaterno = cliente.ApellidoPaterno,
+                ApellidoMaterno = cliente.ApellidoMaterno,
+                NumeroCelular = cliente.NumeroCelular,
+                Email = cliente.Email,
+                Direccion = cliente.Direccion
             };
             return Result<ClienteDto>.Ok(clienteDto);
         }
@@ -84,6 +89,7 @@ namespace YastCleaner.Business.Services
                 ApellidoMaterno = c.ApellidoMaterno,    
                 NumeroCelular = c.NumeroCelular,
                 Direccion = c.Direccion,
+                Email = c.Email,
                 Estado = c.Estado.ToString(),
                 FechaRegistro = c.FechaRegistro
             }).ToList();
@@ -128,6 +134,35 @@ namespace YastCleaner.Business.Services
                 }).ToList()
             };
             return Result<ClienteDto>.Ok(clienteDto);
+        }
+
+        public async Task<Result> ActualizarCliente(int clienteId,ClienteDto clienteDto)
+        {
+            if(clienteId <= 0)
+            {
+                return Result.Fail("El clienteId es obligatorio");
+            }
+            var cliente = await _UoW.ClienteRepository.GetByIdAsync(clienteId);
+            if(cliente is null)
+            {
+                return Result.Fail("El cliente no existe");
+            }
+            try
+            {
+                cliente.Nombre = clienteDto.Nombre;
+                cliente.ApellidoPaterno = clienteDto.ApellidoPaterno;
+                cliente.ApellidoMaterno = clienteDto.ApellidoMaterno;
+                cliente.NumeroCelular = clienteDto.NumeroCelular;
+                cliente.Direccion = clienteDto.Direccion;
+                cliente.Email = clienteDto.Email;
+                _UoW.ClienteRepository.Update(cliente);
+                await _UoW.SaveChangesAsync();
+                return Result.Ok();
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail($"Error al actualizar el cliente: {ex.Message}");
+            }
         }
     }
 }

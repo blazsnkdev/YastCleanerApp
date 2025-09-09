@@ -67,7 +67,8 @@
                 @Html.DisplayFor(modelItem => item.FechaRegistro)
             </td>
             <td>
-                <a asp-controller="Cliente" asp-action="Detalle" asp-route-clienteId="@item.ClienteId" class="btn btn-primary">Detalle</a>
+                <a asp-controller="Cliente" asp-action="Detalle" asp-route-clienteId="@item.ClienteId" class="btn btn-primary">Detalle</a> |
+                    <a asp-controller="Cliente" asp-action="Actualizar" asp-route-clienteId="@item.ClienteId" class="btn btn-primary">Actualizar</a>
             </td>
         </tr>
 }
