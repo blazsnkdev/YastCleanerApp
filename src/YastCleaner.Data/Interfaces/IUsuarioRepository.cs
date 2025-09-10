@@ -15,5 +15,6 @@ namespace YastCleaner.Data.Interfaces
         Task<bool> UsuarioDniExiste(string dni);
         Task<Usuario?> GetByIdUsuario(int usuarioId);
         Task<IEnumerable<Usuario>> GetAllByRolTrabajadorPedidosHoy(DateTime date);
+        Task<Usuario?> GetByRolTrabajadorPedidosById(int trabajadorId, DateTime date);
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
 using YastCleaner.Entities.Enums;
 using YastCleaner.Web.Filters;
 using YastCleaner.Web.Helpers;
+using YastCleaner.Web.Utils;
 using YastCleaner.Web.ViewModels;
 
 namespace YastCleaner.Web.Controllers
@@ -11,45 +13,79 @@ namespace YastCleaner.Web.Controllers
     public class ReporteController : Controller
     {
         private readonly ITrabajadorService _trabajadorService;
+        private readonly IReporteService _reporteService;
         private readonly IDateTimeProvider _dateTimeProvider;
 
-        public ReporteController(ITrabajadorService trabajadorService, IDateTimeProvider dateTimeProvider)
+        public ReporteController(
+            ITrabajadorService trabajadorService,
+            IDateTimeProvider dateTimeProvider,
+            IReporteService reporteService)
         {
             _trabajadorService = trabajadorService;
             _dateTimeProvider = dateTimeProvider;
+            _reporteService = reporteService;
         }
 
         [RoleAuthorize(Rol.Administrador)]
-        public async Task<IActionResult> CerrarCaja(int pagina = 1, int tamanioPagina = 10)//este es el total
+        public async Task<IActionResult> CerrarCaja(int pagina = 1, int tamanioPagina = 10)
         {
             try
             {
                 var trabajadoresDto = await _trabajadorService.TrabajadoresConPedidosHoy();
-                if (trabajadoresDto.Value is null)
+
+                if (!trabajadoresDto.Success)
                 {
-                    return View(new List<TrabajadorViewModel>());
+                    ViewBag.Error = trabajadoresDto.ErrorMessage ?? "Ocurrió un error en la consulta.";
+                    ViewBag.HoraActual = _dateTimeProvider.DateTimeActual().Date;
+                    return View(new PaginaResult<TrabajadorViewModel>
+                    {
+                        Items = new List<TrabajadorViewModel>(),
+                        TotalRegistros = 0,
+                        PaginaIndice = pagina,
+                        TamanioPagina = tamanioPagina
+                    });
                 }
-                var viewModel = trabajadoresDto.Value.Select(t => new TrabajadorViewModel()
+
+                if (trabajadoresDto.Value is null || !trabajadoresDto.Value.Any())
+                {
+                    ViewBag.Error = "No hay trabajadores";
+                    ViewBag.HoraActual = _dateTimeProvider.DateTimeActual().Date;
+                    return View(new PaginaResult<TrabajadorViewModel>
+                    {
+                        Items = new List<TrabajadorViewModel>(),
+                        TotalRegistros = 0,
+                        PaginaIndice = pagina,
+                        TamanioPagina = tamanioPagina
+                    });
+                }
+
+                var viewModel = trabajadoresDto.Value.Select(t => new TrabajadorViewModel
                 {
                     TrabajadorId = t.TrabajadorId,
                     Nombre = t.Nombre,
-                    Apellidos = t.ApellidoPaterno + " " + t.ApellidoPaterno,
+                    Apellidos = t.ApellidoPaterno + " " + t.ApellidoMaterno,
                     Dni = t.Dni,
                     Direccion = t.Direccion,
                     Email = t.Email,
                     FechaRegistro = t.FechaRegistro
                 });
+
                 var paginacion = PaginacionHelper.Paginacion(viewModel, pagina, tamanioPagina);
                 ViewBag.HoraActual = _dateTimeProvider.DateTimeActual().Date;
+
                 return View(paginacion);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("UnauthorizedPage", "Auth");
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Ocurrió un error: {ex.Message}";
-                return RedirectToAction("UnauthorizedPage", "Auth");
+                TempData["Error"] = $"Ocurrió un error inesperado: {ex.Message}";
+                return RedirectToAction("Error", "Home");
             }
-            
         }
+
         [RoleAuthorize(Rol.Administrador)]
         public async Task<IActionResult> Pedidos(int trabajadorId)
         {
@@ -58,9 +94,8 @@ namespace YastCleaner.Web.Controllers
                 var result = await _trabajadorService.PedidosPorTrabajadorHoy(trabajadorId);
                 if (!result.Success)
                 {
-
                     TempData["Error"] = result.ErrorMessage;
-                    return RedirectToAction("UnauthorizedPage", "Auth");
+                    return RedirectToAction("NotFoundPage", "Auth");
                 }
                 if(result.Value is null)
                 {
@@ -77,6 +112,11 @@ namespace YastCleaner.Web.Controllers
                     MontoTotal = p.MontoTotal,
                     MetodoPago = p.MetodoPago,
                     Estado = p.Estado,
+                    Trabajador = new TrabajadorViewModel()
+                    {
+                        TrabajadorId = p.UsuarioId,
+                        Nombre = p.Trabajador.Nombre,
+                    },
                     Cliente = new ClienteViewModel()
                     {
                         ClienteId = p.Cliente.ClienteId,
@@ -92,9 +132,89 @@ namespace YastCleaner.Web.Controllers
                 return View(viewModel);
 
             }
-            catch (Exception ex)
+            catch (UnauthorizedAccessException)
             {
-                TempData["Error"] = $"Ocurrió un error: {ex.Message}";
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+        }
+        
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> Registrar(int trabajadorId)
+        {
+            try
+            {
+                var trabajadorDto = await _reporteService.DetalleRegistroReporte(trabajadorId);
+                if(trabajadorDto.Value is null)
+                {
+                    TempData["Error"] = "El trabajador no existe";
+                    return RedirectToAction(nameof(CerrarCaja));
+                }
+                var trabajadorViewModel = new RegistrarReporteViewModel()
+                {
+                    TrabajadorId = trabajadorDto.Value.TrabajadorId,
+                    MontoTotal = trabajadorDto.Value.Pedidos.Sum(p => p.MontoAdelantado)
+                };
+                return View(trabajadorViewModel);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> Registrar(RegistrarReporteViewModel viewModel)
+        {
+            try
+            {
+                var result = await _reporteService.RegistrarReporte(new ReporteDto
+                {
+                    TrabajadorId = viewModel.TrabajadorId,
+                    MontoGenerado = viewModel.MontoTotal
+                });
+                if (!result.Success)
+                {
+                    TempData["Error"] = result.ErrorMessage;
+                    return RedirectToAction(nameof(Detalle), new { reporteId = result.Value});
+                }
+                    TempData["Exito"] = "Reporte registrado exitosamente";
+                    return RedirectToAction(nameof(CerrarCaja));
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+        }
+        
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> Detalle(int reporteId)
+        {
+            try
+            {
+                var result = await _reporteService.DetalleReporte(reporteId);
+                if (!result.Success || result.Value is null)
+                {
+                    TempData["Error"] = result.ErrorMessage;
+                    return RedirectToAction(nameof(CerrarCaja));
+                }
+                var reporteDetalleViewModel = new DetalleReporteViewModel()
+                {
+                    TrabajadorId = result.Value.TrabajadorId,
+                    Trabajador = new TrabajadorViewModel
+                    {
+                        TrabajadorId = result.Value.Trabajador.TrabajadorId,
+                        Nombre = result.Value.Trabajador.Nombre,
+                        Apellidos = result.Value.Trabajador.ApellidoPaterno + " " + result.Value.Trabajador.ApellidoMaterno,
+                    },
+                    MontoTotal = result.Value.MontoGenerado,
+                    FechaReporte = result.Value.FechaRegistro
+                };
+                return View(reporteDetalleViewModel);
+            }
+            catch (UnauthorizedAccessException)
+            {
                 return RedirectToAction("UnauthorizedPage", "Auth");
             }
         }

@@ -45,6 +45,15 @@ namespace YastCleaner.Data.Repositorios
             return await _appDbContext.TblUsuario.FirstOrDefaultAsync(u => u.UsuarioId == usuarioId);
         }
 
+        public async Task<Usuario?> GetByRolTrabajadorPedidosById(int trabajadorId, DateTime date)
+        {
+            return await _appDbContext.TblUsuario
+                .Where(u => u.Rol == Rol.Trabajador && u.UsuarioId == trabajadorId)
+                .Include(u => u.Pedidos.Where(p=>p.FechaRegistro.Date == date.Date))
+                .ThenInclude(p => p.Cliente)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<bool> UsuarioDniExiste(string dni)
         {
             var existe = await _appDbContext.TblUsuario.FirstOrDefaultAsync(u => u.Dni == dni);

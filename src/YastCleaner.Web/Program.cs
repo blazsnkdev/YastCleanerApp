@@ -22,6 +22,7 @@ builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IPedidoDetalleRepository, PedidoDetalleRepository>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IServicioRepository, ServicioRepository>();
+builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
 //Unit Of Work
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IServicioService, ServicioService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IMetodoPagoService, MetodoPagoService>();
 builder.Services.AddScoped<IPedidoStorage,PedidoSessionStorage>();
+builder.Services.AddScoped<IReporteService, ReporteService>();
 
 //HttpContextAccesor para el Carrito Pedidos
 builder.Services.AddHttpContextAccessor();

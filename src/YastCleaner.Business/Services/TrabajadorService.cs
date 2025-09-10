@@ -191,7 +191,7 @@ namespace YastCleaner.Business.Services
             var pedidosHoy = await _UoW.PedidoRepository.GetAllPedidosByTrabajadorHoy(trabajadorId,_dateTimeProvider.DateTimeActual().Date);
             if (!pedidosHoy.Any())
             {
-                return Result<List<PedidoDto>>.Fail("El trabajador no tiene pedidos hoy");
+                return Result<List<PedidoDto>>.Ok(new List<PedidoDto>());//TODO: solucion temporal
             }
             var pedidosHoyDto = pedidosHoy.Select(p => new PedidoDto
             {
@@ -204,7 +204,20 @@ namespace YastCleaner.Business.Services
                 MontoTotal = p.MontoTotal,
                 MetodoPago = p.MetodoPago.ToString(),
                 Estado = p.Estado.ToString(),
-                Cliente = p.Cliente,
+                Cliente = new ClienteDto()
+                {
+                    ClienteId = p.Cliente.ClienteId,
+                    Nombre = p.Cliente.Nombre,
+                    ApellidoPaterno = p.Cliente.ApellidoPaterno,
+                    ApellidoMaterno = p.Cliente.ApellidoMaterno
+                },
+                Trabajador = new TrabajadorDto()
+                {
+                    TrabajadorId = p.UsuarioId,
+                    Nombre = trabajador.Nombre,
+                    ApellidoPaterno = trabajador.ApellidoPaterno,
+                    ApellidoMaterno = trabajador.ApellidoMaterno
+                }
             }).ToList();
 
             return Result<List<PedidoDto>>.Ok(pedidosHoyDto);

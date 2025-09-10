@@ -5,7 +5,7 @@
 }
 
 <h1>Trabajadores Hoy : @ViewBag.HoraActual</h1>
-
+<h3>Mensaje : @ViewBag.Error</h3>
 <table class="table">
     <thead>
         <tr>
@@ -33,35 +33,37 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model.Items)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TrabajadorId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Apellidos)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Dni)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Direccion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaRegistro)
-                </td>
-                <td>
-                    <a asp-controller="Reporte" asp-action="Pedidos" asp-route-trabajadorId="@item.TrabajadorId" class="btn btn-warning">Pedidos</a> |
-                </td>
-            </tr>
-        }
-    </tbody>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TrabajadorId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Apellidos)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Dni)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Direccion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaRegistro)
+                    </td>
+                    <td>
+                        <a asp-controller="Reporte" asp-action="Pedidos" asp-route-trabajadorId="@item.TrabajadorId" class="btn btn-warning">Pedidos</a> |
+                        <a asp-controller="Reporte" asp-action="Registrar" asp-route-trabajadorId="@item.TrabajadorId" class="btn btn-primary">Cerrar Caja</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
 </table>

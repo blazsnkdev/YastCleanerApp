@@ -17,6 +17,7 @@ namespace YastCleaner.Data.UnitOfWork
         public IPedidoRepository PedidoRepository { get; }
         public IPedidoDetalleRepository PedidoDetalleRepository { get; }
         public IClienteRepository ClienteRepository { get; }
+        public IReporteRepository ReporteRepository { get; }
         //
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();

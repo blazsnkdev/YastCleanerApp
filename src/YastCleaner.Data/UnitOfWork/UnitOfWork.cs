@@ -20,6 +20,7 @@ namespace YastCleaner.Data.UnitOfWork
         public IPedidoRepository PedidoRepository { get; }
         public IPedidoDetalleRepository PedidoDetalleRepository { get; }
         public IClienteRepository ClienteRepository { get; }
+        public IReporteRepository ReporteRepository { get; }
 
         public UnitOfWork(
             AppDbContext appDbContext,
@@ -27,7 +28,8 @@ namespace YastCleaner.Data.UnitOfWork
             IServicioRepository servicioRepository,
             IPedidoRepository pedidoRepository,
             IPedidoDetalleRepository pedidoDetalleRepository,
-            IClienteRepository clienteRepository
+            IClienteRepository clienteRepository,
+            IReporteRepository reporteRepository
             )
         {
             _appDbContext = appDbContext;
@@ -36,6 +38,7 @@ namespace YastCleaner.Data.UnitOfWork
             PedidoRepository = pedidoRepository;
             PedidoDetalleRepository = pedidoDetalleRepository;
             ClienteRepository = clienteRepository;
+            ReporteRepository = reporteRepository;
         }
 
 

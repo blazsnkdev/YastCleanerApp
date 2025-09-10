@@ -4,10 +4,9 @@
     ViewData["Title"] = "Pedidos";
 }
 
-<h1>Pedidos</h1>
+<h1>Pedidos por el trabajador: @Model.FirstOrDefault()?.Trabajador.Nombre</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
