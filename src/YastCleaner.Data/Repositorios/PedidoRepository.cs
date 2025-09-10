@@ -30,5 +30,19 @@ namespace YastCleaner.Data.Repositorios
 
             return pedido;
         }
+
+        public async Task<IEnumerable<Pedido>> GetAllPedidosByTrabajadorHoy(int trabajadorId, DateTime fecha)
+        {
+            var inicio = fecha.Date;             // 2025-09-09 00:00:00
+            var fin = inicio.AddDays(1);         // 2025-09-10 00:00:00
+
+            return await _appDbContext.TblPedido
+                .Where(p => p.UsuarioId == trabajadorId
+                         && p.FechaRegistro >= inicio
+                         && p.FechaRegistro < fin)
+                .Include(c => c.Cliente)
+                .ToListAsync();
+        }
+
     }
 }

@@ -139,5 +139,75 @@ namespace YastCleaner.Business.Services
             }
             
         }
+
+        public async Task<Result<List<PedidoDto>>> PedidosPorTrabajador(int trabajadorId)
+        {
+            var pedidos = await _UoW.PedidoRepository.GetAllAsync();
+            var pedidosPorTrabajador = pedidos.Where(p => p.UsuarioId == trabajadorId).ToList();
+            var pedidosPorTrabajadorDto = pedidosPorTrabajador.Select(p => new PedidoDto
+            {
+                PedidoId = p.PedidoId,
+                CodigoPedido = p.CodigoPedido,
+                Fecha = p.Fecha,
+                ClienteId = p.ClienteId,
+                UsuarioId = p.UsuarioId,
+                MontoAdelantado = p.MontoAdelantado,
+                MontoFaltante = p.MontoFaltante,
+                MontoTotal = p.MontoTotal,
+                MetodoPago = p.MetodoPago.ToString(),
+                Estado = p.Estado.ToString(),
+            }).ToList();
+            return Result<List<PedidoDto>>.Ok(pedidosPorTrabajadorDto);
+        }
+
+        public async Task<Result<List<TrabajadorDto>>> TrabajadoresConPedidosHoy()
+        {
+            var pedidosHoy = await _UoW.UsuarioRepository.GetAllByRolTrabajadorPedidosHoy(_dateTimeProvider.DateTimeActual().Date);
+            if (!pedidosHoy.Any())
+            {
+                return Result<List<TrabajadorDto>>.Fail("No hay trabajadores con pedidos hoy");
+            }
+            var trabajadoresPedidoHoyDto = pedidosHoy.Select(t => new TrabajadorDto
+            {
+                TrabajadorId = t.UsuarioId,
+                Nombre = t.Nombre,
+                ApellidoPaterno = t.ApellidoPaterno,
+                ApellidoMaterno = t.ApellidoMaterno,
+                Dni = t.Dni,
+                Direccion = t.Direccion,
+                Email = t.Email,
+                FechaRegistro = t.FechaRegistro
+            }).ToList();
+            return Result<List<TrabajadorDto>>.Ok(trabajadoresPedidoHoyDto);
+        }
+
+        public async Task<Result<List<PedidoDto>>> PedidosPorTrabajadorHoy(int trabajadorId)
+        {
+            var trabajador = await _UoW.UsuarioRepository.GetByIdAsync(trabajadorId);
+            if(trabajador is null)
+            {
+                return Result<List<PedidoDto>>.Fail("El trabajador no existe");
+            }
+            var pedidosHoy = await _UoW.PedidoRepository.GetAllPedidosByTrabajadorHoy(trabajadorId,_dateTimeProvider.DateTimeActual().Date);
+            if (!pedidosHoy.Any())
+            {
+                return Result<List<PedidoDto>>.Fail("El trabajador no tiene pedidos hoy");
+            }
+            var pedidosHoyDto = pedidosHoy.Select(p => new PedidoDto
+            {
+                PedidoId = p.PedidoId,
+                CodigoPedido = p.CodigoPedido,
+                Fecha = p.Fecha,
+                ClienteId = p.ClienteId,
+                MontoAdelantado = p.MontoAdelantado,
+                MontoFaltante = p.MontoFaltante,
+                MontoTotal = p.MontoTotal,
+                MetodoPago = p.MetodoPago.ToString(),
+                Estado = p.Estado.ToString(),
+                Cliente = p.Cliente,
+            }).ToList();
+
+            return Result<List<PedidoDto>>.Ok(pedidosHoyDto);
+        }
     }
 }

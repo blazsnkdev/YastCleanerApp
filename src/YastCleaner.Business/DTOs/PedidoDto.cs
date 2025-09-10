@@ -14,7 +14,7 @@ namespace YastCleaner.Business.DTOs
         public string CodigoPedido { get; set; }
         public DateTime Fecha { get; set; }
         public int ClienteId { get; set; }
-        //public Cliente Cliente { get; set; }
+        public Cliente Cliente { get; set; }
         public int UsuarioId { get; set; }
         public TrabajadorDto Trabajador { get; set; }
         //public Usuario Usuario { get; set; }

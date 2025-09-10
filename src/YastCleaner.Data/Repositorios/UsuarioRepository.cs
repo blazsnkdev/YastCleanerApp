@@ -24,6 +24,15 @@ namespace YastCleaner.Data.Repositorios
             return await _appDbContext.TblUsuario.Where(u=>u.Rol == Rol.Trabajador).ToListAsync();
         }
 
+        public async Task<IEnumerable<Usuario>> GetAllByRolTrabajadorPedidosHoy(DateTime date)
+        {
+            return await _appDbContext.TblUsuario
+                .Where(u => u.Rol == Rol.Trabajador && u.Pedidos.Any(p => p.FechaRegistro.Date == date.Date))
+                .Include(u => u.Pedidos.Where(p => p.FechaRegistro.Date == date.Date))
+                .ThenInclude(p => p.Cliente)
+                .ToListAsync();
+        }
+
         //NOTE : obtiene el usuario partir del email de la bd
         public async Task<Usuario?> GetByEmail(string email)
         {

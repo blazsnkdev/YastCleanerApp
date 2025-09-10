@@ -17,5 +17,8 @@ namespace YastCleaner.Business.Interfaces
         Task<Result> ActualizarTrabajador(TrabajadorDto dto);
         string GenerarPassword(string nombre, string apellidoPaterno, string apellidoMaterno);
         Task<Result> EliminarTrabajador(int trabajadorId);
+        Task<Result<List<PedidoDto>>> PedidosPorTrabajador(int trabajadorId);
+        Task<Result<List<TrabajadorDto>>> TrabajadoresConPedidosHoy();
+        Task<Result<List<PedidoDto>>> PedidosPorTrabajadorHoy(int trabajadorId);
     }
 }

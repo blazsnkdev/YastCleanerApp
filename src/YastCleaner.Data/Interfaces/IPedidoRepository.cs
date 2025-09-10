@@ -10,5 +10,6 @@ namespace YastCleaner.Data.Interfaces
     public interface IPedidoRepository : IRepository<Pedido>
     {
         Task<Pedido?> GetPedidoById(int pedidoId);
+        Task<IEnumerable<Pedido>> GetAllPedidosByTrabajadorHoy(int trabajadorId, DateTime fecha);
     }
 }
