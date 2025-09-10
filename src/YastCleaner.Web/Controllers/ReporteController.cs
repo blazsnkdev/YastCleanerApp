@@ -32,11 +32,10 @@ namespace YastCleaner.Web.Controllers
             try
             {
                 var trabajadoresDto = await _trabajadorService.TrabajadoresConPedidosHoy();
-
+                var fecha = _dateTimeProvider.DateTimeActual().ToString("dd/MM/yyyy");
                 if (!trabajadoresDto.Success)
                 {
-                    ViewBag.Error = trabajadoresDto.ErrorMessage ?? "Ocurrió un error en la consulta.";
-                    ViewBag.HoraActual = _dateTimeProvider.DateTimeActual().Date;
+                    ViewBag.HoraActual = fecha;
                     return View(new PaginaResult<TrabajadorViewModel>
                     {
                         Items = new List<TrabajadorViewModel>(),
@@ -48,8 +47,7 @@ namespace YastCleaner.Web.Controllers
 
                 if (trabajadoresDto.Value is null || !trabajadoresDto.Value.Any())
                 {
-                    ViewBag.Error = "No hay trabajadores";
-                    ViewBag.HoraActual = _dateTimeProvider.DateTimeActual().Date;
+                    ViewBag.HoraActual = fecha;
                     return View(new PaginaResult<TrabajadorViewModel>
                     {
                         Items = new List<TrabajadorViewModel>(),
@@ -71,8 +69,7 @@ namespace YastCleaner.Web.Controllers
                 });
 
                 var paginacion = PaginacionHelper.Paginacion(viewModel, pagina, tamanioPagina);
-                ViewBag.HoraActual = _dateTimeProvider.DateTimeActual().Date;
-
+                ViewBag.HoraActual = fecha;
                 return View(paginacion);
             }
             catch (UnauthorizedAccessException)
@@ -154,6 +151,7 @@ namespace YastCleaner.Web.Controllers
                     TrabajadorId = trabajadorDto.Value.TrabajadorId,
                     MontoTotal = trabajadorDto.Value.Pedidos.Sum(p => p.MontoAdelantado)
                 };
+                ViewBag.Pedidos = trabajadorDto.Value.Pedidos.Count();
                 return View(trabajadorViewModel);
             }
             catch (UnauthorizedAccessException)
