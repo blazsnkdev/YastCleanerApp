@@ -21,6 +21,49 @@ namespace YastCleaner.Business.Services
             _dateTimeProvider = dateTimeProvider;
             _servicioService = servicioService;
         }
+
+        public async Task<Result<PedidoDto>> ConsultarPedidoPorCodigo(string codigoPedido)
+        {
+            if(string.IsNullOrEmpty(codigoPedido) || string.IsNullOrWhiteSpace(codigoPedido))
+            {
+                return Result<PedidoDto>.Fail("El codigo del pedido es obligatorio");
+            }
+            var pedido = await _UoW.PedidoRepository.GetPedidoByCodigo(codigoPedido);
+            if(pedido is null)
+            {
+                return Result<PedidoDto>.Fail("El pedido no existe");
+            }
+            var pedidoDto = new PedidoDto()
+            {
+                PedidoId = pedido.PedidoId,
+                CodigoPedido = pedido.CodigoPedido,
+                Fecha = pedido.Fecha,
+                ClienteId = pedido.ClienteId,
+                UsuarioId = pedido.UsuarioId,
+                MontoAdelantado = pedido.MontoAdelantado,
+                MontoFaltante = pedido.MontoFaltante,
+                MontoTotal = pedido.MontoTotal,
+                MetodoPago = pedido.MetodoPago.ToString(),
+                Estado = pedido.Estado.ToString(),
+                Detalles = pedido.DetallePedidos.Select(d => new DetallePedidoDto()
+                {
+                    DetallePedidoId = d.DetallePedidoId,
+                    PedidoId = d.PedidoId,
+                    ServicioId = d.ServicioId,
+                    Cantidad = d.Cantidad,
+                    Precio = d.PrecioUnitario,
+                    SubTotal = d.SubTotal,
+                    Servicio = new ServicioDto
+                    {
+                        ServicioId = d.Servicio.ServicioId,
+                        Nombre = d.Servicio.Nombre,
+                        Precio = d.Servicio.Precio
+                    }
+                }).ToList()
+            };
+            return Result<PedidoDto>.Ok(pedidoDto);
+        }
+
         public Result EliminarServicioDelPedido(int servicioId)
         {
             try

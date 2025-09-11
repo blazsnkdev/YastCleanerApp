@@ -44,5 +44,15 @@ namespace YastCleaner.Data.Repositorios
                 .ToListAsync();
         }
 
+        public async Task<Pedido?> GetPedidoByCodigo(string codigoPedido)
+        {
+            return await _appDbContext.TblPedido
+                .Where(p => p.CodigoPedido == codigoPedido)
+                .Include(c => c.Cliente)
+                .Include(u => u.Usuario)
+                .Include(d => d.DetallePedidos)
+                .ThenInclude(d => d.Servicio)
+                .FirstOrDefaultAsync();
+        }
     }
 }

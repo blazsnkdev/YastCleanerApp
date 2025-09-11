@@ -190,5 +190,25 @@ namespace YastCleaner.Web.Controllers
             ViewBag.MetodosPago = new SelectList(await _metodoPagoService.ListarMetodosPago());
         }
         
+        public async Task<IActionResult> Consultar(string codigoPedido)
+        {
+            try
+            {
+                var result = await _pedidoService.ConsultarPedidoPorCodigo(codigoPedido);
+                if (result.Success && result.Value is not null)
+                {
+                    return RedirectToAction(nameof(DetallePedido), new { pedidoId = result.Value.PedidoId });   
+                }
+                    return RedirectToAction("NotFoundPage", "Auth");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+        }
+        public IActionResult Buscar()
+        {
+            return View();
+        }
     }
 }
