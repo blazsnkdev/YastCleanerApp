@@ -1,0 +1,90 @@
+﻿@model YastCleaner.Web.ViewModels.DetalleEntregarPedidoViewModel
+
+@{
+    ViewData["Title"] = "Entregar Pedido";
+}
+
+<h2>Entregar Pedido: @Model.CodigoPedido</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <!-- Información del Pedido -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h5>Información del Pedido</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Código:</dt>
+                    <dd class="col-sm-8">@Model.CodigoPedido</dd>
+
+                    <dt class="col-sm-4">Fecha:</dt>
+                    <dd class="col-sm-8">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+
+                    <dt class="col-sm-4">Cliente:</dt>
+                    <dd class="col-sm-8">@Model.NombreCliente</dd>
+
+                    <dt class="col-sm-4">Estado:</dt>
+                    <dd class="col-sm-8">@Model.Estado</dd>
+
+                    <dt class="col-sm-4">Método Pago:</dt>
+                    <dd class="col-sm-8">@Model.MetodoPago</dd>
+
+                    <dt class="col-sm-4">Total:</dt>
+                    <dd class="col-sm-8">@Model.MontoTotal.ToString("C")</dd>
+
+                    <dt class="col-sm-4">Adelantado:</dt>
+                    <dd class="col-sm-8">@Model.MontoAdelantado.ToString("C")</dd>
+
+                    <dt class="col-sm-4">Faltante:</dt>
+                    <dd class="col-sm-8">@Model.MontoFaltante.ToString("C")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Formulario de Entrega -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5>Confirmar Entrega</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="EntregarPedido" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="pedidoId" value="@Model.PedidoId" />
+                    <div class="form-group mb-3">
+                        <label for="metodoPago">Método de Pago</label>
+
+                        @if (Model.MontoFaltante == 0)
+                        {
+                            <input type="text" class="form-control" value="@Model.MetodoPago" readonly />
+                            <input type="hidden" name="metodoPago" value="@Model.MetodoPago" />
+                        }
+                        else
+                        {
+                            <select id="metodoPago" name="metodoPago" asp-items="@ViewBag.MetodosPago"
+                                    class="form-control" required>
+                                <option value="">Seleccione un método</option>
+                            </select>
+                        }
+                    </div>
+
+
+                    <div class="form-group mb-3">
+                        <label for="observaciones" class="form-label fw-bold">Observaciones de Entrega:</label>
+                        <textarea class="form-control" id="observaciones" name="observaciones"
+                                  rows="4" placeholder="Ingrese observaciones relevantes de la entrega..."
+                                  required>@Model.Observaciones</textarea>
+                        <div class="form-text">Ej: Estado del producto, incidencias, etc.</div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-success">Confirmar Entrega</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

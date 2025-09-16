@@ -210,5 +210,75 @@ namespace YastCleaner.Web.Controllers
         {
             return View();
         }
+
+        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
+        public async Task<IActionResult> Entregar(int pedidoId)
+        {
+            try
+            {
+                var pedido = await _pedidoService.DetalleEntregarPedido(pedidoId);
+                if (!pedido.Success)
+                {
+                    TempData["Mensaje"] = "Ya fue entregado el pedido";
+                    return RedirectToAction("DetallePedido", "Pedido", new { pedidoId = pedidoId });
+                }
+                if (pedido.Value is null)
+                    return RedirectToAction("NotFoundPage", "Auth");
+                var detalleEntregaViewModel = new DetalleEntregarPedidoViewModel
+                {
+                    PedidoId = pedidoId,
+                    CodigoPedido = pedido.Value.CodigoPedido,
+                    Fecha = pedido.Value.Fecha,
+                    NombreCliente = pedido.Value.Cliente.Nombre,
+                    MontoAdelantado = pedido.Value.MontoAdelantado,
+                    MontoFaltante = pedido.Value.MontoFaltante,
+                    MontoTotal = pedido.Value.MontoTotal,
+                    MetodoPago = pedido.Value.MetodoPago,
+                    Estado = pedido.Value.Estado,
+                    Observaciones = string.Empty
+                };
+                ViewBag.MetodosPago = new SelectList(await _metodoPagoService.ListarMetodosPago());
+                return View(detalleEntregaViewModel);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EntregarPedido(int pedidoId, string metodoPago, string observaciones)
+        {
+            try
+            {
+                var pedido = await _pedidoService.VerDetallePedido(pedidoId);
+                if (!pedido.Success)
+                    return RedirectToAction("BadRequest", "Auth");
+                if (pedido.Value is null)
+                    return RedirectToAction("NotFoundPage", "Auth");
+
+                var pedidoEntregadoDto = new EntregaDto()
+                {
+                    PedidoId = pedido.Value.PedidoId,
+                    Pedido = pedido.Value,
+                    Observaciones = observaciones,
+                };
+                var result = await _pedidoService.RegistrarEntrega(pedidoEntregadoDto);
+                if (!result.Success)
+                    return RedirectToAction("BadRequest", "Auth");
+                TempData["Mensaje"] = $"El pedido {pedidoEntregadoDto.Pedido.CodigoPedido} se ha entregado correctamente.";
+                return View("Confirmacion", "Pedido");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+        }
+
+        public IActionResult Confirmacion()
+        {
+            return View();
+        }
     }
 }

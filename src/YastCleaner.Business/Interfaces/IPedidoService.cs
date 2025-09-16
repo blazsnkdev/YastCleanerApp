@@ -18,5 +18,7 @@ namespace YastCleaner.Business.Interfaces
         List<PedidoTemporalDto> ObtenerPedidosTemporal();
         Task<Result<PedidoDto>> VerDetallePedido(int pedidoId);
         Task<Result<PedidoDto>> ConsultarPedidoPorCodigo(string codigoPedido);
+        Task<Result> RegistrarEntrega(EntregaDto pedidoEntregadoDto);
+        Task<Result<PedidoDto>> DetalleEntregarPedido(int pedidoId);
     }
 }

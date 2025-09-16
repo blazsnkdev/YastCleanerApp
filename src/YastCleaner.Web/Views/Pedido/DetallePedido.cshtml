@@ -5,7 +5,7 @@
 }
 
 <h2>Detalle del Pedido</h2>
-
+<h3>@TempData["Mensaje"] @Model.CodigoPedido</h3>
 <hr />
 
 <div class="card mb-4">
@@ -89,5 +89,6 @@
 </table>
 
 <div class="mt-4">
-    <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-secondary">Volver</a>
+    <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-secondary">Volver</a> |
+    <a asp-controller="Pedido" asp-action="Entregar" asp-route-pedidoId="@Model.PedidoId" class="btn btn-danger">Entregar Pedido</a>
 </div>

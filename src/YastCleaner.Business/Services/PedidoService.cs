@@ -64,6 +64,55 @@ namespace YastCleaner.Business.Services
             return Result<PedidoDto>.Ok(pedidoDto);
         }
 
+        public async Task<Result<PedidoDto>> DetalleEntregarPedido(int pedidoId)
+        {
+            var pedido = await _UoW.PedidoRepository.GetPedidoById(pedidoId);
+            if (pedido is null)
+                return Result<PedidoDto>.Fail("El pedido no existe");
+            if (pedido.Estado != EstadoPedido.Terminado)
+            {
+                var pedidoDto = new PedidoDto()
+                {
+                    PedidoId = pedidoId,
+                    CodigoPedido = pedido.CodigoPedido,
+                    Fecha = pedido.Fecha,
+                    ClienteId = pedido.ClienteId,
+                    UsuarioId = pedido.UsuarioId,
+                    MontoAdelantado = pedido.MontoAdelantado,
+                    MontoFaltante = pedido.MontoFaltante,
+                    MontoTotal = pedido.MontoTotal,
+                    MetodoPago = pedido.MetodoPago.ToString(),
+                    Estado = pedido.Estado.ToString(),
+                    Cliente = new ClienteDto
+                    {
+                        ClienteId = pedido.Cliente.ClienteId,
+                        Nombre = pedido.Cliente.Nombre,
+                        ApellidoPaterno = pedido.Cliente.ApellidoPaterno,
+                        ApellidoMaterno = pedido.Cliente.ApellidoMaterno,
+                        Email = pedido.Cliente.Email,
+                        NumeroCelular = pedido.Cliente.NumeroCelular
+                    },
+                    Detalles = pedido.DetallePedidos.Select(d => new DetallePedidoDto()
+                    {
+                        DetallePedidoId = d.DetallePedidoId,
+                        PedidoId = pedido.PedidoId,
+                        ServicioId = d.ServicioId,
+                        Cantidad = d.Cantidad,
+                        Precio = d.PrecioUnitario,
+                        SubTotal = d.SubTotal,
+                        Servicio = new ServicioDto
+                        {
+                            ServicioId = d.Servicio.ServicioId,
+                            Nombre = d.Servicio.Nombre,
+                            Precio = d.Servicio.Precio
+                        }
+                    }).ToList()
+                };
+                return Result<PedidoDto>.Ok(pedidoDto);
+            }
+            return Result<PedidoDto>.Fail("El pedido ya fue entregado");
+        }
+
         public Result EliminarServicioDelPedido(int servicioId)
         {
             try
@@ -118,6 +167,28 @@ namespace YastCleaner.Business.Services
                 Cantidad = p.Cantidad,
                 Precio = p.Precio
             }).ToList();
+        }
+
+        public async Task<Result> RegistrarEntrega(EntregaDto pedidoEntregadoDto)
+        {
+            var pedido = await _UoW.PedidoRepository.GetPedidoById(pedidoEntregadoDto.PedidoId);
+            if (pedido is null)
+                return Result.Fail("El pedido no existe");
+
+            pedido.Estado = EstadoPedido.Terminado;
+            pedido.MontoFaltante = 0;
+
+            var entrega = new PedidoEntregado()
+            {
+                PedidoId = pedido.PedidoId,
+                Pedido = pedido,
+                FechaEntrega = _dateTimeProvider.DateTimeActual(),
+                Observaciones = pedidoEntregadoDto.Observaciones
+            };
+
+            await _UoW.PedidoEntregadoRepository.AddAsync(entrega);
+            await _UoW.SaveChangesAsync();
+            return Result.Ok();
         }
 
         public async Task<Result<int>> RegistrarPedido(PedidoDto pedidoDto) //TODO: esto debe ser un dto
@@ -188,14 +259,23 @@ namespace YastCleaner.Business.Services
                 MontoTotal = pedido.MontoTotal,
                 MetodoPago = pedido.MetodoPago.ToString(),
                 Estado = pedido.Estado.ToString(),
-                Detalles = pedido.DetallePedidos.Select(  d => new DetallePedidoDto()
+                Cliente = new ClienteDto
                 {
-                    DetallePedidoId =d.DetallePedidoId,
-                    PedidoId =pedido.PedidoId,
+                    ClienteId = pedido.Cliente.ClienteId,
+                    Nombre = pedido.Cliente.Nombre,
+                    ApellidoPaterno = pedido.Cliente.ApellidoPaterno,
+                    ApellidoMaterno = pedido.Cliente.ApellidoMaterno,
+                    Email = pedido.Cliente.Email,
+                    NumeroCelular = pedido.Cliente.NumeroCelular
+                },
+                Detalles = pedido.DetallePedidos.Select(d => new DetallePedidoDto()
+                {
+                    DetallePedidoId = d.DetallePedidoId,
+                    PedidoId = pedido.PedidoId,
                     ServicioId = d.ServicioId,
-                    Cantidad =d.Cantidad,
+                    Cantidad = d.Cantidad,
                     Precio = d.PrecioUnitario,
-                    SubTotal =d.SubTotal,
+                    SubTotal = d.SubTotal,
                     Servicio = new ServicioDto
                     {
                         ServicioId = d.Servicio.ServicioId,
