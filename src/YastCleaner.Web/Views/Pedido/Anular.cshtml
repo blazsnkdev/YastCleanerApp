@@ -1,0 +1,61 @@
+﻿@model YastCleaner.Web.ViewModels.DetalleAnularPedido
+
+@{
+    ViewData["Title"] = "Anular";
+}
+
+<h1>Anular</h1>
+
+<div>
+    <h4>DetalleAnularPedido</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PedidoId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PedidoId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CodigoPedido)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CodigoPedido)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MontoTotal)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MontoTotal)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaEntrega)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaEntrega)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NombreCliente)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombreCliente)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NombreTrabajador)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombreTrabajador)
+        </dd>
+    </dl>
+</div>
+<hr/>
+<div>
+    <form asp-action="AnularPedido" asp-controller="Pedido" method="post">
+        <input type="hidden" asp-for="PedidoId" id="pedidoId" name="pedidoId" value="@Model.PedidoId"/>
+        <label for="MotivoAnulacion">Motivo de Anulación:</label>
+        <textarea id="comentario" name="comentario" class="form-control" rows="4" required></textarea>
+        <br />
+        <button type="submit" class="btn btn-danger">Anular Pedido</button> |
+        <a asp-action="Index">Volver a la lista</a>
+        </form>
+</div>

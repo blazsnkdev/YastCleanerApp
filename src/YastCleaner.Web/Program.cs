@@ -24,6 +24,7 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IServicioRepository, ServicioRepository>();
 builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
 builder.Services.AddScoped<IPedidoEntregadoRepository, PedidoEntregadoRepository>();
+builder.Services.AddScoped<IPedidoAnuladoRepository,PedidoAnuladoRepository>();
 //Unit Of Work
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 

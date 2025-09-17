@@ -12,14 +12,36 @@ namespace YastCleaner.Business.Services
         private readonly IUnitOfWork _UoW;
         private readonly IPedidoStorage _pedidoStorage;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly IServicioService _servicioService;
+        
 
-        public PedidoService(IUnitOfWork uow, IPedidoStorage pedidoStorage,IDateTimeProvider dateTimeProvider, IServicioService servicioService)
+        public PedidoService(IUnitOfWork uow, IPedidoStorage pedidoStorage,IDateTimeProvider dateTimeProvider)
         {
             _UoW = uow;
             _pedidoStorage = pedidoStorage;
             _dateTimeProvider = dateTimeProvider;
-            _servicioService = servicioService;
+        }
+
+        public async Task<Result> AnularPedido(int pedidoId, string comentario)
+        {
+            var pedido = await _UoW.PedidoRepository.GetPedidoById(pedidoId);
+            if(pedido is null)
+                return Result.Fail("El pedido no existe");
+            if(pedido.Estado == EstadoPedido.Entregado)
+                return Result.Fail("No se puede anular un pedido que ya fue entregado");
+            var pedidoYaFueAnulado = await _UoW.PedidoAnuladoRepository.ExistePedidoAnulado(pedidoId);
+            if(pedidoYaFueAnulado)
+                return Result.Fail("El pedido ya fue anulado");
+            var pedidoAnulado = new PedidoAnulado
+            {
+                PedidoId = pedidoId,
+                Pedido = pedido,
+                Comentario = comentario,
+                FechaAnulacion = _dateTimeProvider.DateTimeActual(),
+            };
+            pedidoAnulado.Pedido.Estado = EstadoPedido.Anulado;
+            await _UoW.PedidoAnuladoRepository.AddAsync(pedidoAnulado);
+            await _UoW.SaveChangesAsync();
+            return Result.Ok();
         }
 
         public async Task<Result<PedidoDto>> ConsultarPedidoPorCodigo(string codigoPedido)
@@ -69,7 +91,7 @@ namespace YastCleaner.Business.Services
             var pedido = await _UoW.PedidoRepository.GetPedidoById(pedidoId);
             if (pedido is null)
                 return Result<PedidoDto>.Fail("El pedido no existe");
-            if (pedido.Estado != EstadoPedido.Terminado)
+            if (pedido.Estado != EstadoPedido.Entregado)
             {
                 var pedidoDto = new PedidoDto()
                 {
@@ -138,14 +160,11 @@ namespace YastCleaner.Business.Services
             int numero = int.Parse(ultimoCodigo.Substring(1)) + 1;
             return "P" + numero.ToString("D8");
         }
-
-
         public double ImporteTotalPedido()
         {
             var pedidosTemporal = _pedidoStorage.RecuperarCarrito();
             return pedidosTemporal.Sum(p => p.Importe);
         }
-
         public Result ModificarCantidadServicioDelPedido(int servicioId, int cantidad)
         {
             var pedidosTemporal = _pedidoStorage.RecuperarCarrito();
@@ -156,7 +175,6 @@ namespace YastCleaner.Business.Services
             _pedidoStorage.GrabarCarrito();
             return Result.Ok();
         }
-
         public List<PedidoTemporalDto> ObtenerPedidosTemporal()
         {
             var pedidosTemporal = _pedidoStorage.RecuperarCarrito();
@@ -175,7 +193,7 @@ namespace YastCleaner.Business.Services
             if (pedido is null)
                 return Result.Fail("El pedido no existe");
 
-            pedido.Estado = EstadoPedido.Terminado;
+            pedido.Estado = EstadoPedido.Entregado;
             pedido.MontoFaltante = 0;
 
             var entrega = new PedidoEntregado()
@@ -190,7 +208,22 @@ namespace YastCleaner.Business.Services
             await _UoW.SaveChangesAsync();
             return Result.Ok();
         }
-
+        public async Task<Result<AnularDto>> DetalleAnularPedido(int pedidoId)
+        {
+            var pedido = await _UoW.PedidoRepository.GetPedidoById(pedidoId);
+            if(pedido is null)
+                return Result<AnularDto>.Fail("El pedido no existe");
+            var anuladoDto = new AnularDto
+            {
+                PedidoId = pedidoId,
+                CodigoPedido = pedido.CodigoPedido,
+                MontoTotal = pedido.MontoTotal,
+                FechaEntrega = pedido.Fecha,
+                NombreCliente = pedido.Cliente.Nombre,
+                NombreTrabajador = pedido.Usuario.Nombre
+            };
+            return Result<AnularDto>.Ok(anuladoDto);
+        }
         public async Task<Result<int>> RegistrarPedido(PedidoDto pedidoDto) //TODO: esto debe ser un dto
         {
             try

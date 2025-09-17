@@ -19,11 +19,11 @@ namespace YastCleaner.Entities.Entidades
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; }
         public double MontoAdelantado { get; set; }
-        public double MontoFaltante { get; set; }//esto no va
+        public double MontoFaltante { get; set; }
         public double MontoTotal { get; set; }
         public MetodoPago MetodoPago { get; set; }  
         public EstadoPedido Estado { get; set; }
-        public DateTime FechaRegistro { get; set; }//TODO: agrege esto
+        public DateTime FechaRegistro { get; set; }
 
 
         public ICollection<DetallePedido> DetallePedidos { get; set; } = new List<DetallePedido>();

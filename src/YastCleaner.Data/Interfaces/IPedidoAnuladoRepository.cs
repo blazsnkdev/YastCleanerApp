@@ -9,5 +9,6 @@ namespace YastCleaner.Data.Interfaces
 {
     public interface IPedidoAnuladoRepository : IRepository<PedidoAnulado>
     {
+        Task<bool> ExistePedidoAnulado(int pedidoId);
     }
 }

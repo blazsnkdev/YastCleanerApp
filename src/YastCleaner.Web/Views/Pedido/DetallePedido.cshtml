@@ -90,5 +90,6 @@
 
 <div class="mt-4">
     <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-secondary">Volver</a> |
-    <a asp-controller="Pedido" asp-action="Entregar" asp-route-pedidoId="@Model.PedidoId" class="btn btn-danger">Entregar Pedido</a>
+    <a asp-controller="Pedido" asp-action="Entregar" asp-route-pedidoId="@Model.PedidoId" class="btn btn-primary">Entregar Pedido</a> |
+    <a asp-controller="Pedido" asp-action="Anular" asp-route-pedidoId="@Model.PedidoId" class="btn btn-danger">Anular Pedido</a>
 </div>

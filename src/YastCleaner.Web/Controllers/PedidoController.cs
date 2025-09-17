@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 using YastCleaner.Business.DTOs;
@@ -13,7 +14,6 @@ namespace YastCleaner.Web.Controllers
 {
     public class PedidoController : Controller
     {
-        //TODO: este controlador va manejar el general del recurso de pediso
         private readonly IPedidoService _pedidoService;
         private readonly IClienteService _clienteService;
         private readonly ITrabajadorService _trabajadorService;
@@ -276,6 +276,59 @@ namespace YastCleaner.Web.Controllers
             }
         }
 
+
+        public async Task<IActionResult> Anular(int pedidoId)
+        {
+            try
+            {
+                var detallePedidoAnulado = await _pedidoService.DetalleAnularPedido(pedidoId);
+                if (!detallePedidoAnulado.Success)
+                {
+                    TempData["Mensaje"] = "No se pudo obtener el detalle del pedido anulado.";
+                    return RedirectToAction("DetallePedido", "Pedido", new { pedidoId = pedidoId });
+                }
+                if (detallePedidoAnulado.Value is null)
+                    return RedirectToAction("NotFoundPage", "Auth");
+                var anularViewModel = new DetalleAnularPedido
+                {
+                    PedidoId = detallePedidoAnulado.Value.PedidoId,
+                    CodigoPedido = detallePedidoAnulado.Value.CodigoPedido,
+                    NombreCliente = detallePedidoAnulado.Value.NombreCliente,
+                    NombreTrabajador = detallePedidoAnulado.Value.NombreTrabajador,
+                    MontoTotal = detallePedidoAnulado.Value.MontoTotal,
+                    FechaEntrega = detallePedidoAnulado.Value.FechaEntrega
+                };
+                return View(anularViewModel);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+        }
+
+        [ValidateAntiForgeryToken]
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> AnularPedido(int pedidoId, string comentario)
+        {
+            try
+            {
+                var result = await _pedidoService.AnularPedido(pedidoId, comentario);
+                if (!result.Success)
+                {
+                    TempData["Mensaje"] = $"{result.ErrorMessage}";
+                    return RedirectToAction("DetallePedido", "Pedido", new { pedidoId = pedidoId });
+                }
+                TempData["Mensaje"] = "El pedido se ha anulado correctamente.";
+                return RedirectToAction("DetallePedido", "Pedido", new { pedidoId = pedidoId });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return View("UnauthorizedPage", "Auth");
+            }
+        }
+
+        [ValidateAntiForgeryToken]
+        [RoleAuthorize(Rol.Trabajador)]
         public IActionResult Confirmacion()
         {
             return View();

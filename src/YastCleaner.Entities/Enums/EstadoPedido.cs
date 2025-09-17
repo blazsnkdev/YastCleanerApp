@@ -9,7 +9,8 @@ namespace YastCleaner.Entities.Enums
     public enum EstadoPedido
     {
         Pendiente,
-        Terminado,
-        Pagado
+        Entregado,
+        Pagado,
+        Anulado
     }
 }

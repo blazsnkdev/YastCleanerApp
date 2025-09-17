@@ -20,5 +20,7 @@ namespace YastCleaner.Business.Interfaces
         Task<Result<PedidoDto>> ConsultarPedidoPorCodigo(string codigoPedido);
         Task<Result> RegistrarEntrega(EntregaDto pedidoEntregadoDto);
         Task<Result<PedidoDto>> DetalleEntregarPedido(int pedidoId);
+        Task<Result> AnularPedido(int pedidoId, string comentario);
+        Task<Result<AnularDto>> DetalleAnularPedido(int pedidoId);
     }
 }
