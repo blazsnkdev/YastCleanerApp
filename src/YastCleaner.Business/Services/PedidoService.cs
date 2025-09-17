@@ -213,16 +213,25 @@ namespace YastCleaner.Business.Services
             var pedido = await _UoW.PedidoRepository.GetPedidoById(pedidoId);
             if(pedido is null)
                 return Result<AnularDto>.Fail("El pedido no existe");
-            var anuladoDto = new AnularDto
+            if(pedido.Estado != EstadoPedido.Entregado && pedido.Estado != EstadoPedido.Anulado)
             {
-                PedidoId = pedidoId,
-                CodigoPedido = pedido.CodigoPedido,
-                MontoTotal = pedido.MontoTotal,
-                FechaEntrega = pedido.Fecha,
-                NombreCliente = pedido.Cliente.Nombre,
-                NombreTrabajador = pedido.Usuario.Nombre
-            };
-            return Result<AnularDto>.Ok(anuladoDto);
+                var anuladoDto = new AnularDto
+                {
+                    PedidoId = pedidoId,
+                    CodigoPedido = pedido.CodigoPedido,
+                    MontoTotal = pedido.MontoTotal,
+                    FechaEntrega = pedido.Fecha,
+                    NombreCliente = pedido.Cliente.Nombre,
+                    NombreTrabajador = pedido.Usuario.Nombre
+                };
+                return Result<AnularDto>.Ok(anuladoDto);
+            }
+            else
+            {
+                return Result<AnularDto>.Fail("El pedido no se puede anular porque ya fue entregado o anulado.");
+            }
+
+
         }
         public async Task<Result<int>> RegistrarPedido(PedidoDto pedidoDto) //TODO: esto debe ser un dto
         {

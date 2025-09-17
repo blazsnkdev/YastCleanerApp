@@ -5,7 +5,7 @@
 }
 
 <h2>Detalle del Pedido</h2>
-<h3>@TempData["Mensaje"] @Model.CodigoPedido</h3>
+<h3>@TempData["Mensaje"]</h3>
 <hr />
 
 <div class="card mb-4">
@@ -15,7 +15,7 @@
     <div class="card-body">
         <dl class="row">
             <dt class="col-sm-3">Fecha</dt>
-            <dd class="col-sm-9">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+            <dd class="col-sm-9">@Model.Fecha.ToString("dd/MM/yyyy HH:mm")</dd>
 
             <dt class="col-sm-3">Estado</dt>
             <dd class="col-sm-9">@Model.Estado</dd>
@@ -89,7 +89,7 @@
 </table>
 
 <div class="mt-4">
-    <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-secondary">Volver</a> |
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Salir</a> |
     <a asp-controller="Pedido" asp-action="Entregar" asp-route-pedidoId="@Model.PedidoId" class="btn btn-primary">Entregar Pedido</a> |
     <a asp-controller="Pedido" asp-action="Anular" asp-route-pedidoId="@Model.PedidoId" class="btn btn-danger">Anular Pedido</a>
 </div>

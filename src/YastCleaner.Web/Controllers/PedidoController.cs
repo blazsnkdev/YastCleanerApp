@@ -219,7 +219,7 @@ namespace YastCleaner.Web.Controllers
                 var pedido = await _pedidoService.DetalleEntregarPedido(pedidoId);
                 if (!pedido.Success)
                 {
-                    TempData["Mensaje"] = "Ya fue entregado el pedido";
+                    TempData["Mensaje"] = $"{pedido.ErrorMessage}";
                     return RedirectToAction("DetallePedido", "Pedido", new { pedidoId = pedidoId });
                 }
                 if (pedido.Value is null)
@@ -284,7 +284,7 @@ namespace YastCleaner.Web.Controllers
                 var detallePedidoAnulado = await _pedidoService.DetalleAnularPedido(pedidoId);
                 if (!detallePedidoAnulado.Success)
                 {
-                    TempData["Mensaje"] = "No se pudo obtener el detalle del pedido anulado.";
+                    TempData["Mensaje"] = $"{detallePedidoAnulado.ErrorMessage}";
                     return RedirectToAction("DetallePedido", "Pedido", new { pedidoId = pedidoId });
                 }
                 if (detallePedidoAnulado.Value is null)
