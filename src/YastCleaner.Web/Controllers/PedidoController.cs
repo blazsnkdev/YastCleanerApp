@@ -211,7 +211,7 @@ namespace YastCleaner.Web.Controllers
             return View();
         }
 
-        [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
+        [RoleAuthorize(Rol.Trabajador)]
         public async Task<IActionResult> Entregar(int pedidoId)
         {
             try
@@ -248,6 +248,7 @@ namespace YastCleaner.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RoleAuthorize(Rol.Trabajador)]
         public async Task<IActionResult> EntregarPedido(int pedidoId, string metodoPago, string observaciones)
         {
             try
@@ -276,7 +277,7 @@ namespace YastCleaner.Web.Controllers
             }
         }
 
-
+        [RoleAuthorize(Rol.Administrador)]
         public async Task<IActionResult> Anular(int pedidoId)
         {
             try
