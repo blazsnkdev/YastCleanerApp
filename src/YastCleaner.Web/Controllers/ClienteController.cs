@@ -68,7 +68,7 @@ namespace YastCleaner.Web.Controllers
                 ModelState.AddModelError(string.Empty, result.ErrorMessage!);
                 return View(viewModel);
             }
-            return RedirectToAction("Index", "Home");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
+            return RedirectToAction("Activos", "Cliente");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
         }
         [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         public async Task<IActionResult> Detalle(int clienteId)
