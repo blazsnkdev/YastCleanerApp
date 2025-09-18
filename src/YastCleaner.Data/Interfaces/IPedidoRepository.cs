@@ -12,5 +12,6 @@ namespace YastCleaner.Data.Interfaces
         Task<Pedido?> GetPedidoById(int pedidoId);
         Task<IEnumerable<Pedido>> GetAllPedidosByTrabajadorHoy(int trabajadorId, DateTime fecha);
         Task<Pedido?> GetPedidoByCodigo(string codigoPedido);
+        Task<List<Pedido>> GetPedidosByClienteId(int clienteId);
     }
 }

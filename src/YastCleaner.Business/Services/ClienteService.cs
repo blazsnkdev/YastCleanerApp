@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YastCleaner.Business.DTOs;
+﻿using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
 using YastCleaner.Business.Utils;
 using YastCleaner.Data.UnitOfWork;
@@ -182,6 +177,63 @@ namespace YastCleaner.Business.Services
             {
                 return Result.Fail($"Error al desactivar el cliente: {ex.Message}");
             }
+        }
+
+        public async Task<Result<List<PedidoDto>>> ObtenerPedidosCliente(int clienteId)
+        {
+            if(clienteId <= 0)
+            {
+                return Result<List<PedidoDto>>.Fail("El clienteId es obligatorio");
+            }
+            var pedidosCliente = await _UoW.PedidoRepository.GetPedidosByClienteId(clienteId);
+            if(pedidosCliente is null)
+            {
+                return Result<List<PedidoDto>>.Fail("El cliente no tiene pedidos");
+            }
+            var pedidosClienteDto =  pedidosCliente.Select(pc => new PedidoDto
+            {
+                PedidoId = pc.PedidoId,
+                CodigoPedido = pc.CodigoPedido,
+                Fecha = pc.Fecha,
+                UsuarioId = pc.UsuarioId,
+                MontoAdelantado = pc.MontoAdelantado,
+                MontoFaltante = pc.MontoFaltante,
+                MontoTotal = pc.MontoTotal,
+                MetodoPago = pc.MetodoPago.ToString(),
+                Estado = pc.Estado.ToString(),
+                Trabajador = new TrabajadorDto()
+                {
+                    TrabajadorId = pc.UsuarioId,
+                    Nombre = pc.Usuario.Nombre,
+                    ApellidoPaterno = pc.Usuario.ApellidoPaterno,
+                    ApellidoMaterno = pc.Usuario.ApellidoMaterno,
+                },
+                Cliente = new ClienteDto()
+                {
+                    ClienteId = pc.ClienteId,
+                    Nombre = pc.Cliente.Nombre,
+                    ApellidoPaterno = pc.Cliente.ApellidoPaterno,
+                    ApellidoMaterno = pc.Cliente.ApellidoMaterno,
+                },
+                Detalles = pc.DetallePedidos.Select(d => new DetallePedidoDto
+                {
+                    DetallePedidoId = d.DetallePedidoId,
+                    PedidoId = d.PedidoId,
+                    ServicioId = d.ServicioId,
+                    Servicio = new ServicioDto
+                    {
+                        ServicioId = d.ServicioId,
+                        Nombre = d.Servicio.Nombre,
+                        Descripcion = d.Servicio.Descripcion,
+                        Precio = d.Servicio.Precio
+                    },
+                    Cantidad = d.Cantidad,
+                    Precio = d.PrecioUnitario,
+                    SubTotal = d.SubTotal
+                }).ToList()
+
+            }).ToList();
+            return Result<List<PedidoDto>>.Ok(pedidosClienteDto);
         }
     }
 }

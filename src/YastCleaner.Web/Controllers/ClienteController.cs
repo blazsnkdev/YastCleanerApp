@@ -43,9 +43,9 @@ namespace YastCleaner.Web.Controllers
         {
             return View(new InsertarClienteViewModel());
         }
-
         [HttpPost]
         [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
+        [ValidateAntiForgeryToken]
         public IActionResult Registrar(InsertarClienteViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -133,6 +133,7 @@ namespace YastCleaner.Web.Controllers
         }
         [HttpPost]
         [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Actualizar(InsertarClienteViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -159,18 +160,19 @@ namespace YastCleaner.Web.Controllers
 
         [HttpPost]
         [RoleAuthorize(Rol.Administrador)]
-        public async Task<IActionResult> Desactivar(int clientId)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Desactivar(int clienteId)
         {
             try
             {
-                var result = await _clienteService.DesactivarCliente(clientId);
+                var result = await _clienteService.DesactivarCliente(clienteId);
                 if (!result.Success)
                 {
                     TempData["Error"] = $"Error: {result.ErrorMessage}";//TODO: Notificaciones
                     return RedirectToAction("Activos", "Cliente");
                 }
                 ViewData["Mensaje"] = "Cliente desactivado correctamente";//TODO: esto lo tengo que manejar con js
-                return RedirectToAction("Detalle", new { clienteId = clientId });
+                return RedirectToAction("Detalle", new { clienteId = clienteId });
             }
             catch (Exception ex)
             {
@@ -178,6 +180,43 @@ namespace YastCleaner.Web.Controllers
                 return RedirectToAction("UnauthorizedPage", "Auth");
             }
             
+        }
+        [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
+        public async Task<IActionResult> Pedidos(int clienteId, int pagina = 1,int tamanioPagina = 10)
+        {
+            try
+            {
+                var result = await _clienteService.ObtenerPedidosCliente(clienteId);
+                if (!result.Success)
+                {
+                    TempData["Error"] = $"Error: {result.ErrorMessage}";  
+                    return RedirectToAction(nameof(Detalle), new { clienteId});
+                }
+                var pedidosViewModel = result.Value!.Select(p => new PedidoViewModel
+                {
+                    PedidoId = p.PedidoId,
+                    CodigoPedido = p.CodigoPedido,
+                    Fecha = p.Fecha,
+                    UsuarioId = p.UsuarioId,
+                    MontoAdelantado = p.MontoAdelantado,
+                    MontoFaltante = p.MontoFaltante,
+                    MontoTotal = p.MontoTotal,
+                    MetodoPago = p.MetodoPago,
+                    Estado = p.Estado,
+                    Trabajador = new TrabajadorViewModel
+                    {
+                        TrabajadorId = p.Trabajador.TrabajadorId,
+                        Nombre = p.Trabajador.Nombre,
+                        Apellidos = p.Trabajador.ApellidoPaterno + " " + p.Trabajador.ApellidoMaterno,
+                    }
+                }).ToList();
+                var paginacion = PaginacionHelper.Paginacion(pedidosViewModel, pagina, tamanioPagina);
+                return View(paginacion);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
         }
     }
 }
