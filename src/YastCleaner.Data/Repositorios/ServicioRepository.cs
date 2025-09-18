@@ -22,5 +22,10 @@ namespace YastCleaner.Data.Repositorios
         {
             return await _appDbContext.TblServicio.Where(s => s.Nombre == nombre).FirstOrDefaultAsync();
         }
+
+        public async Task<bool> ValidarNombreServicioDisponibleAsync(string nombre)
+        {
+            return !await _appDbContext.TblServicio.AnyAsync(s=>s.Nombre == nombre);
+        }
     }
 }

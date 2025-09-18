@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YastCleaner.Entities.Entidades;
+﻿using YastCleaner.Entities.Entidades;
 
 namespace YastCleaner.Data.Interfaces
 {
     public interface IServicioRepository :IRepository<Servicio>
     {
         Task<Servicio?> GetByNameAsync(string nombre);
+        Task<bool> ValidarNombreServicioDisponibleAsync(string nombre); 
     }
 }

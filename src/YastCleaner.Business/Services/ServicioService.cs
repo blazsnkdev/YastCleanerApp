@@ -107,9 +107,20 @@ namespace YastCleaner.Business.Services
             }).ToList();
         }
 
-        public Task<List<ServicioDto>> ListaServiciosInactivos()
+        public async Task<List<ServicioDto>> ListaServiciosInactivos()
         {
-            throw new NotImplementedException();
+            var servicios = await _UoW.ServicioRepository.GetAllAsync();
+            var serviciosInactivos = servicios.Where(s => s.Estado == EstadoServicio.Inactivo).ToList();
+            var result = serviciosInactivos.Select(s => new ServicioDto
+            {
+                ServicioId = s.ServicioId,
+                Nombre = s.Nombre,
+                Descripcion =s.Descripcion,
+                Precio =s.Precio,
+                Estado = s.Estado.ToString(),
+                FechaRegistro = s.FechaRegistro
+            }).ToList();
+            return result;
         }
 
         public async Task<ServicioDto?> ObtenerServicio(int servicioId)
@@ -131,11 +142,22 @@ namespace YastCleaner.Business.Services
 
         public async Task<Result> RegistrarServicio(ServicioDto servicioDto)
         {
-            if (string.IsNullOrWhiteSpace(servicioDto.Nombre)
-                || string.IsNullOrEmpty(servicioDto.Descripcion)
-                || servicioDto.Precio < 0)
+            if (string.IsNullOrWhiteSpace(servicioDto.Nombre))
             {
-                return Result.Fail("Error en las propiedades nombre, descripción, precio");
+                return Result.Fail("El nombre esta vacío");
+            }
+            if(string.IsNullOrEmpty(servicioDto.Descripcion))
+            {
+                return Result.Fail("La descripción es nula");
+            }
+            if (servicioDto.Precio <= 0)
+            {
+                return Result.Fail("El precio no puede ser menor o igual que 0");
+            }
+            var disponible = await _UoW.ServicioRepository.ValidarNombreServicioDisponibleAsync(servicioDto.Nombre);
+            if (!disponible)
+            {
+                return Result.Fail("El nombre no esta disponible");
             }
             var existeServicio = await _UoW.ServicioRepository.GetByNameAsync(servicioDto.Nombre);
             if(existeServicio is not null)

@@ -35,6 +35,51 @@ namespace YastCleaner.Web.Controllers
             var paginacion = PaginacionHelper.Paginacion(viewModel, indicePagina, tamanioPagina);
             return View(paginacion);
         }
+        [RoleAuthorize(Rol.Administrador)]
+        public async Task<IActionResult> Modulo(int indicePagina = 1, int tamanioPagina = 10, string estado = "Disponible")
+        {
+            try
+            {
+                List<ServicioViewModel> viewModel;
+
+                if (estado == "Inactivo")
+                {
+                    var serviciosDtoInactivos = await _servicioService.ListaServiciosInactivos();
+                    viewModel = serviciosDtoInactivos.Select(s => new ServicioViewModel
+                    {
+                        ServicioId = s.ServicioId,
+                        Nombre = s.Nombre,
+                        Precio = s.Precio,
+                        Descripcion = s.Descripcion,
+                        Estado = s.Estado
+                    }).ToList();
+                }
+                else
+                {
+                    var serviciosDtoDisponibles = await _servicioService.ListaServiciosDisponibles();
+                    viewModel = serviciosDtoDisponibles.Select(s => new ServicioViewModel
+                    {
+                        ServicioId = s.ServicioId,
+                        Nombre = s.Nombre,
+                        Precio = s.Precio,
+                        Descripcion = s.Descripcion,
+                        Estado = s.Estado
+                    }).ToList();
+                }
+
+                var paginacion = PaginacionHelper.Paginacion(viewModel, indicePagina, tamanioPagina);
+                return View(paginacion);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                TempData["Error"] = "Sin autorización para el módulo de Servicios";
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+        }
+
+
+
+
         [RoleAuthorize(Rol.Trabajador)]
         public async Task<IActionResult> Seleccionar(int servicioId)
         {
