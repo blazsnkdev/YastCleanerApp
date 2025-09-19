@@ -56,5 +56,14 @@ namespace YastCleaner.Data.Repositorios
         {
             return !await _appDbContext.TblServicio.AnyAsync(s=>s.Nombre == nombre);
         }
+
+        public async Task<Servicio?> GetServicioById(int servicioId)
+        {
+            return await _appDbContext.TblServicio
+                .Where(s => s.ServicioId == servicioId)
+                .Include(s => s.DetallePedidos)
+                .FirstOrDefaultAsync();
+        }
+        
     }
 }

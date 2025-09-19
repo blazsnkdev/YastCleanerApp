@@ -187,5 +187,30 @@ namespace YastCleaner.Business.Services
             await _UoW.SaveChangesAsync();
             return Result.Ok();
         }
+
+        public async Task<Result<ServicioDetalleDto>> DetalleServicio(int servicioId)
+        {
+            //necesito traer los datos de la consulta pero tmb con la cantidad de detalles por servicio ý gastos hoy
+            var servicioSeleccionado = await _UoW.ServicioRepository.GetServicioById(servicioId);
+            if(servicioSeleccionado is null)
+            {
+                return Result<ServicioDetalleDto>.Fail("no hay datos");
+            }
+            var cantidadRegistrados = servicioSeleccionado.DetallePedidos.Count();
+            //un metodo en el repositorio que me traiga el monto generadop or hoy
+            var cantidadGenerada = servicioSeleccionado.DetallePedidos.Sum(d => d.SubTotal);
+            var servicioDetalleDto = new ServicioDetalleDto
+            {
+                ServicioId = servicioId,
+                Nombre= servicioSeleccionado.Nombre,
+                Descripcion = servicioSeleccionado.Descripcion,
+                Precio = servicioSeleccionado.Precio,
+                Estado = servicioSeleccionado.Estado.ToString(),
+                CantidadUtilizados = cantidadRegistrados,
+                MontoTotalGenerado = cantidadGenerada,
+            };
+            return Result<ServicioDetalleDto>.Ok(servicioDetalleDto);
+                
+        }
     }
 }

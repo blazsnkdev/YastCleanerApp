@@ -9,5 +9,6 @@ namespace YastCleaner.Data.Interfaces
         Task DesactivarServicio(int servicioId);
         Task ActivarServicio(int servicioId);
         Task<string?> GetEstadoById(int servicioId);
+        Task<Servicio?> GetServicioById(int servicioId);
     }
 }

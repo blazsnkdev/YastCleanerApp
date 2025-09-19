@@ -21,6 +21,7 @@ namespace YastCleaner.Web.Controllers
         }
 
         [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Servicios(int indicePagina =1,int tamanioPagina =10)
         {
             var serviciosDto = await _servicioService.ListaServiciosDisponibles();
@@ -79,10 +80,8 @@ namespace YastCleaner.Web.Controllers
             }
         }
 
-
-
-
         [RoleAuthorize(Rol.Trabajador)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Seleccionar(int servicioId)
         {
             var servicioDto = await _servicioService.ObtenerServicio(servicioId);
@@ -100,6 +99,7 @@ namespace YastCleaner.Web.Controllers
         }
         [HttpPost]
         [RoleAuthorize(Rol.Trabajador)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Seleccionar(int servicioId, int cantidad)
         {
             var result = await _servicioService.AgregarServicioAlPedido(servicioId,cantidad);
@@ -110,12 +110,14 @@ namespace YastCleaner.Web.Controllers
         }
 
         [RoleAuthorize(Rol.Administrador)]
+        [ValidateAntiForgeryToken]
         public IActionResult RegistrarServicio()
         {
             return View(new ServicioViewModel());
         }
         [HttpPost]
         [RoleAuthorize(Rol.Administrador)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegistrarServicio([FromBody]ServicioViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -137,6 +139,7 @@ namespace YastCleaner.Web.Controllers
         }
 
         [RoleAuthorize(Rol.Administrador)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarServicio(int servicioId)
         {
             var servicioDto = await _servicioService.ObtenerServicio(servicioId);
@@ -155,6 +158,7 @@ namespace YastCleaner.Web.Controllers
         }
         [HttpPost]
         [RoleAuthorize(Rol.Administrador)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarServicio(int servicioId,[FromBody]ServicioViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -202,6 +206,38 @@ namespace YastCleaner.Web.Controllers
         private async Task CargarEstadoServicio()
         {
             ViewBag.Estados = new SelectList(await _servicioService.ListarEstadoServicios());
+        }
+        public async Task<IActionResult> Detalle(int servicioId)
+        {
+            try
+            {
+                var detalleServicioDto = await _servicioService.DetalleServicio(servicioId);
+                if (!detalleServicioDto.Success)
+                {
+                    ViewBag.Error = detalleServicioDto.ErrorMessage;
+                    return View("Modulo");
+                }
+                if(detalleServicioDto.Value is null)
+                {
+                    ViewBag.Error = detalleServicioDto.ErrorMessage;
+                    return View("Modulo");
+                }
+                var detalleServicioViewModel = new DetalleServicioViewModel
+                {
+                    ServicioId = servicioId,
+                    Nombre = detalleServicioDto.Value.Nombre,
+                    Descripcion = detalleServicioDto.Value.Descripcion,
+                    Precio = detalleServicioDto.Value.Precio,
+                    Estado = detalleServicioDto.Value.Estado,
+                    CantidadDetalles = detalleServicioDto.Value.CantidadUtilizados,
+                    MontoGenerado = detalleServicioDto.Value.MontoTotalGenerado
+                };
+                return View(detalleServicioViewModel);
+            }catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("", "");
+            }
+
         }
     }
 }

@@ -16,6 +16,7 @@ namespace YastCleaner.Business.Interfaces
         //Task<Result> EliminarServicio(int servicioId);
         Task<Result> ManipularEstadoServicio(int servicioId);
         //Módulo de gestión de servicios
+        Task<Result<ServicioDetalleDto>> DetalleServicio(int servicioId);
         
     }
 }
