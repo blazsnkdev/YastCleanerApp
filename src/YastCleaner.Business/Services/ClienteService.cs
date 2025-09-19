@@ -235,5 +235,14 @@ namespace YastCleaner.Business.Services
             }).ToList();
             return Result<List<PedidoDto>>.Ok(pedidosClienteDto);
         }
+        public async Task<Result<string>> RecuperarEmailCliente(int clienteId)
+        {
+            var email = await _UoW.ClienteRepository.GetEmailByClienteIds(clienteId);
+            if(email is null)
+            {
+                return Result<string>.Fail("El email no existe");
+            }
+            return Result<string>.Ok(email);
+        }
     }
 }

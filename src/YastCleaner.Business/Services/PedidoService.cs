@@ -233,14 +233,15 @@ namespace YastCleaner.Business.Services
 
 
         }
-        public async Task<Result<int>> RegistrarPedido(PedidoDto pedidoDto) //TODO: esto debe ser un dto
+        public async Task<Result<int>> RegistrarPedido(PedidoDto pedidoDto)
         {
             try
             {
-                var listaPedidoTemporal = _pedidoStorage.RecuperarCarrito();
+                var listaPedidoTemporal = _pedidoStorage.RecuperarCarrito();//Recuperamos la lista
                 if (!listaPedidoTemporal.Any())
-                    return Result<int>.Fail("La lista esta vacia");
-
+                {
+                    return Result<int>.Fail("La lista de servicios seleccionado esta vacío");
+                }
                 double montoPagar = listaPedidoTemporal.Sum(x => x.Importe);
                 string codigoPedido = await GenerarCodigoPedido();
                 double faltante = montoPagar - pedidoDto.MontoAdelantado;
@@ -273,7 +274,6 @@ namespace YastCleaner.Business.Services
                     await _UoW.PedidoDetalleRepository.AddAsync(pedidoDetalle);
                     await _UoW.SaveChangesAsync();
                 }
-                //await _UoW.SaveChangesAsync();
                 _pedidoStorage.LimpiarCarrito();
                 return Result<int>.Ok(nuevoPedido.PedidoId);
             }
@@ -328,5 +328,6 @@ namespace YastCleaner.Business.Services
             };
             return Result<PedidoDto>.Ok(pedidoDto);
         }
+        
     }
 }

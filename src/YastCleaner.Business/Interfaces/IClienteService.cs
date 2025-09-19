@@ -20,5 +20,6 @@ namespace YastCleaner.Business.Interfaces
         Task<Result> ActualizarCliente(int clienteId,ClienteDto clienteDto);
         Task<Result> DesactivarCliente(int clienteId);
         Task<Result<List<PedidoDto>>> ObtenerPedidosCliente(int clienteId);
+        Task<Result<string>> RecuperarEmailCliente(int clienteId);
     }
 }

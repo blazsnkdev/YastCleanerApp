@@ -18,6 +18,15 @@ namespace YastCleaner.Data.Repositorios
         {
             _appDbContext = appDbContext;
         }
+
+        public async Task<string?> GetEmailByClienteIds(int clienteId)
+        {
+            return await _appDbContext.TblCliente
+                .Where(c => c.ClienteId == clienteId)
+                .Select(c => c.Email)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<Cliente?> GetClienteById(int clienteId)
         {
             var cliente = await _appDbContext.TblCliente

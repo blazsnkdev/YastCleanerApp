@@ -96,41 +96,53 @@ namespace YastCleaner.Web.Controllers
         [RoleAuthorize(Rol.Trabajador)]
         public async Task<IActionResult> RegistrarPedido(int clienteId,DateTime fecha,double montoAdelanto, string metodoPago)
         {
-            //Aqui necesito construir un pedidoDto apartir de un viewModel
-            var trabajadorId = SessionHelper.GetUsuarioId(HttpContext);
-            if (trabajadorId is null)
-                return RedirectToAction("UnauthorizedPage", "Auth");
-
-            var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
-            if(pedidosTemporalDto is null || !pedidosTemporalDto.Any())
+            try
             {
-                return RedirectToAction("Servicios", "Servicio");
-            }
+                var trabajadorId = SessionHelper.GetUsuarioId(HttpContext);
+                if (trabajadorId is null)
+                    return RedirectToAction("UnauthorizedPage", "Auth");
 
-            var pedidoDto = new PedidoDto()
-            {
-                ClienteId = clienteId,
-                Fecha = fecha,
-                UsuarioId = trabajadorId.Value,
-                MontoAdelantado = montoAdelanto,
-                MetodoPago = metodoPago,
-                Detalles = pedidosTemporalDto.Select(p => new DetallePedidoDto()
+                var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
+                if (pedidosTemporalDto is null || !pedidosTemporalDto.Any())
                 {
-                    ServicioId = p.Id,
-                    Cantidad = p.Cantidad,
-                    Precio = p.Precio,
-                    SubTotal = p.Cantidad * p.Precio
-                }).ToList()
-            };
+                    return RedirectToAction("Servicios", "Servicio");
+                }
 
-            var result = await _pedidoService.RegistrarPedido(pedidoDto);
-            if (!result.Success)
-            {
-                await CargarCombos();
-                return View(pedidosTemporalDto);
+                var pedidoDto = new PedidoDto()
+                {
+                    ClienteId = clienteId,
+                    Fecha = fecha,
+                    UsuarioId = trabajadorId.Value,
+                    MontoAdelantado = montoAdelanto,
+                    MetodoPago = metodoPago,
+                    Detalles = pedidosTemporalDto.Select(p => new DetallePedidoDto()
+                    {
+                        ServicioId = p.Id,
+                        Cantidad = p.Cantidad,
+                        Precio = p.Precio,
+                        SubTotal = p.Cantidad * p.Precio
+                    }).ToList()
+                };
+                
+                var result = await _pedidoService.RegistrarPedido(pedidoDto);
+                if (!result.Success)
+                {
+                    await CargarCombos();
+                    return View(pedidosTemporalDto);
+                }
+                var email = await _clienteService.RecuperarEmailCliente(clienteId);
+                if(email.Value is not null)
+                {
+                    _enviarCorreoSmtp.RegistroPedido(email.Value);
+                }
+                return RedirectToAction("DetallePedido", new { pedidoId = result.Value });
             }
-            //_enviarCorreoSmtp.RegistroPedido(); //TODO: aqui tengo que manejar la logica para enviar el correo electronico, recuperar el email del cliente seleccinado
-            return RedirectToAction("DetallePedido", new {pedidoId = result.Value});
+            catch (UnauthorizedAccessException)
+            {
+                TempData["Error"] = "No tiene acceso";
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+            
         }
         //Ruido de Mate....
         [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
@@ -324,7 +336,7 @@ namespace YastCleaner.Web.Controllers
             }
             catch (UnauthorizedAccessException)
             {
-                return View("UnauthorizedPage", "Auth");
+                return RedirectToAction("UnauthorizedPage", "Auth");
             }
         }
 
