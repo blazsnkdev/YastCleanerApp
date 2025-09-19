@@ -21,7 +21,6 @@ namespace YastCleaner.Web.Controllers
         }
 
         [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Servicios(int indicePagina =1,int tamanioPagina =10)
         {
             var serviciosDto = await _servicioService.ListaServiciosDisponibles();
@@ -81,7 +80,6 @@ namespace YastCleaner.Web.Controllers
         }
 
         [RoleAuthorize(Rol.Trabajador)]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Seleccionar(int servicioId)
         {
             var servicioDto = await _servicioService.ObtenerServicio(servicioId);
@@ -110,7 +108,6 @@ namespace YastCleaner.Web.Controllers
         }
 
         [RoleAuthorize(Rol.Administrador)]
-        [ValidateAntiForgeryToken]
         public IActionResult RegistrarServicio()
         {
             return View(new ServicioViewModel());
@@ -139,7 +136,6 @@ namespace YastCleaner.Web.Controllers
         }
 
         [RoleAuthorize(Rol.Administrador)]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarServicio(int servicioId)
         {
             var servicioDto = await _servicioService.ObtenerServicio(servicioId);
@@ -185,7 +181,7 @@ namespace YastCleaner.Web.Controllers
 
         [HttpPost]
         [RoleAuthorize(Rol.Administrador)]
-        [ValidateAntiForgeryTokenAttribute]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ManipularEstado(int servicioId)
         {
             try
@@ -207,6 +203,8 @@ namespace YastCleaner.Web.Controllers
         {
             ViewBag.Estados = new SelectList(await _servicioService.ListarEstadoServicios());
         }
+
+        [RoleAuthorize(Rol.Administrador)]
         public async Task<IActionResult> Detalle(int servicioId)
         {
             try
@@ -235,9 +233,31 @@ namespace YastCleaner.Web.Controllers
                 return View(detalleServicioViewModel);
             }catch (UnauthorizedAccessException)
             {
-                return RedirectToAction("", "");
+                return RedirectToAction("UnauthorizedPage", "Auth");
             }
 
         }
+        [HttpPost]
+        [RoleAuthorize(Rol.Administrador)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Eliminar(int servicioId)
+        {
+            try
+            {
+                var result = await _servicioService.EliminarServicio(servicioId);
+                if (!result.Success)
+                {
+                    ViewBag.Error = result.ErrorMessage;
+                    return View("Detalle", new { servicioId = servicioId});
+                }
+                return RedirectToAction("Modulo", "Servicio");
+            }catch (UnauthorizedAccessException)
+            {
+                TempData["Error"] = "Sin autorización para eliminar el servicio";
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
+
+        }
+        
     }
 }

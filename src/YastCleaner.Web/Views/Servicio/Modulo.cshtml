@@ -7,7 +7,7 @@
 <h1>Módulo de Servicios</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success">Crear Nuevo Servicio</a>
+    <a asp-action="RegistrarServicio" class="btn btn-success">Crear Nuevo Servicio</a>
     <a asp-controller="Servicio" asp-action="Modulo" asp-route-estado="Inactivo" class="btn btn-warning">Ver servicios inactivos
 </a>
 
@@ -68,7 +68,7 @@
                             }
                         </form>
 
-                        <a asp-action="Detalle" asp-route-servicioId="@item.ServicioId" class="btn btn-warning btn-sm">Ver Detalle</a>
+                        <a asp-action="Detalle" asp-route-servicioId="@item.ServicioId" >Ver Detalle</a>
                     </td>
                 </tr>
             }

@@ -212,5 +212,20 @@ namespace YastCleaner.Business.Services
             return Result<ServicioDetalleDto>.Ok(servicioDetalleDto);
                 
         }
+
+        public async Task<Result> EliminarServicio(int servicioId)
+        {
+            if(servicioId <= 0)
+            {
+                return Result.Fail("El Id no es valido");
+            }
+            var servicio = await _UoW.ServicioRepository.GetByIdAsync(servicioId);
+            if(servicio is not null)
+            {
+                _UoW.ServicioRepository.Delete(servicio);
+                await _UoW.SaveChangesAsync();
+            }
+            return Result.Fail("El servicio no fue encontrado");
+        }
     }
 }

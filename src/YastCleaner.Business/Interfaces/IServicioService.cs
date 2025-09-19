@@ -13,10 +13,11 @@ namespace YastCleaner.Business.Interfaces
         Task<ServicioDto?> ObtenerServicio(int servicioId);
         Task<Result> AgregarServicioAlPedido(int servicioId, int cantidad);
         Task<List<EstadoServicio>> ListarEstadoServicios();
-        //Task<Result> EliminarServicio(int servicioId);
+        
         Task<Result> ManipularEstadoServicio(int servicioId);
         //Módulo de gestión de servicios
         Task<Result<ServicioDetalleDto>> DetalleServicio(int servicioId);
-        
+        Task<Result> EliminarServicio(int servicioId);
+
     }
 }
