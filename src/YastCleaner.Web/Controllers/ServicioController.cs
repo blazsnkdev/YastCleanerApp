@@ -51,7 +51,8 @@ namespace YastCleaner.Web.Controllers
                         Nombre = s.Nombre,
                         Precio = s.Precio,
                         Descripcion = s.Descripcion,
-                        Estado = s.Estado
+                        Estado = s.Estado,
+                        FechaRegistro = s.FechaRegistro
                     }).ToList();
                 }
                 else
@@ -63,7 +64,8 @@ namespace YastCleaner.Web.Controllers
                         Nombre = s.Nombre,
                         Precio = s.Precio,
                         Descripcion = s.Descripcion,
-                        Estado = s.Estado
+                        Estado = s.Estado,
+                        FechaRegistro = s.FechaRegistro
                     }).ToList();
                 }
 
@@ -179,21 +181,21 @@ namespace YastCleaner.Web.Controllers
 
         [HttpPost]
         [RoleAuthorize(Rol.Administrador)]
-        public async Task<IActionResult> DesactivarServicio(int servicioId)
+        [ValidateAntiForgeryTokenAttribute]
+        public async Task<IActionResult> ManipularEstado(int servicioId)
         {
             try
             {
-                var result = await _servicioService.DesactivarServicio(servicioId);
+                var result = await _servicioService.ManipularEstadoServicio(servicioId);
                 if (!result.Success)
                 {
                     ViewBag.Error = "No se pudo desactivar el servicio.";
                 }
-                return RedirectToAction("Servicios", "Servicio");
+                return RedirectToAction("Modulo", "Servicio");
             }
-            catch (Exception ex) 
+            catch (UnauthorizedAccessException) 
             {
-                ViewBag.Error = ex.Message;
-                return RedirectToAction("Servicios", "Servicio");
+                return RedirectToAction("UnauthorizedPage", "Auth");
             }
         }
 

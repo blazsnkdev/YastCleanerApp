@@ -14,7 +14,7 @@ namespace YastCleaner.Business.Interfaces
         Task<Result> AgregarServicioAlPedido(int servicioId, int cantidad);
         Task<List<EstadoServicio>> ListarEstadoServicios();
         //Task<Result> EliminarServicio(int servicioId);
-        Task<Result> DesactivarServicio(int servicioId);
+        Task<Result> ManipularEstadoServicio(int servicioId);
         //Módulo de gestión de servicios
         
     }

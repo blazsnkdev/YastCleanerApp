@@ -50,15 +50,25 @@ namespace YastCleaner.Business.Services
             return Result.Ok();
         }
 
-        public async Task<Result> DesactivarServicio(int servicioId)
+        public async Task<Result> ManipularEstadoServicio(int servicioId)
         {
-            var existeServicio = await _UoW.ServicioRepository.GetByIdAsync(servicioId);
-            if(existeServicio is null)
-                return Result.Fail("El registro no existe");
-            existeServicio.Estado = EstadoServicio.Inactivo;
-            _UoW.ServicioRepository.Update(existeServicio);
-            await _UoW.SaveChangesAsync();
-            return Result.Ok();
+            if (servicioId <= 0)
+            {
+                return Result.Fail("El Id del servicio es erroneo");
+            }
+            //aqui un repositorio para saber saber el estado y depende a ello realizar la transaction
+            var estadoActual = await _UoW.ServicioRepository.GetEstadoById(servicioId);
+            if (estadoActual == "Disponible")
+            {
+                await _UoW.ServicioRepository.DesactivarServicio(servicioId);
+                return Result.Ok();
+            } 
+            else if (estadoActual == "Inactivo")
+            {
+                await _UoW.ServicioRepository.ActivarServicio(servicioId);
+                return Result.Ok();
+            }
+            return Result.Fail("Opcion no valida");
         }
 
         public async Task<Result> EditarServicio(int servicioId,ServicioDto servicioDto)
@@ -92,7 +102,7 @@ namespace YastCleaner.Business.Services
 
         public Task<List<EstadoServicio>> ListarEstadoServicios() => Task.FromResult(Enum.GetValues<EstadoServicio>().ToList());
 
-        public async Task<List<ServicioDto>> ListaServiciosDisponibles()//TODO : esta lista es para el trabajador pueda ver los que estan disnponinbles
+        public async Task<List<ServicioDto>> ListaServiciosDisponibles()
         {
             var servicios = await _UoW.ServicioRepository.GetAllAsync();
             return servicios
@@ -104,6 +114,7 @@ namespace YastCleaner.Business.Services
                 Precio = s.Precio,
                 Descripcion = s.Descripcion,
                 Estado = s.Estado.ToString(),
+                FechaRegistro = s.FechaRegistro
             }).ToList();
         }
 
