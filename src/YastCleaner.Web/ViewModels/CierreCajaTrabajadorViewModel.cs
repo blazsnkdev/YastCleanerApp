@@ -1,6 +1,6 @@
 ﻿namespace YastCleaner.Web.ViewModels
 {
-    public class TrabajadorViewModel
+    public class CierreCajaTrabajadorViewModel
     {
         public int TrabajadorId { get; set; }
         public string Nombre { get; set; }
@@ -9,5 +9,6 @@
         public string Direccion { get; set; }
         public string Email { get; set; }
         public DateTime FechaRegistro { get; set; }
+        public bool Registrado { get; set; }
     }
 }

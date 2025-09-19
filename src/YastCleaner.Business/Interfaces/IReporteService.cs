@@ -13,5 +13,6 @@ namespace YastCleaner.Business.Interfaces
         Task<Result<int>> RegistrarReporte(ReporteDto reporteDto);
         Task<Result<ReporteDto>> DetalleReporte(int reporteId);
         Task<Result<TrabajadorDto>> DetalleRegistroReporte(int trabajadorId);
+        Task<bool> ExisteReportePorTrabajadorHoy(int trabajadorId);
     }
 }

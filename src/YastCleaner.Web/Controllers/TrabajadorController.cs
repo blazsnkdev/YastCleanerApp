@@ -24,7 +24,7 @@ namespace YastCleaner.Web.Controllers
             _enviarCorreo = enviarCorreo;
         }
         [RoleAuthorize(Rol.Administrador)]
-        public async Task<IActionResult> Trabajadores(int pagina = 1, int tamanioPagina =10)//este es el total
+        public async Task<IActionResult> Trabajadores(int pagina = 1, int tamanioPagina =10)
         {
             var trabajadoresDto = await _trabajadorService.ListaTrabajadores();
             //TODO : utilizar esto para la paginacion

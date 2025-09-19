@@ -1,4 +1,4 @@
-﻿@model YastCleaner.Web.Utils.PaginaResult<YastCleaner.Web.ViewModels.TrabajadorViewModel>
+﻿@model YastCleaner.Web.Utils.PaginaResult<YastCleaner.Web.ViewModels.CierreCajaTrabajadorViewModel>
 
 @{
     ViewData["Title"] = "Cerrar Caja";
@@ -19,6 +19,18 @@
                         <strong>Email:</strong> @item.Email <br />
                         <strong>Fecha Registro:</strong> @item.FechaRegistro.ToShortDateString()
                     </p>
+
+                    <p>
+                        @if (item.Registrado)
+                        {
+                            <span class="badge bg-success">Reporte registrado</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Reporte no registrado</span>
+                        }
+                    </p>
+
                     <a asp-controller="Reporte" asp-action="Pedidos" asp-route-trabajadorId="@item.TrabajadorId" class="card-link btn btn-warning btn-sm">
                         Pedidos
                     </a>
@@ -29,4 +41,5 @@
             </div>
         </div>
     }
+
 </div>

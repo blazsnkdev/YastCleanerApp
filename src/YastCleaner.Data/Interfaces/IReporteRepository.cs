@@ -9,5 +9,6 @@ namespace YastCleaner.Data.Interfaces
 {
     public interface IReporteRepository : IRepository<Reporte>
     {
+        Task<bool> ExisteReporteTrabajadorHoy(int reporteId);
     }
 }

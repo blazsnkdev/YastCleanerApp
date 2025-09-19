@@ -127,5 +127,10 @@ namespace YastCleaner.Business.Services
             }
         }
 
+        public async Task<bool> ExisteReportePorTrabajadorHoy(int trabajadorId)
+        {
+            return await _UoW.ReporteRepository.ExisteReporteTrabajadorHoy(trabajadorId);
+        }
+
     }
 }

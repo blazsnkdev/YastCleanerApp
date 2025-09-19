@@ -32,48 +32,45 @@ namespace YastCleaner.Web.Controllers
             try
             {
                 var trabajadoresDto = await _trabajadorService.TrabajadoresConPedidosHoy();
-                var fecha = _dateTimeProvider.DateTimeActual().ToString("dd/MM/yyyy");
-                if (!trabajadoresDto.Success)
+                var fecha = _dateTimeProvider.DateTimeActual();
+
+                if (!trabajadoresDto.Success || trabajadoresDto.Value is null || !trabajadoresDto.Value.Any())
                 {
-                    ViewBag.HoraActual = fecha;
-                    return View(new PaginaResult<TrabajadorViewModel>
+                    ViewBag.HoraActual = fecha.ToString("dd/MM/yyyy");
+                    return View(new PaginaResult<CierreCajaTrabajadorViewModel>
                     {
-                        Items = new List<TrabajadorViewModel>(),
+                        Items = new List<CierreCajaTrabajadorViewModel>(),
                         TotalRegistros = 0,
                         PaginaIndice = pagina,
                         TamanioPagina = tamanioPagina
                     });
                 }
 
-                if (trabajadoresDto.Value is null || !trabajadoresDto.Value.Any())
-                {
-                    ViewBag.HoraActual = fecha;
-                    return View(new PaginaResult<TrabajadorViewModel>
-                    {
-                        Items = new List<TrabajadorViewModel>(),
-                        TotalRegistros = 0,
-                        PaginaIndice = pagina,
-                        TamanioPagina = tamanioPagina
-                    });
-                }
-
-                var viewModel = trabajadoresDto.Value.Select(t => new TrabajadorViewModel
+                // crear una lista de tasks
+                var tareas = trabajadoresDto.Value.Select(async t => new CierreCajaTrabajadorViewModel
                 {
                     TrabajadorId = t.TrabajadorId,
                     Nombre = t.Nombre,
-                    Apellidos = t.ApellidoPaterno + " " + t.ApellidoMaterno,
+                    Apellidos = $"{t.ApellidoPaterno} {t.ApellidoMaterno}",
                     Dni = t.Dni,
                     Direccion = t.Direccion,
                     Email = t.Email,
-                    FechaRegistro = t.FechaRegistro
+                    FechaRegistro = t.FechaRegistro,
+                    Registrado = await _reporteService.ExisteReportePorTrabajadorHoy(t.TrabajadorId)
                 });
 
-                var paginacion = PaginacionHelper.Paginacion(viewModel, pagina, tamanioPagina);
-                ViewBag.HoraActual = fecha;
+                // esperar a que terminen todas las tasks
+                var viewModelList = await Task.WhenAll(tareas);
+
+                // ahora sí paginar
+                var paginacion = PaginacionHelper.Paginacion(viewModelList, pagina, tamanioPagina);
+
+                ViewBag.HoraActual = fecha.ToString("dd/MM/yyyy HH:mm");
                 return View(paginacion);
             }
             catch (UnauthorizedAccessException)
             {
+                TempData["Error"] = "No tiene autorización para dar el cierre de caja";
                 return RedirectToAction("UnauthorizedPage", "Auth");
             }
             catch (Exception ex)
@@ -82,6 +79,8 @@ namespace YastCleaner.Web.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
+
+
 
         [RoleAuthorize(Rol.Administrador)]
         public async Task<IActionResult> Pedidos(int trabajadorId)
