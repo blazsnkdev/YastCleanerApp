@@ -60,11 +60,15 @@
 
                             @if (item.Estado == "Disponible")
                             {
-                                <button type="submit" class="btn btn-warning btn-sm">Desactivar</button>
+                                <button type="submit" class="btn btn-warning btn-sm"
+                                onclick="return confirm('¿Seguro que desea Desactivar ese servicio?')"
+                                >Desactivar</button>
                             }
                             else
                             {
-                                <button type="submit" class="btn btn-success btn-sm">Activar</button>
+                                <button type="submit" class="btn btn-success btn-sm"
+                                onclick="return confirm('¿Seguro que desea Activar ese servicio?')"
+                                >Activar</button>
                             }
                         </form>
 
