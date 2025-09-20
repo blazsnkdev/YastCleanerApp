@@ -274,6 +274,7 @@ namespace YastCleaner.Web.Controllers
                     ViewBag.Error = result.ErrorMessage;
                     return View("Detalle", new { servicioId = servicioId});
                 }
+                TempData["Mensaje"] = "Servicio Eliminado";
                 return RedirectToAction("Modulo", "Servicio");
             }catch (UnauthorizedAccessException)
             {

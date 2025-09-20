@@ -49,7 +49,10 @@
     </dl>
 </div>
 <div>
-    @Html.ActionLink("Regresar", "Modulo", new { /* id = Model.PrimaryKey */ }) |
-    @Html.ActionLink("Eliminar", "Eliminar", new { id = Model.ServicioId }) |
-    <a asp-action="EditarServicio" asp-route-servicioId="@Model.ServicioId"> Editar</a>
+    <a asp-action="Modulo" class="btn btn-secondary">Regresar</a> |
+    <form asp-action="Eliminar" asp-route-servicioId="@Model.ServicioId" method="post" onsubmit="return confirm('¿Está seguro?');">
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+    </form>
+
+    <a asp-action="EditarServicio" asp-route-servicioId="@Model.ServicioId" class="btn btn-warning"> Editar</a>
 </div>

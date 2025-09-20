@@ -224,7 +224,7 @@ namespace YastCleaner.Business.Services
                 _UoW.ServicioRepository.Delete(servicio);
                 await _UoW.SaveChangesAsync();
             }
-            return Result.Fail("El servicio no fue encontrado");
+            return Result.Ok();
         }
     }
 }
