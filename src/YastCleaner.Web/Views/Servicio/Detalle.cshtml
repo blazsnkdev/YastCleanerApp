@@ -50,5 +50,6 @@
 </div>
 <div>
     @Html.ActionLink("Regresar", "Modulo", new { /* id = Model.PrimaryKey */ }) |
-    @Html.ActionLink("Eliminar", "Eliminar", new { id = Model.ServicioId })
+    @Html.ActionLink("Eliminar", "Eliminar", new { id = Model.ServicioId }) |
+    <a asp-action="EditarServicio" asp-route-servicioId="@Model.ServicioId"> Editar</a>
 </div>

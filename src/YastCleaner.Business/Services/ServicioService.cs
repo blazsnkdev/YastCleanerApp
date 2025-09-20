@@ -73,29 +73,28 @@ namespace YastCleaner.Business.Services
 
         public async Task<Result> EditarServicio(int servicioId,ServicioDto servicioDto)
         {
-            var existeServicio = await _UoW.ServicioRepository.GetByIdAsync(servicioId);
-            if (existeServicio is null)
+            var servicio = await _UoW.ServicioRepository.GetByIdAsync(servicioId);
+            if (servicio is null)
             {
                 return Result.Fail("El registro no existe");
             }
-            if (string.IsNullOrWhiteSpace(servicioDto.Nombre)
-                || string.IsNullOrEmpty(servicioDto.Descripcion)
-                || servicioDto.Precio < 0)
+            if (string.IsNullOrWhiteSpace(servicioDto.Nombre))
             {
-                return Result.Fail("Las propiedades vienen vacias");
+                return Result.Fail("El nombre es nulo");
             }
-            existeServicio.Nombre = servicioDto.Nombre;
-            existeServicio.Descripcion = servicioDto.Descripcion;
-            existeServicio.Precio = servicioDto.Precio;
-            if (Enum.TryParse<EstadoServicio>(servicioDto.Estado, out var estadoServicio))//TODO: el viewmodel debe enviar el estado de servicio como string
+            if(string.IsNullOrEmpty(servicioDto.Descripcion))
             {
-                existeServicio.Estado = estadoServicio;
+                return Result.Fail("La descripción es nula");
             }
-            else
+            if(servicioDto.Precio < 0)
             {
-                return Result.Fail("El estado del servicio no es válido");
+                return Result.Fail("El precio es 0 o menor");
             }
-            _UoW.ServicioRepository.Update(existeServicio);
+
+            servicio.Nombre = servicioDto.Nombre;
+            servicio.Descripcion = servicioDto.Descripcion;
+            servicio.Precio = servicioDto.Precio;
+            //_UoW.ServicioRepository.Update(servicio); //TODO : no es necesario esta vaina pq al manilar el objeto ya hace el trackeo
             await _UoW.SaveChangesAsync();
             return Result.Ok();
         }

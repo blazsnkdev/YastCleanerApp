@@ -147,45 +147,60 @@ namespace YastCleaner.Web.Controllers
         [RoleAuthorize(Rol.Administrador)]
         public async Task<IActionResult> EditarServicio(int servicioId)
         {
-            var servicioDto = await _servicioService.ObtenerServicio(servicioId);
-            if (servicioDto is null)
-                return RedirectToAction("Servicios","Servicio");
-            var viewModel = new ServicioViewModel()
+            try
             {
-                ServicioId = servicioDto.ServicioId,
-                Nombre = servicioDto.Nombre,
-                Descripcion = servicioDto.Descripcion,
-                Precio = servicioDto.Precio,
-                Estado = servicioDto.Estado
-            };
-            await CargarEstadoServicio();
-            return View(viewModel);
+                var servicioDto = await _servicioService.ObtenerServicio(servicioId);
+                if (servicioDto is null)
+                {
+                    return RedirectToAction("Modulo", "Servicio");
+                }
+                var viewModel = new EditarServicioViewModel()
+                {
+                    ServicioId = servicioDto.ServicioId,
+                    Nombre = servicioDto.Nombre,
+                    Descripcion = servicioDto.Descripcion,
+                    Precio = servicioDto.Precio,
+                };
+                return View(viewModel);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                TempData["Error"] = "No tiene acceso";
+                return RedirectToAction("UnauthorizedPage", "Auth");
+            }
         }
         [HttpPost]
         [RoleAuthorize(Rol.Administrador)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarServicio(int servicioId,[FromBody]ServicioViewModel viewModel)
+        public async Task<IActionResult> EditarServicio(int servicioId,EditarServicioViewModel viewModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                await CargarEstadoServicio();
-                return View(viewModel);
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+                var servicioDto = new ServicioDto()
+                {
+                    ServicioId = viewModel.ServicioId,
+                    Nombre = viewModel.Nombre,
+                    Descripcion = viewModel.Descripcion,
+                    Precio = viewModel.Precio
+                };
+                var result = await _servicioService.EditarServicio(servicioId, servicioDto);
+                if (!result.Success)
+                {
+                    ViewBag.Error = result.ErrorMessage;
+                    return View(viewModel);
+                }
+                TempData["Mensaje"] = "Servicio Editado";
+                return RedirectToAction("Modulo", "Servicio");
             }
-            var servicioDto = new ServicioDto()
+            catch (UnauthorizedAccessException)
             {
-                ServicioId = viewModel.ServicioId,
-                Nombre = viewModel.Nombre,
-                Descripcion = viewModel.Descripcion,
-                Precio = viewModel.Precio,
-                Estado = viewModel.Estado
-            };
-            var result = await _servicioService.EditarServicio(servicioId, servicioDto);
-            if (!result.Success)
-            {
-                await CargarEstadoServicio();
-                return View(viewModel);
+                TempData["Error"] = "No tiene acceso";
+                return RedirectToAction("UnauthorizedPage", "Auth");
             }
-            return RedirectToAction("Servicios", "Servicio");
         }
 
         [HttpPost]
