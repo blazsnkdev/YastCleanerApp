@@ -36,12 +36,11 @@ namespace YastCleaner.Web.Controllers
             return View(paginacion);
         }
         [RoleAuthorize(Rol.Administrador)]
-        public async Task<IActionResult> Modulo(int indicePagina = 1, int tamanioPagina = 10, string estado = "Disponible")
+        public async Task<IActionResult> Modulo(int indicePagina = 1, int tamanioPagina = 10, string estado = "Disponible")//TODO :este codigo de md xD, el estado se puede refactorizar
         {
             try
             {
                 List<ServicioViewModel> viewModel;
-
                 if (estado == "Inactivo")
                 {
                     var serviciosDtoInactivos = await _servicioService.ListaServiciosInactivos();
@@ -110,29 +109,39 @@ namespace YastCleaner.Web.Controllers
         [RoleAuthorize(Rol.Administrador)]
         public IActionResult RegistrarServicio()
         {
-            return View(new ServicioViewModel());
+            return View(new RegistrarServicioViewModel());
         }
         [HttpPost]
         [RoleAuthorize(Rol.Administrador)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegistrarServicio([FromBody]ServicioViewModel viewModel)
+        public async Task<IActionResult> RegistrarServicio(RegistrarServicioViewModel viewModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(viewModel);
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+                var servicioDto = new ServicioDto()
+                {
+                    Nombre = viewModel.Nombre,
+                    Descripcion = viewModel.Descripcion,
+                    Precio = viewModel.Precio
+                };
+                var result = await _servicioService.RegistrarServicio(servicioDto);
+                if (!result.Success)
+                {
+                    ModelState.AddModelError(string.Empty, result.ErrorMessage!);//TODO : posible nulo en ErroMessage
+                    return View(viewModel);
+                }
+                TempData["Mensaje"] = "Servicio registrado!";
+                return RedirectToAction("Modulo", "Servicio");
             }
-            var servicioDto = new ServicioDto()
+            catch (UnauthorizedAccessException)
             {
-                Nombre = viewModel.Nombre,
-                Descripcion = viewModel.Descripcion,
-                Precio = viewModel.Precio
-            };
-            var result = await _servicioService.RegistrarServicio(servicioDto);
-            if (!result.Success)
-            {
-                return View(viewModel);
+                TempData["Mensaje"] = "No tiene acceso";
+                return RedirectToAction("UnauthorizedPage", "Auth");
             }
-            return RedirectToAction("Servicios", "Servicio");
         }
 
         [RoleAuthorize(Rol.Administrador)]

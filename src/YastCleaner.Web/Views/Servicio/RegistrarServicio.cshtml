@@ -1,4 +1,4 @@
-﻿@model YastCleaner.Web.ViewModels.ServicioViewModel
+﻿@model YastCleaner.Web.ViewModels.RegistrarServicioViewModel
 
 @{
     ViewData["Title"] = "RegistrarServicio";
@@ -12,11 +12,7 @@
     <div class="col-md-4">
         <form asp-action="RegistrarServicio">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @* <div class="form-group">
-                <label asp-for="ServicioId" class="control-label"></label>
-                <input asp-for="ServicioId" class="form-control" />
-                <span asp-validation-for="ServicioId" class="text-danger"></span>
-            </div> *@
+            
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" />
@@ -32,11 +28,6 @@
                 <input asp-for="Descripcion" class="form-control" />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
-            @* <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div> *@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
