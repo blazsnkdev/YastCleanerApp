@@ -1,8 +1,16 @@
-﻿<h1>Ingresar Código Pedido</h1>
-<form asp-controller="Pedido" asp-action="Consultar" method="get">
-    <div class="form-group">
-        <label for="codigo">Código Pedido</label>
-        <input type="text" id="codigoPedido" name="codigoPedido" class="form-control" required />
+﻿<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+        <h1 class="text-center mb-4">Ingresar Código Pedido</h1>
+
+        <form asp-controller="Pedido" asp-action="Consultar" method="get">
+            <div class="mb-3">
+                <label for="codigoPedido" class="form-label">Código Pedido</label>
+                <input type="text" id="codigoPedido" name="codigoPedido" class="form-control" required />
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Consultar</button>
+            </div>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Consultar</button>
-</form>
+</div>

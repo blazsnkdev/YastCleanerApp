@@ -12,9 +12,9 @@ namespace YastCleaner.Business.Services
         private readonly IUnitOfWork _UoW;
         private readonly IPedidoStorage _pedidoStorage;
         private readonly IDateTimeProvider _dateTimeProvider;
-        
 
-        public PedidoService(IUnitOfWork uow, IPedidoStorage pedidoStorage,IDateTimeProvider dateTimeProvider)
+
+        public PedidoService(IUnitOfWork uow, IPedidoStorage pedidoStorage, IDateTimeProvider dateTimeProvider)
         {
             _UoW = uow;
             _pedidoStorage = pedidoStorage;
@@ -24,12 +24,12 @@ namespace YastCleaner.Business.Services
         public async Task<Result> AnularPedido(int pedidoId, string comentario)
         {
             var pedido = await _UoW.PedidoRepository.GetPedidoById(pedidoId);
-            if(pedido is null)
+            if (pedido is null)
                 return Result.Fail("El pedido no existe");
-            if(pedido.Estado == EstadoPedido.Entregado)
+            if (pedido.Estado == EstadoPedido.Entregado)
                 return Result.Fail("No se puede anular un pedido que ya fue entregado");
             var pedidoYaFueAnulado = await _UoW.PedidoAnuladoRepository.ExistePedidoAnulado(pedidoId);
-            if(pedidoYaFueAnulado)
+            if (pedidoYaFueAnulado)
                 return Result.Fail("El pedido ya fue anulado");
             var pedidoAnulado = new PedidoAnulado
             {
@@ -46,12 +46,12 @@ namespace YastCleaner.Business.Services
 
         public async Task<Result<PedidoDto>> ConsultarPedidoPorCodigo(string codigoPedido)
         {
-            if(string.IsNullOrEmpty(codigoPedido) || string.IsNullOrWhiteSpace(codigoPedido))
+            if (string.IsNullOrEmpty(codigoPedido) || string.IsNullOrWhiteSpace(codigoPedido))
             {
                 return Result<PedidoDto>.Fail("El codigo del pedido es obligatorio");
             }
             var pedido = await _UoW.PedidoRepository.GetPedidoByCodigo(codigoPedido);
-            if(pedido is null)
+            if (pedido is null)
             {
                 return Result<PedidoDto>.Fail("El pedido no existe");
             }
@@ -146,7 +146,7 @@ namespace YastCleaner.Business.Services
             }
             catch (Exception ex) {
                 return Result.Fail(ex.ToString());
-            }           
+            }
         }
 
         public async Task<string> GenerarCodigoPedido()
@@ -211,9 +211,9 @@ namespace YastCleaner.Business.Services
         public async Task<Result<AnularDto>> DetalleAnularPedido(int pedidoId)
         {
             var pedido = await _UoW.PedidoRepository.GetPedidoById(pedidoId);
-            if(pedido is null)
+            if (pedido is null)
                 return Result<AnularDto>.Fail("El pedido no existe");
-            if(pedido.Estado != EstadoPedido.Entregado && pedido.Estado != EstadoPedido.Anulado)
+            if (pedido.Estado != EstadoPedido.Entregado && pedido.Estado != EstadoPedido.Anulado)
             {
                 var anuladoDto = new AnularDto
                 {
@@ -254,8 +254,8 @@ namespace YastCleaner.Business.Services
                     MontoTotal = montoPagar,
                     MontoAdelantado = pedidoDto.MontoAdelantado,
                     MontoFaltante = faltante,//esto seria 
-                    MetodoPago = (MetodoPago)Enum.Parse(typeof(MetodoPago),pedidoDto.MetodoPago),//TODO : conversion
-                    Estado = faltante == 0 ? EstadoPedido.Pagado : EstadoPedido.Pendiente, 
+                    MetodoPago = (MetodoPago)Enum.Parse(typeof(MetodoPago), pedidoDto.MetodoPago),//TODO : conversion
+                    Estado = faltante == 0 ? EstadoPedido.Pagado : EstadoPedido.Pendiente,
                     FechaRegistro = _dateTimeProvider.DateTimeActual()
                 };
                 await _UoW.PedidoRepository.AddAsync(nuevoPedido);
@@ -264,10 +264,10 @@ namespace YastCleaner.Business.Services
                 {
                     var pedidoDetalle = new DetallePedido()
                     {
-                        PedidoId =nuevoPedido.PedidoId,
+                        PedidoId = nuevoPedido.PedidoId,
                         CodigoPedido = codigoPedido,
                         ServicioId = item.Id,
-                        Cantidad =item.Cantidad,
+                        Cantidad = item.Cantidad,
                         PrecioUnitario = item.Precio,
                         SubTotal = item.Importe
                     };
@@ -281,7 +281,7 @@ namespace YastCleaner.Business.Services
             {
                 return Result<int>.Fail(ex.ToString());
             }
-            
+
         }
 
         public async Task<Result<PedidoDto>> VerDetallePedido(int pedidoId)
@@ -328,6 +328,25 @@ namespace YastCleaner.Business.Services
             };
             return Result<PedidoDto>.Ok(pedidoDto);
         }
-        
+
+        public Result LimpiarCarrito()
+        {
+            try
+            {
+                //ejecutamos la funcion de limpiar el carrito global
+                _pedidoStorage.LimpiarCarrito();
+                //obtenemos la lista
+                var carrito = _pedidoStorage.RecuperarCarrito().ToList();
+                //si la lista no esta vacia
+                if(carrito.Any())
+                {
+                    return Result.Fail("La lista no se ha limpieado");
+                }
+                return Result.Ok();
+            }
+            catch (Exception ex) { 
+                return Result.Fail(ex.Message);
+            }
+        }
     }
 }

@@ -30,7 +30,6 @@
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th>Apellidos Completos</th>
                 <th>Número Dni</th>
@@ -44,7 +43,6 @@
             @foreach (var item in Model.Items)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.TrabajadorId)</td>
                     <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
                     <td>@Html.DisplayFor(modelItem => item.Apellidos)</td>
                     <td>@Html.DisplayFor(modelItem => item.Dni)</td>

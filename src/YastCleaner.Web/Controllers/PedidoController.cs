@@ -41,8 +41,11 @@ namespace YastCleaner.Web.Controllers
         public IActionResult Temporal()
         {
             var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
-            if (pedidosTemporalDto.Count == 0 || pedidosTemporalDto is null || !pedidosTemporalDto.Any())
-                return RedirectToAction("Servicios","Servicio");
+            if (pedidosTemporalDto == null || !pedidosTemporalDto.Any())
+            {
+                TempData["Error"] = "El carrito esta vacío";
+                return RedirectToAction("Servicios", "Servicio");
+            }
             var pedidoTemporalViewModel = pedidosTemporalDto.Select(p=> new PedidosTemporalViewModel()
             {
                 Id = p.Id,
@@ -53,6 +56,7 @@ namespace YastCleaner.Web.Controllers
             ViewBag.Importe = _pedidoService.ImporteTotalPedido();
             return View(pedidoTemporalViewModel);
         }
+
         [HttpPost]
         [RoleAuthorize(Rol.Trabajador)]
         public IActionResult EliminarServicio(int servicioId)
@@ -345,6 +349,16 @@ namespace YastCleaner.Web.Controllers
         public IActionResult Confirmacion()
         {
             return View();
+        }
+        public IActionResult Limpiar()
+        {
+            var result = _pedidoService.LimpiarCarrito();
+            if (!result.Success)
+            {
+                ViewBag.Error = result.ErrorMessage;
+                return View("Temporal");
+            }
+            return RedirectToAction("Servicios","Servicio");
         }
     }
 }

@@ -1,57 +1,129 @@
 ﻿@model YastCleaner.Web.ViewModels.InsertarClienteViewModel
 
 @{
-    ViewData["Title"] = "Actualizar";
+    ViewData["Title"] = "Actualizar Cliente";
 }
 
-<h1>Actualizar</h1>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-edit"></i> Actualizar Cliente
+                        </h3>
+                        <a asp-action="Activos" asp-controller="Cliente" class="btn btn-light btn-sm">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Mensajes de Validación -->
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> Por favor, corrija los siguientes errores:
+                    </div>
 
-<h4>InsertarClienteViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Actualizar" asp-controller="Cliente" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ClienteId" />
-            
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle"></i> @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Actualizar" asp-controller="Cliente" method="post" id="actualizarForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ClienteId" />
+
+                        <div class="row">
+                            <!-- Columna Izquierda - Información Personal -->
+                            <div class="col-md-6">
+                                <h5 class="text-primary mb-3 border-bottom pb-2">
+                                    <i class="fas fa-user"></i> Información Personal
+                                </h5>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Nombre" class="form-label fw-bold">Nombre *</label>
+                                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre" />
+                                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="ApellidoPaterno" class="form-label fw-bold">Apellido Paterno *</label>
+                                    <input asp-for="ApellidoPaterno" class="form-control" placeholder="Ingrese el apellido paterno" />
+                                    <span asp-validation-for="ApellidoPaterno" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="ApellidoMaterno" class="form-label fw-bold">Apellido Materno</label>
+                                    <input asp-for="ApellidoMaterno" class="form-control" placeholder="Ingrese el apellido materno" />
+                                    <span asp-validation-for="ApellidoMaterno" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Columna Derecha - Información de Contacto -->
+                            <div class="col-md-6">
+                                <h5 class="text-primary mb-3 border-bottom pb-2">
+                                    <i class="fas fa-address-book"></i> Información de Contacto
+                                </h5>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="NumeroCelular" class="form-label fw-bold">Número de Celular *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+51</span>
+                                        <input asp-for="NumeroCelular" class="form-control" placeholder="9XXXXXXXX" />
+                                    </div>
+                                    <span asp-validation-for="NumeroCelular" class="text-danger small"></span>
+                                    <div class="form-text">Formato: 9 dígitos</div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Email" class="form-label fw-bold">Correo Electrónico *</label>
+                                    <input asp-for="Email" class="form-control" placeholder="cliente@ejemplo.com" />
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                    <div class="form-text">Ejemplo: nombre@dominio.com</div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Direccion" class="form-label fw-bold">Dirección *</label>
+                                    <textarea asp-for="Direccion" class="form-control" rows="3" placeholder="Ingrese la dirección completa"></textarea>
+                                    <span asp-validation-for="Direccion" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="Activos" asp-controller="Cliente" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times"></i> Cancelar
+                                    </a>
+
+                                    <div>
+                                        <button type="reset" class="btn btn-outline-warning me-2">
+                                            <i class="fas fa-undo"></i> Limpiar
+                                        </button>
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="fas fa-save"></i> Actualizar Cliente
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="ApellidoPaterno" class="control-label"></label>
-                <input asp-for="ApellidoPaterno" class="form-control" />
-                <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ApellidoMaterno" class="control-label"></label>
-                <input asp-for="ApellidoMaterno" class="form-control" />
-                <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NumeroCelular" class="control-label"></label>
-                <input asp-for="NumeroCelular" class="form-control" />
-                <span asp-validation-for="NumeroCelular" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Direccion" class="control-label"></label>
-                <input asp-for="Direccion" class="form-control" />
-                <span asp-validation-for="Direccion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 

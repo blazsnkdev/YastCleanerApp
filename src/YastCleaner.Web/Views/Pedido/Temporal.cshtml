@@ -1,74 +1,112 @@
 ﻿@model IEnumerable<YastCleaner.Web.ViewModels.PedidosTemporalViewModel>
 
 @{
-    ViewData["Title"] = "Temporal";
+    ViewData["Title"] = "Carrito de Pedidos";
+    double totalPagar = ViewBag.Importe ?? 0;
 }
 
-<h1>Temporal</h1>
+<h1 class="mb-4 text-center">Servicios Seleccionado en el Carrito</h1>
 
-<p>
-    <a asp-controller="Pedido" asp-action="RegistrarPedido">Registrar</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cantidad)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Precio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Importe)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-                <form asp-controller="Pedido" asp-action="ModificarCantidad" method="post">
-                    @Html.Hidden("servicioId", item.Id)
-                <td>
-                    @Html.TextBox("cantidad", item.Cantidad,
-                    new { @type = "number", min = 1 })
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Precio)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Importe)
-                </td>
-                <td>
-                    <button type="submit" class="btn btn-success">Modificar</button>
-                </td>
-            </form>
-            <form asp-controller="Pedido" asp-action="EliminarServicio" method="post">
-            <td>
-                @Html.Hidden("servicioId", item.Id)
-                <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('Estas seguro de Eliminar el Articulo?')">
-                    Eliminar
-                </button>
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Servicio</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Importe</th>
+                    <th colspan="2" class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Id)</td>
+                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Nombre)</td>
+                        <td class="align-middle">
+                            <form asp-controller="Pedido" asp-action="ModificarCantidad" method="post" class="d-inline">
+                                @Html.Hidden("servicioId", item.Id)
+                                <div class="input-group input-group-sm" style="width: 120px;">
+                                    <input type="number"
+                                           name="cantidad"
+                                           value="@item.Cantidad"
+                                           min="1"
+                                           class="form-control"
+                                           required />
+                                    <button type="submit" class="btn btn-outline-primary btn-sm" title="Actualizar cantidad">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                        <td class="align-middle text-success fw-bold">
+                            S/ @Html.DisplayFor(modelItem => item.Precio)
+                        </td>
+                        <td class="align-middle text-success fw-bold">
+                            S/ @Html.DisplayFor(modelItem => item.Importe)
+                        </td>
+                        <td class="align-middle text-center">
+                            <form asp-controller="Pedido" asp-action="EliminarServicio" method="post" class="d-inline">
+                                @Html.Hidden("servicioId", item.Id)
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('¿Estás seguro de eliminar este servicio del carrito?')"
+                                        title="Eliminar servicio">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-            </td>
-            </form>
-        </tr>
+    <!-- Resumen del Pedido -->
+    <div class="row mt-4">
+        <div class="col-md-6 offset-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Resumen del Pedido</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bold fs-5">Total a Pagar:</span>
+                        <span class="fw-bold fs-5 text-success">S/ @totalPagar.ToString("N2")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de acción final -->
+    <div class="d-flex justify-content-between mt-4">
+        <a asp-controller="Servicio" asp-action="Servicios" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Continuar Comprando
+        </a>
+        <div>
+            <a asp-controller="Pedido" asp-action="Limpiar"
+               class="btn btn-warning me-2"
+               onclick="return confirm('¿Estás seguro de limpiar todo el carrito?')">
+                <i class="fas fa-broom"></i> Limpiar Carrito
+            </a>
+            <a asp-controller="Pedido" asp-action="RegistrarPedido" class="btn btn-success btn-lg">
+                <i class="fas fa-check-circle"></i> Finalizar Pedido
+            </a>
+        </div>
+    </div>
 }
-    </tbody>
-</table>
-<div>
-    <h3><b>Total a Pagar: @ViewBag.Importe</b></h3>
-</div>
+else
+{
+    <div class="alert alert-info text-center">
+        <h4>Carrito Vacío</h4>
+        <p>No hay servicios agregados al carrito.</p>
+        <a asp-controller="Servicio" asp-action="Servicios" class="btn btn-primary">
+            <i class="fas fa-shopping-cart"></i> Agregar Servicios
+        </a>
+    </div>
+}

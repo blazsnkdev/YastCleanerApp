@@ -1,60 +1,130 @@
 ﻿@model YastCleaner.Web.ViewModels.ServicioViewModel
 
 @{
-    ViewData["Title"] = "Seleccionar";
+    ViewData["Title"] = "Seleccionar Servicio";
 }
 
-<h1>Seleccionar</h1>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title mb-0 text-center">Seleccionar Servicio</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Información del Servicio -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h4 class="text-primary text-center">Información del Servicio</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th class="bg-light">Nombre</th>
+                                            <td>@Html.DisplayFor(model => model.Nombre)</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="bg-light">Precio</th>
+                                            <td class="fw-bold text-success">S/ @Html.DisplayFor(model => model.Precio)</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="bg-light">Descripción</th>
+                                            <td>@Html.DisplayFor(model => model.Descripcion)</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="bg-light">Estado</th>
+                                            <td>
+                                                <span class="badge @(Model.Estado == "Activo" ? "bg-success" : "bg-warning")">
+                                                    @Html.DisplayFor(model => model.Estado)
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ServicioId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ServicioId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Precio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Precio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-    </dl>
-</div>
-<div>
-    <form asp-controller="Servicio" asp-action="Seleccionar" method="post">
-    <div>
-        @Html.Hidden("servicioId", Model.ServicioId)<!--lo que esta de color naraja es el parametro que se pasa al metodo del controlador-->
-        <em>Cantidad: </em> @Html.TextBox("cantidad", "1", 
-        new { Type="number", 
-        min = 1, max = 30})<!--aqui es el minimo y el maximo de valores que puede ingresar en el input-->
-        <hr/>
-        <button type="submit" class="btn btn-primary">
-            Agregar Servicio
+                    <!-- Formulario de Selección -->
+                    <form asp-controller="Servicio" asp-action="Seleccionar" method="post" class="needs-validation" novalidate>
+                        @Html.Hidden("servicioId", Model.ServicioId)
 
-        </button>
-        <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-success">Ver Carrito</a> |
-        <a asp-controller="Servicio" asp-action="Servicios" class="btn btn-primary">Agregar Otro Servicio</a>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cantidad" class="form-label fw-bold">Cantidad:</label>
+                                    <div class="input-group">
+                                        <input type="number"
+                                               id="cantidad"
+                                               name="cantidad"
+                                               value="1"
+                                               min="1"
+                                               max="30"
+                                               class="form-control form-control-lg"
+                                               required
+                                               oninput="calcularTotal()" />
+                                        <span class="input-group-text">unidades</span>
+                                    </div>
+                                    <div class="form-text">Mínimo: 1, Máximo: 30 unidades</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="bg-light p-3 rounded">
+                                    <h5 class="mb-2">Resumen del Pedido</h5>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Precio unitario:</span>
+                                        <span class="fw-bold">S/ <span id="precioUnitario">@Model.Precio</span></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-2">
+                                        <span>Total:</span>
+                                        <span class="fw-bold fs-5 text-success">S/ <span id="totalCalculado">@Model.Precio</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Botones de Acción -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-controller="Servicio" asp-action="Servicios" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> Volver a Servicios
+                            </a>
+                            <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-info me-md-2">
+                                <i class="fas fa-shopping-cart"></i> Ver Carrito
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-cart-plus"></i> Agregar al Carrito
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-</form>
 </div>
+
+@section Scripts {
+    <script>
+        function calcularTotal() {
+            const cantidad = document.getElementById('cantidad').value;
+            const precioUnitario = @Model.Precio;
+            const total = cantidad * precioUnitario;
+            document.getElementById('totalCalculado').textContent = total.toFixed(2);
+        }
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+}

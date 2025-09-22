@@ -1,83 +1,194 @@
 ﻿@model IEnumerable<YastCleaner.Web.ViewModels.PedidosTemporalViewModel>
 
 @{
-    ViewData["Title"] = "RegistrarPedido";
+    ViewData["Title"] = "Registrar Pedido";
+    double totalPagar = ViewBag.Importe ?? 0;
+    double montoAdelanto = ViewBag.MontoAdelanto ?? 0;
+    double saldoPendiente = totalPagar - montoAdelanto;
 }
 
-<h1>RegistrarPedido</h1>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Formulario de Registro -->
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">Registrar Pedido</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Pedido" asp-action="RegistrarPedido" method="post" id="pedidoForm">
 
-<form asp-controller="Pedido" asp-action="RegistrarPedido" method="post">
+                        <div class="form-group mb-3">
+                            <label for="fecha" class="form-label fw-bold">Fecha y Hora</label>
+                            <input type="datetime-local" id="fecha" name="fecha" class="form-control"
+                                   value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
+                            <div class="form-text">Seleccione la fecha y hora del pedido</div>
+                        </div>
 
-    <div>
-        <div class="form-group mb-3">
-            <label for="fecha">Fecha</label>
-            <input type="datetime-local" id="fecha" name="fecha" class="form-control" required />
-        </div>
-        <div class="form-group mb-3">
-            <label for="clienteId">Cliente</label>
-            <select id="clienteId" name="clienteId" asp-items="@ViewBag.Clientes" class="form-control" required>
-                <option value="">Seleccione</option>
-            </select>
-        </div>
-        <div class="form-group mb-3">
-            <label for="montoAdelanto">Monto Adelantado</label>
-            <input type="number" id="montoAdelanto" name="montoAdelanto" class="form-control" step="0.01" min="0" max="@ViewBag.Importe" value="0" />
-        </div>
-        <div class="form-group mb-3">
-            <label for="metodoPago">Método de Pago</label>
-            <select id="metodoPago" name="metodoPago" asp-items="@ViewBag.MetodosPago" class="form-control" required>
-                <option value="">Seleccione un método</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Pagar</button>
-        <a asp-controller="Pedido" asp-action="RegistrarPedido" class="btn btn-success">Modificar</a>
-        <a asp-controller="Servicio" asp-action="Servicio" class="btn btn-warning">Agregar Servicio</a>
+                        <div class="form-group mb-3">
+                            <label for="clienteId" class="form-label fw-bold">Cliente</label>
+                            <select id="clienteId" name="clienteId" asp-items="@ViewBag.Clientes" class="form-select" required>
+                                <option value="">Seleccione un cliente</option>
+                            </select>
+                            <div class="form-text">Elija el cliente para el pedido</div>
+                        </div>
 
+                        <div class="form-group mb-3">
+                            <label for="metodoPago" class="form-label fw-bold">Método de Pago</label>
+                            <select id="metodoPago" name="metodoPago" asp-items="@ViewBag.MetodosPago" class="form-select" required>
+                                <option value="">Seleccione un método de pago</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="montoAdelanto" class="form-label fw-bold">Monto Adelantado</label>
+                            <div class="input-group">
+                                <span class="input-group-text">S/</span>
+                                <input type="number" id="montoAdelanto" name="montoAdelanto"
+                                       class="form-control" step="0.01" min="0" max="@totalPagar"
+                                       value="@montoAdelanto" oninput="calcularSaldo()" />
+                            </div>
+                            <div class="form-text">Máximo permitido: S/ @totalPagar.ToString("N2")</div>
+                        </div>
+
+                        <!-- Resumen de Pago -->
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Resumen de Pago</h6>
+                                <div class="d-flex justify-content-between">
+                                    <span>Total Pedido:</span>
+                                    <span class="fw-bold">S/ @totalPagar.ToString("N2")</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Monto Adelantado:</span>
+                                    <span id="adelantoMostrado" class="fw-bold">S/ @montoAdelanto.ToString("N2")</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold">Saldo Pendiente:</span>
+                                    <span id="saldoPendiente" class="fw-bold text-success">S/ @saldoPendiente.ToString("N2")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-controller="Servicio" asp-action="Servicios" class="btn btn-warning me-md-2">
+                                <i class="fas fa-plus-circle"></i> Agregar Servicio
+                            </a>
+                            <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-edit"></i> Modificar Carrito
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check-circle"></i> Registrar Pedido
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles del Carrito -->
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title mb-0">Detalles del Carrito</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Servicio</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unit.</th>
+                                        <th>Importe</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Id</td>
+                                            <td>@item.Nombre</td>
+                                            <td>@item.Cantidad</td>
+                                            <td class="text-success">S/ @item.Precio.ToString("N2")</td>
+                                            <td class="text-success fw-bold">S/ @item.Importe.ToString("N2")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="alert alert-info">
+                                    <h6 class="alert-heading">Total de Items: @Model.Count()</h6>
+                                    <p class="mb-0">Cantidad total de servicios: @Model.Sum(x => x.Cantidad)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title text-success">Total a Pagar</h5>
+                                        <h3 class="text-success fw-bold">S/ @totalPagar.ToString("N2")</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning text-center">
+                            <i class="fas fa-shopping-cart fa-2x mb-3"></i>
+                            <h5>Carrito Vacío</h5>
+                            <p>No hay servicios en el carrito.</p>
+                            <a asp-controller="Servicio" asp-action="Servicios" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Agregar Servicios
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-
-</form>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cantidad)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Precio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Importe)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cantidad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Precio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Importe)
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-<div>
-    <h3><b>Total a Pagar: @ViewBag.Importe</b></h3>
 </div>
+
+@section Scripts {
+    <script>
+        function calcularSaldo() {
+            const total = @totalPagar;
+            const adelanto = parseFloat(document.getElementById('montoAdelanto').value) || 0;
+            const saldo = total - adelanto;
+
+            document.getElementById('adelantoMostrado').textContent = 'S/ ' + adelanto.toFixed(2);
+            document.getElementById('saldoPendiente').textContent = 'S/ ' + saldo.toFixed(2);
+
+            // Validar que el adelanto no supere el total
+            if (adelanto > total) {
+                document.getElementById('montoAdelanto').classList.add('is-invalid');
+            } else {
+                document.getElementById('montoAdelanto').classList.remove('is-invalid');
+            }
+        }
+
+        // Validación del formulario
+        document.getElementById('pedidoForm').addEventListener('submit', function(e) {
+            const adelanto = parseFloat(document.getElementById('montoAdelanto').value) || 0;
+            const total = @totalPagar;
+
+            if (adelanto > total) {
+                e.preventDefault();
+                alert('El monto adelantado no puede ser mayor al total del pedido.');
+            }
+        });
+
+        // Establecer fecha actual por defecto
+        document.addEventListener('DOMContentLoaded', function() {
+            calcularSaldo();
+        });
+    </script>
+}

@@ -8,8 +8,13 @@
 
 <div class="d-flex justify-content-between mb-4">
     <div>
-        <a asp-controller="Pedido" asp-action="Buscar" class="btn btn-warning">Consultar Pedidos</a>
+        <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-warning">Carrito</a>
     </div>
+    @if (TempData["Error"] != null)
+    {
+        <h4>@TempData["Error"]</h4>
+    }
+
 </div>
 
 @if (Model.Items.Any())
