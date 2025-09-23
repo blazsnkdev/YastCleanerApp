@@ -14,10 +14,12 @@ namespace YastCleaner.Web.Controllers
     public class ClienteController : Controller
     {
         private readonly IClienteService _clienteService;
+        private readonly IPedidoService _pedidoService;
 
-        public ClienteController(IClienteService clienteService)
+        public ClienteController(IClienteService clienteService, IPedidoService pedidoService)
         {
             _clienteService = clienteService;
+            _pedidoService = pedidoService;
         }
         [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
         public async Task<IActionResult> Activos(int pagina = 1, int tamanioPagina = 10)
@@ -38,6 +40,7 @@ namespace YastCleaner.Web.Controllers
             var paginacion = PaginacionHelper.Paginacion(viewModel, pagina, tamanioPagina);
             return View(paginacion);
         }
+
         [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         public IActionResult Registrar()
         {
@@ -46,29 +49,38 @@ namespace YastCleaner.Web.Controllers
         [HttpPost]
         [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         [ValidateAntiForgeryToken]
-        public IActionResult Registrar(InsertarClienteViewModel viewModel)
+        public IActionResult Registrar(InsertarClienteViewModel viewModel, string accion)
         {
-            if (!ModelState.IsValid)
+            try
             {
-               return View(viewModel);
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+                var clienteDto = new ClienteDto
+                {
+                    Nombre = viewModel.Nombre,
+                    ApellidoPaterno = viewModel.ApellidoPaterno,
+                    ApellidoMaterno = viewModel.ApellidoMaterno,
+                    NumeroCelular = viewModel.NumeroCelular,
+                    Direccion = viewModel.Direccion,
+                    Email = viewModel.Email
+                };
+                var result = _clienteService.CrearCliente(clienteDto).Result;
+                if (!result.Success)
+                {
+                    ModelState.AddModelError(string.Empty, result.ErrorMessage!);
+                    return View(viewModel);
+                }
+                if(accion == "pedido")
+                {
+                    return RedirectToAction("RegistrarPedido", "Pedido");
+                }
+                return RedirectToAction("Activos", "Cliente");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
+            }catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("", "");
             }
-            
-            var clienteDto = new ClienteDto
-            {
-                Nombre = viewModel.Nombre,
-                ApellidoPaterno = viewModel.ApellidoPaterno,
-                ApellidoMaterno = viewModel.ApellidoMaterno,
-                NumeroCelular = viewModel.NumeroCelular,
-                Direccion = viewModel.Direccion,
-                Email = viewModel.Email
-            };
-            var result = _clienteService.CrearCliente(clienteDto).Result;
-            if (!result.Success)
-            {
-                ModelState.AddModelError(string.Empty, result.ErrorMessage!);
-                return View(viewModel);
-            }
-            return RedirectToAction("Activos", "Cliente");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
         }
         [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         public async Task<IActionResult> Detalle(int clienteId)

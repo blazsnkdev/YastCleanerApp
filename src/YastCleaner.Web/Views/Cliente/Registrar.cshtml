@@ -43,9 +43,7 @@
 
                     <form asp-action="Registrar" asp-controller="Cliente" method="post" id="registrarForm">
                         @Html.AntiForgeryToken()
-
                         <div class="row">
-                            <!-- Columna Izquierda - Información Personal -->
                             <div class="col-md-6">
                                 <div class="section-header mb-4">
                                     <h5 class="text-success">
@@ -114,6 +112,10 @@
                             </div>
                         </div>
 
+                        @* @{
+                            bool hayPedido = ViewBag.HayPedido != null && (bool)ViewBag.HayPedido;
+                        } *@
+
                         <!-- Botones de Acción -->
                         <div class="row mt-4">
                             <div class="col-12">
@@ -126,13 +128,19 @@
                                         <button type="reset" class="btn btn-outline-warning btn-lg">
                                             <i class="fas fa-broom me-2"></i>Limpiar
                                         </button>
-                                        <button type="submit" class="btn btn-success btn-lg px-4">
+
+                                        <button type="submit" name="accion" value="cliente" class="btn btn-success btn-lg px-4">
                                             <i class="fas fa-save me-2"></i>Registrar Cliente
+                                        </button>
+                                        <button type="submit" name="accion" value="pedido" class="btn btn-success btn-lg px-4">
+                                            <i class="fas fa-shopping-cart me-2"></i>Realizar Pedido
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
                     </form>
                 </div>
             </div>

@@ -11,7 +11,6 @@ namespace YastCleaner.Business.Interfaces
 {
     public interface IClienteService
     {
-        //TODO : esto voy a tener que cambiar despues para que solo tenga el id 
         Task<List<ClienteDto>> ListarClientes();
         Task<Result<ClienteDto>> ObtenerCliente(int clienteId);
         Task<Result> CrearCliente(ClienteDto clienteDto);
