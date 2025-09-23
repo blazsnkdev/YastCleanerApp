@@ -244,9 +244,17 @@ namespace YastCleaner.Business.Services
         public async Task<List<ClienteAutoCompletadoDto>> ObtenerClienteAutocompletado(string term)
         {
             var clientes = await _UoW.ClienteRepository.GetAllAsync();
-            var filtrado = clientes.Where(c => c.Nombre.Contains(term ?? "", StringComparison.OrdinalIgnoreCase))
-        .Select(c => new ClienteAutoCompletadoDto { ClienteId= c.ClienteId,Nombre = c.Nombre})
-        .ToList();
+
+            var filtrado = clientes
+                .Where(c => c.Nombre.Contains(term ?? "", StringComparison.OrdinalIgnoreCase) ||
+                           c.ApellidoPaterno.Contains(term ?? "", StringComparison.OrdinalIgnoreCase) ||
+                           c.ApellidoMaterno.Contains(term ?? "", StringComparison.OrdinalIgnoreCase))
+                .Select(c => new ClienteAutoCompletadoDto
+                {
+                    ClienteId = c.ClienteId,
+                    Nombre = $"{c.Nombre} {c.ApellidoPaterno} {c.ApellidoMaterno}".Trim()
+                })
+                .ToList();
             return filtrado;
         }
     }
