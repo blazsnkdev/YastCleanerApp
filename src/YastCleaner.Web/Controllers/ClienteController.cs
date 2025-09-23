@@ -49,8 +49,8 @@ namespace YastCleaner.Web.Controllers
         [HttpPost]
         [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]
         [ValidateAntiForgeryToken]
-        public IActionResult Registrar(InsertarClienteViewModel viewModel, string accion)
-        {
+        public async Task<IActionResult> Registrar(InsertarClienteViewModel viewModel, string accion)
+        {   
             try
             {
                 if (!ModelState.IsValid)
@@ -66,20 +66,33 @@ namespace YastCleaner.Web.Controllers
                     Direccion = viewModel.Direccion,
                     Email = viewModel.Email
                 };
-                var result = _clienteService.CrearCliente(clienteDto).Result;
+                Result result;
+                if (accion == "pedido")//presionamos el boton de ir a pedidos
+                {
+                    var pedidosTemporal = _pedidoService.ObtenerPedidosTemporal();
+                    if (pedidosTemporal.Any())
+                    {
+                        result = await _clienteService.CrearCliente(clienteDto);
+                        if (!result.Success)
+                        {
+                            ModelState.AddModelError(string.Empty, result.ErrorMessage!);
+                            return View(viewModel);
+                        }
+                        return RedirectToAction("RegistrarPedido","Pedido");
+                    }
+                    ViewBag.Error = "No hay pedido para registrar";//TODO : esto cambiar el mensaje
+                    return View(viewModel);
+                }
+                result = await _clienteService.CrearCliente(clienteDto);
                 if (!result.Success)
                 {
                     ModelState.AddModelError(string.Empty, result.ErrorMessage!);
                     return View(viewModel);
                 }
-                if(accion == "pedido")
-                {
-                    return RedirectToAction("RegistrarPedido", "Pedido");
-                }
-                return RedirectToAction("Activos", "Cliente");//TODO: esto a futuro tengo que redirigir a una accion anterior con js
+                return RedirectToAction("Activos", "Cliente");
             }catch (UnauthorizedAccessException)
             {
-                return RedirectToAction("", "");
+                return RedirectToAction("UnauthorizedPage", "Auth");
             }
         }
         [RoleAuthorize(Rol.Administrador, Rol.Trabajador)]

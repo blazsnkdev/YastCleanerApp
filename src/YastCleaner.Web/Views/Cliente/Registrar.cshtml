@@ -13,26 +13,14 @@
                         <h3 class="card-title mb-0">
                             <i class="fas fa-user-plus me-2"></i>Registrar Nuevo Cliente
                         </h3>
-                        <a asp-action="Activos" asp-controller="Cliente" class="btn btn-light btn-sm">
-                            <i class="fas fa-arrow-left me-1"></i> Volver a Clientes
-                        </a>
                     </div>
                 </div>
 
                 <div class="card-body p-4">
-                    <!-- Mensajes de Alertas -->
-                    @if (TempData["Success"] != null)
-                    {
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle me-2"></i> @TempData["Success"]
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    }
-
-                    @if (TempData["Error"] != null)
+                    @if (@ViewBag.Error != null)
                     {
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i> @TempData["Error"]
+                            <i class="fas fa-exclamation-triangle me-2"></i> @ViewBag.Error
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     }
