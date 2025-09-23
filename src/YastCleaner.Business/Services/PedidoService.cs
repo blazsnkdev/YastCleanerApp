@@ -238,13 +238,22 @@ namespace YastCleaner.Business.Services
             try
             {
                 var listaPedidoTemporal = _pedidoStorage.RecuperarCarrito();//Recuperamos la lista
+                Console.WriteLine($"Items {listaPedidoTemporal.Count}");
                 if (!listaPedidoTemporal.Any())
                 {
                     return Result<int>.Fail("La lista de servicios seleccionado esta vacío");
                 }
                 double montoPagar = listaPedidoTemporal.Sum(x => x.Importe);
+                if(pedidoDto.MontoAdelantado > montoPagar)
+                {
+                    return Result<int>.Fail("el monto adelantado no puede ser mayor al total");
+                }
                 string codigoPedido = await GenerarCodigoPedido();
                 double faltante = montoPagar - pedidoDto.MontoAdelantado;
+                if(!Enum.TryParse<MetodoPago>(pedidoDto.MetodoPago,out var metodoPagoEnum))
+                {
+                    return Result<int>.Fail("El metodo de pago no es valido");
+                }
                 var nuevoPedido = new Pedido()
                 {
                     CodigoPedido = codigoPedido,
@@ -279,7 +288,9 @@ namespace YastCleaner.Business.Services
             }
             catch (Exception ex)
             {
-                return Result<int>.Fail(ex.ToString());
+                Console.WriteLine("Error"+ex.Message);
+                Console.WriteLine("Stack Trace" + ex.StackTrace);
+                return Result<int>.Fail(ex.Message);
             }
 
         }

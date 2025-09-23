@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="~/css/detallecliente.css" rel="stylesheet" />
     <link href="~/css/temporal.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 </head>
 <body>
     <header>
@@ -102,8 +105,12 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @* Jquery - autocompletado*@
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
-
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

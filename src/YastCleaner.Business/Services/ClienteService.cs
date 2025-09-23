@@ -89,7 +89,6 @@ namespace YastCleaner.Business.Services
                 FechaRegistro = c.FechaRegistro
             }).ToList();
         }
-
         public async Task<Result<ClienteDto>> ObtenerDetalleCliente(int clienteId)
         {
             var cliente = await _UoW.ClienteRepository.GetClienteById(clienteId);
@@ -130,7 +129,6 @@ namespace YastCleaner.Business.Services
             };
             return Result<ClienteDto>.Ok(clienteDto);
         }
-
         public async Task<Result> ActualizarCliente(int clienteId,ClienteDto clienteDto)
         {
             if(clienteId <= 0)
@@ -159,7 +157,6 @@ namespace YastCleaner.Business.Services
                 return Result.Fail($"Error al actualizar el cliente: {ex.Message}");
             }
         }
-
         public async Task<Result> DesactivarCliente(int clienteId)
         {
             var cliente = await _UoW.ClienteRepository.GetByIdAsync(clienteId);
@@ -178,7 +175,6 @@ namespace YastCleaner.Business.Services
                 return Result.Fail($"Error al desactivar el cliente: {ex.Message}");
             }
         }
-
         public async Task<Result<List<PedidoDto>>> ObtenerPedidosCliente(int clienteId)
         {
             if(clienteId <= 0)
@@ -243,6 +239,15 @@ namespace YastCleaner.Business.Services
                 return Result<string>.Fail("El email no existe");
             }
             return Result<string>.Ok(email);
+        }
+
+        public async Task<List<ClienteAutoCompletadoDto>> ObtenerClienteAutocompletado(string term)
+        {
+            var clientes = await _UoW.ClienteRepository.GetAllAsync();
+            var filtrado = clientes.Where(c => c.Nombre.Contains(term ?? "", StringComparison.OrdinalIgnoreCase))
+        .Select(c => new ClienteAutoCompletadoDto { ClienteId= c.ClienteId,Nombre = c.Nombre})
+        .ToList();
+            return filtrado;
         }
     }
 }

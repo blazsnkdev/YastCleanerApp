@@ -10,13 +10,19 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Formulario de Registro -->
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["Error"]
+            </div>
+        }
         <div class="col-md-5">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title mb-0">Registrar Pedido</h3>
                 </div>
                 <div class="card-body">
-                    <form asp-controller="Pedido" asp-action="RegistrarPedido" method="post" id="pedidoForm">
+                    <form asp-controller="Pedido" asp-action="RegistrarPedido" method="post" id="pedidoForm" data-total="@totalPagar">
 
                         <div class="form-group mb-3">
                             <label for="fecha" class="form-label fw-bold">Fecha y Hora</label>
@@ -26,12 +32,14 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="clienteId" class="form-label fw-bold">Cliente</label>
-                            <select id="clienteId" name="clienteId" asp-items="@ViewBag.Clientes" class="form-select" required>
-                                <option value="">Seleccione un cliente</option>
-                            </select>
+                            <label for="cliente" class="form-label fw-bold">Cliente</label>
+
+                            <!-- Input visible para autocompletar (nombre del cliente) -->
+                            <input type="text" id="cliente" class="form-control" autocomplete="off" />
+                            <input type="hidden" id="clienteId" name="clienteId"/>
                             <div class="form-text">Elija el cliente para el pedido</div>
                         </div>
+
 
                         <div class="form-group mb-3">
                             <label for="metodoPago" class="form-label fw-bold">Método de Pago</label>
@@ -39,7 +47,6 @@
                                 <option value="">Seleccione un método de pago</option>
                             </select>
                         </div>
-
                         <div class="form-group mb-3">
                             <label for="montoAdelanto" class="form-label fw-bold">Monto Adelantado</label>
                             <div class="input-group">
@@ -163,37 +170,5 @@
 </div>
 
 @section Scripts {
-    <script>
-        function calcularSaldo() {
-            const total = @totalPagar;
-            const adelanto = parseFloat(document.getElementById('montoAdelanto').value) || 0;
-            const saldo = total - adelanto;
-
-            document.getElementById('adelantoMostrado').textContent = 'S/ ' + adelanto.toFixed(2);
-            document.getElementById('saldoPendiente').textContent = 'S/ ' + saldo.toFixed(2);
-
-            // Validar que el adelanto no supere el total
-            if (adelanto > total) {
-                document.getElementById('montoAdelanto').classList.add('is-invalid');
-            } else {
-                document.getElementById('montoAdelanto').classList.remove('is-invalid');
-            }
-        }
-
-        // Validación del formulario
-        document.getElementById('pedidoForm').addEventListener('submit', function(e) {
-            const adelanto = parseFloat(document.getElementById('montoAdelanto').value) || 0;
-            const total = @totalPagar;
-
-            if (adelanto > total) {
-                e.preventDefault();
-                alert('El monto adelantado no puede ser mayor al total del pedido.');
-            }
-        });
-
-        // Establecer fecha actual por defecto
-        document.addEventListener('DOMContentLoaded', function() {
-            calcularSaldo();
-        });
-    </script>
+    <script src="~/js/RegistrarPedido.js"></script>
 }

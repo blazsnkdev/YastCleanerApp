@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 using YastCleaner.Business.DTOs;
 using YastCleaner.Business.Interfaces;
+using YastCleaner.Business.Utils;
 using YastCleaner.Data.Interfaces;
 using YastCleaner.Entities.Enums;
 using YastCleaner.Web.Filters;
@@ -80,11 +81,9 @@ namespace YastCleaner.Web.Controllers
         public async Task<IActionResult> RegistrarPedido()
         {
             await CargarCombos();
-
             var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
             if (pedidosTemporalDto is null || !pedidosTemporalDto.Any())
             {
-                //await CargarCombos();//TODO : esto ah modificar, si en caso no hay lista no debe haber esto
                 return RedirectToAction("Servicios", "Servicio");
             }
             var pedidoTemporalViewModel = pedidosTemporalDto.Select(p => new PedidosTemporalViewModel()
@@ -98,20 +97,28 @@ namespace YastCleaner.Web.Controllers
         }
         [HttpPost]
         [RoleAuthorize(Rol.Trabajador)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegistrarPedido(int clienteId,DateTime fecha,double montoAdelanto, string metodoPago)
         {
             try
             {
                 var trabajadorId = SessionHelper.GetUsuarioId(HttpContext);
                 if (trabajadorId is null)
+                {
                     return RedirectToAction("UnauthorizedPage", "Auth");
-
+                }
                 var pedidosTemporalDto = _pedidoService.ObtenerPedidosTemporal();
                 if (pedidosTemporalDto is null || !pedidosTemporalDto.Any())
                 {
+                    TempData["Error"] = "No hay servicios en el carrito";
                     return RedirectToAction("Servicios", "Servicio");
                 }
-
+                double totalPagar = pedidosTemporalDto.Sum(p => p.Cantidad * p.Precio);
+                if(montoAdelanto> totalPagar)
+                {
+                    TempData["Error"] = "El monto adelantado no puede ser mayor";
+                    return RedirectToAction("RegistrarPedido");
+                }
                 var pedidoDto = new PedidoDto()
                 {
                     ClienteId = clienteId,
@@ -131,8 +138,8 @@ namespace YastCleaner.Web.Controllers
                 var result = await _pedidoService.RegistrarPedido(pedidoDto);
                 if (!result.Success)
                 {
-                    await CargarCombos();
-                    return View(pedidosTemporalDto);
+                    TempData["Error"] = result.ErrorMessage;
+                    return RedirectToAction("RegistrarPedido");
                 }
                 var email = await _clienteService.RecuperarEmailCliente(clienteId);
                 if(email.Value is not null)
@@ -145,8 +152,11 @@ namespace YastCleaner.Web.Controllers
             {
                 TempData["Error"] = "No tiene acceso";
                 return RedirectToAction("UnauthorizedPage", "Auth");
+            }catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("RegistrarPedido");
             }
-            
         }
         //Ruido de Mate....
         [RoleAuthorize(Rol.Administrador,Rol.Trabajador)]
@@ -201,7 +211,6 @@ namespace YastCleaner.Web.Controllers
 
         private async Task CargarCombos()//TODO : aqui este metodo privado carga todos los combos de selectList para el registro de pedido
         {
-            ViewBag.Clientes = new SelectList(await _clienteService.ObtenerClientesActivos(), "ClienteId", "Nombre");
             ViewBag.Importe = _pedidoService.ImporteTotalPedido();
             ViewBag.MetodosPago = new SelectList(await _metodoPagoService.ListarMetodosPago());
         }

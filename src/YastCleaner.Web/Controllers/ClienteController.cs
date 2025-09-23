@@ -243,5 +243,19 @@ namespace YastCleaner.Web.Controllers
                 return RedirectToAction("UnauthorizedPage", "Auth");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> BuscarClienteJson(string term)
+        {
+            var result = await _clienteService.ObtenerClienteAutocompletado(term);
+
+            var data = result.Select(c => new
+            {
+                label = c.Nombre,
+                value = c.ClienteId
+            });
+            return Json(data);
+        }
+
     }
 }
