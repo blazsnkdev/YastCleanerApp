@@ -240,6 +240,8 @@ main {
     padding: 25px;
     box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
     margin-top: 15px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Footer */

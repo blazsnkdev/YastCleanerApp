@@ -173,7 +173,18 @@ namespace YastCleaner.Web.Controllers
             if (pedidoDto.Value is null || clienteDto.Value is null || trabajadorDto is null)
                 return View();
 
-            var clienteViewModel = new ClienteViewModel(clienteDto.Value.ClienteId, clienteDto.Value.Nombre);
+            var clienteViewModel = new ClienteViewModel
+            {
+                ClienteId = pedidoDto.Value.Cliente.ClienteId,
+                Nombre = pedidoDto.Value.Cliente.Nombre,
+                ApellidoPaterno = pedidoDto.Value.Cliente.ApellidoPaterno,
+                ApellidoMaterno = pedidoDto.Value.Cliente.ApellidoMaterno,
+                NumeroCelular = pedidoDto.Value.Cliente.NumeroCelular,
+                Email = pedidoDto.Value.Cliente.Email,
+                Direccion = pedidoDto.Value.Cliente.Direccion,
+                Estado = pedidoDto.Value.Cliente.Estado,
+                FechaRegistro = pedidoDto.Value.Fecha
+            };
 
             var trabajadorViewModel = new TrabajadorViewModel()
             {
@@ -182,7 +193,8 @@ namespace YastCleaner.Web.Controllers
                 Apellidos = trabajadorDto.ApellidoPaterno + " " + trabajadorDto.ApellidoMaterno,
                 Dni = trabajadorDto.Dni,
                 Direccion = trabajadorDto.Direccion,
-                Email = trabajadorDto.Email
+                Email = trabajadorDto.Email,
+                FechaRegistro = trabajadorDto.FechaRegistro
             };
             var detallePedidoViewModel = new DetallePedidoViewModel()
             {

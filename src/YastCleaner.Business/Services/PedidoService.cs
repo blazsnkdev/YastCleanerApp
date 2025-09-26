@@ -319,7 +319,20 @@ namespace YastCleaner.Business.Services
                     ApellidoPaterno = pedido.Cliente.ApellidoPaterno,
                     ApellidoMaterno = pedido.Cliente.ApellidoMaterno,
                     Email = pedido.Cliente.Email,
-                    NumeroCelular = pedido.Cliente.NumeroCelular
+                    NumeroCelular = pedido.Cliente.NumeroCelular,
+                    Direccion = pedido.Cliente.Direccion,
+                    FechaRegistro = pedido.Cliente.FechaRegistro
+                },
+                Trabajador = new TrabajadorDto
+                {
+                    TrabajadorId = pedido.Usuario.UsuarioId,
+                    Nombre = pedido.Usuario.Nombre,
+                    ApellidoPaterno = pedido.Usuario.ApellidoPaterno,
+                    ApellidoMaterno = pedido.Usuario.ApellidoMaterno,
+                    Email = pedido.Usuario.Email,
+                    Direccion = pedido.Usuario.Email,
+                    Dni = pedido.Usuario.Dni,
+                    FechaRegistro = pedido.Usuario.FechaRegistro
                 },
                 Detalles = pedido.DetallePedidos.Select(d => new DetallePedidoDto()
                 {
