@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YastCleaner.Entities.Entidades;
+﻿using YastCleaner.Entities.Entidades;
 
 namespace YastCleaner.Data.Interfaces
 {
@@ -13,5 +8,9 @@ namespace YastCleaner.Data.Interfaces
         Task<IEnumerable<Pedido>> GetAllPedidosByTrabajadorHoy(int trabajadorId, DateTime fecha);
         Task<Pedido?> GetPedidoByCodigo(string codigoPedido);
         Task<List<Pedido>> GetPedidosByClienteId(int clienteId);
+        int ContarPedidos(DateTime fecha);
+        int ContarPedidosEntregados(DateTime fecha);
+        double SumarMontoTotal(DateTime fecha);
+        List<Pedido> GetPedidosRecientes(int cantidad);
     }
 }

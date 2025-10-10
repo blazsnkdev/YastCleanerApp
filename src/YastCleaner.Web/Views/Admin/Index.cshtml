@@ -1,8 +1,84 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<h1>Index - Admin</h1>
+<h2>Dashboard</h2>
 
+<div class="row">
+    <div class="col-md-4">
+        <div class="card p-3 mb-3">
+            <h4>Total Pedidos Hoy</h4>
+            <p id="totalPedidos">0</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 mb-3">
+            <h4>Pedidos Entregados Hoy</h4>
+            <p id="totalPedidosEntregados">0</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 mb-3">
+            <h4>Monto Total</h4>
+            <p id="montoTotal">S/ 0.00</p>
+        </div>
+    </div>
+</div>
 
+<canvas id="pedidosChart" width="400" height="200"></canvas>
+
+@section Scripts {
+    <!-- Agrega Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            cargarDashboard();
+        });
+
+        function cargarDashboard() {
+            $.ajax({
+                url: '@Url.Action("PedidosDashboard")', // tu endpoint
+                method: 'GET',
+                success: function (response) {
+                    if (response && response.success) {
+                        const data = response.value; // porque usas Result<T>
+                        $("#totalPedidos").text(data.totalPedidos);
+                        $("#totalPedidosEntregados").text(data.totalPedidosEntregados);
+                        $("#montoTotal").text("S/ " + data.montoTotal.toFixed(2));
+
+                        renderChart(data);
+                    } else {
+                        console.error(response);
+                    }
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        function renderChart(data) {
+            const ctx = document.getElementById('pedidosChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Pedidos', 'Entregados'],
+                    datasets: [{
+                        label: 'Pedidos Hoy',
+                        data: [data.totalPedidos, data.totalPedidosEntregados],
+                        backgroundColor: ['#007bff', '#28a745']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}

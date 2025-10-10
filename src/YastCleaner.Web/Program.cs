@@ -40,7 +40,7 @@ builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IMetodoPagoService, MetodoPagoService>();
 builder.Services.AddScoped<IPedidoStorage,PedidoSessionStorage>();
 builder.Services.AddScoped<IReporteService, ReporteService>();
-
+builder.Services.AddScoped<IDashboardService,DashboardService>();
 //HttpContextAccesor para el Carrito Pedidos
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();

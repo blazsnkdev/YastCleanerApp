@@ -1,0 +1,432 @@
+﻿/* ESTILOS ESPECÍFICOS PARA PÁGINA DE CONFIRMACIÓN */
+.confirmacion-container {
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.confirmacion-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(89, 42, 245, 0.15);
+    padding: 50px 40px;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    border: 1px solid #f0f0f0;
+}
+
+/* Icono de confirmación */
+.confirmacion-icono {
+    font-size: 5rem;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+    .confirmacion-icono .fa-check-circle {
+        color: #0abb87;
+        animation: bounceIn 1s ease;
+    }
+
+    .confirmacion-icono .fa-exclamation-triangle {
+        color: #ffa800;
+        animation: pulse 2s infinite;
+    }
+
+    .confirmacion-icono .fa-times-circle {
+        color: #f64e60;
+        animation: shake 0.5s ease;
+    }
+
+/* Título */
+.confirmacion-titulo {
+    color: #592af5;
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+/* Mensaje */
+.confirmacion-mensaje {
+    margin-bottom: 25px;
+}
+
+    .confirmacion-mensaje p {
+        font-size: 1.2rem;
+        color: #555;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+/* Detalles adicionales */
+.confirmacion-detalles {
+    background: #f8f9ff;
+    border: 1px solid #eaeaea;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+    .confirmacion-detalles i {
+        color: #592af5;
+    }
+
+/* Código de referencia */
+.referencia-codigo {
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+    .referencia-codigo label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 5px;
+        opacity: 0.9;
+    }
+
+    .referencia-codigo .codigo {
+        font-size: 1.3rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        font-family: 'Courier New', monospace;
+    }
+
+/* Tiempo de operación */
+.tiempo-operacion {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Acciones */
+.confirmacion-acciones {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.btn-continuar {
+    background: linear-gradient(135deg, #0abb87 0%, #1cd1a1 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    min-width: 160px;
+    justify-content: center;
+}
+
+    .btn-continuar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(10, 187, 135, 0.3);
+        color: white;
+    }
+
+.btn-volver {
+    background: white;
+    color: #592af5;
+    padding: 15px 30px;
+    border: 2px solid #592af5;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    min-width: 160px;
+    justify-content: center;
+}
+
+    .btn-volver:hover {
+        background: #592af5;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+.btn-inicio {
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    min-width: 160px;
+    justify-content: center;
+}
+
+    .btn-inicio:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(89, 42, 245, 0.3);
+        color: white;
+    }
+
+/* Información adicional */
+.informacion-adicional {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding-top: 25px;
+    border-top: 1px solid #eaeaea;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+    .info-item i {
+        color: #592af5;
+    }
+
+/* Contador de redirección */
+.contador-redireccion {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.contador-content {
+    background: #fff4e6;
+    color: #ffa800;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Confetti */
+.confetti {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #592af5;
+    border-radius: 50%;
+    animation: fall 3s linear infinite;
+    z-index: 1;
+}
+
+    .confetti:nth-child(2) {
+        left: 10%;
+        animation-delay: 0.5s;
+    }
+
+    .confetti:nth-child(3) {
+        left: 20%;
+        animation-delay: 1s;
+    }
+
+    .confetti:nth-child(4) {
+        left: 30%;
+        animation-delay: 1.5s;
+    }
+
+    .confetti:nth-child(5) {
+        left: 40%;
+        animation-delay: 2s;
+    }
+
+/* Animaciones */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    70% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes fall {
+    0% {
+        top: -10%;
+        transform: translateX(0) rotate(0deg);
+    }
+
+    100% {
+        top: 110%;
+        transform: translateX(100px) rotate(360deg);
+    }
+}
+
+/* Estados específicos */
+.confirmacion-card.error .confirmacion-titulo {
+    color: #f64e60;
+}
+
+.confirmacion-card.warning .confirmacion-titulo {
+    color: #ffa800;
+}
+
+.confirmacion-card.success .confirmacion-titulo {
+    color: #0abb87;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .confirmacion-container {
+        padding: 15px;
+    }
+
+    .confirmacion-card {
+        padding: 40px 25px;
+    }
+
+    .confirmacion-titulo {
+        font-size: 2rem;
+    }
+
+    .confirmacion-mensaje p {
+        font-size: 1.1rem;
+    }
+
+    .confirmacion-acciones {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn-continuar,
+    .btn-volver,
+    .btn-inicio {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .informacion-adicional {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .confirmacion-card {
+        padding: 30px 20px;
+    }
+
+    .confirmacion-titulo {
+        font-size: 1.8rem;
+    }
+
+    .confirmacion-icono {
+        font-size: 4rem;
+    }
+
+    .referencia-codigo {
+        padding: 12px 20px;
+    }
+
+        .referencia-codigo .codigo {
+            font-size: 1.1rem;
+        }
+}
+
+/* Efectos de hover mejorados */
+.btn-continuar, .btn-volver, .btn-inicio {
+    position: relative;
+    overflow: hidden;
+}
+
+    .btn-continuar::before, .btn-volver::before, .btn-inicio::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-continuar:hover::before, .btn-volver:hover::before, .btn-inicio:hover::before {
+        left: 100%;
+    }

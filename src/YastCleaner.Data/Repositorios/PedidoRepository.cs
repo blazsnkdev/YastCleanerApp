@@ -2,6 +2,7 @@
 using YastCleaner.Data.Data;
 using YastCleaner.Data.Interfaces;
 using YastCleaner.Entities.Entidades;
+using YastCleaner.Entities.Enums;
 
 namespace YastCleaner.Data.Repositorios
 {
@@ -59,5 +60,26 @@ namespace YastCleaner.Data.Repositorios
                 .ThenInclude(d => d.Servicio)
                 .ToListAsync();
         }
+
+        public int ContarPedidos(DateTime fecha)
+        {
+            var inicio = fecha.Date;             // 2025-09-09 00:00:00
+            var fin = inicio.AddDays(1);         // 2025-09-10 00:00:00
+
+            return _appDbContext.TblPedido.Count(p => p.FechaRegistro >= inicio && p.FechaRegistro < fin);
+        }
+        public int ContarPedidosEntregados(DateTime fecha)
+        {
+            var inicio = fecha.Date;             // 2025-09-09 00:00:00
+            var fin = inicio.AddDays(1);         // 2025-09-10 00:00:00
+            return _appDbContext.TblPedido.Count(p => p.Estado == EstadoPedido.Entregado && p.FechaRegistro >= inicio && p.FechaRegistro < fin);
+        }
+        public double SumarMontoTotal(DateTime fecha)
+        {
+            var inicio = fecha.Date;             // 2025-09-09 00:00:00
+            var fin = inicio.AddDays(1);         // 2025-09-10 00:00:00
+            return _appDbContext.TblPedido.Where(p => p.Fecha >= inicio && p.FechaRegistro < fin).Sum(p => p.MontoTotal);
+        }
+        public List<Pedido> GetPedidosRecientes(int cantidad) => _appDbContext.TblPedido.OrderByDescending(p=>p.Fecha).Take(cantidad).ToList();
     }
 }

@@ -4,87 +4,268 @@
     ViewData["Title"] = "Entregar Pedido";
 }
 
-<h2>Entregar Pedido: @Model.CodigoPedido</h2>
-<hr />
+@section Styles {
+    <link rel="stylesheet" href="~/css/Entregar.css" />
+}
 
-<div class="row">
-    <div class="col-md-6">
-        <!-- Información del Pedido -->
-        <div class="card mb-4">
-            <div class="card-header bg-light">
-                <h5>Información del Pedido</h5>
-            </div>
-            <div class="card-body">
-                <dl class="row">
-                    <dt class="col-sm-4">Código:</dt>
-                    <dd class="col-sm-8">@Model.CodigoPedido</dd>
-
-                    <dt class="col-sm-4">Fecha:</dt>
-                    <dd class="col-sm-8">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
-
-                    <dt class="col-sm-4">Cliente:</dt>
-                    <dd class="col-sm-8">@Model.NombreCliente</dd>
-
-                    <dt class="col-sm-4">Estado:</dt>
-                    <dd class="col-sm-8">@Model.Estado</dd>
-
-                    <dt class="col-sm-4">Método Pago:</dt>
-                    <dd class="col-sm-8">@Model.MetodoPago</dd>
-
-                    <dt class="col-sm-4">Total:</dt>
-                    <dd class="col-sm-8">@Model.MontoTotal.ToString("C")</dd>
-
-                    <dt class="col-sm-4">Adelantado:</dt>
-                    <dd class="col-sm-8">@Model.MontoAdelantado.ToString("C")</dd>
-
-                    <dt class="col-sm-4">Faltante:</dt>
-                    <dd class="col-sm-8">@Model.MontoFaltante.ToString("C")</dd>
-                </dl>
+<div class="entregar-pedido-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">
+                <i class="fas fa-truck-loading me-3"></i>
+                Entregar Pedido
+            </h1>
+            <div class="codigo-pedido">
+                <span class="codigo-badge">@Model.CodigoPedido</span>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6">
-        <!-- Formulario de Entrega -->
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5>Confirmar Entrega</h5>
+    <div class="pedido-content">
+        <div class="row">
+            <!-- Información del Pedido -->
+            <div class="col-lg-6">
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        <h3>Detalles del Pedido</h3>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-barcode"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Código del Pedido</label>
+                                    <span class="info-value">@Model.CodigoPedido</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Fecha del Pedido</label>
+                                    <span class="info-value">@Model.Fecha.ToString("dd/MM/yyyy")</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Cliente</label>
+                                    <span class="info-value">@Model.NombreCliente</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Estado Actual</label>
+                                    <span class="badge-estado badge-@(Model.Estado.ToLower())">@Model.Estado</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información de Pagos -->
+                        <div class="pagos-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-money-bill-wave me-2"></i>
+                                Información de Pagos
+                            </h4>
+                            <div class="pagos-grid">
+                                <div class="pago-item total">
+                                    <div class="pago-label">Total del Pedido</div>
+                                    <div class="pago-value">@Model.MontoTotal.ToString("C")</div>
+                                </div>
+                                <div class="pago-item adelantado">
+                                    <div class="pago-label">Monto Adelantado</div>
+                                    <div class="pago-value">@Model.MontoAdelantado.ToString("C")</div>
+                                </div>
+                                <div class="pago-item faltante @(Model.MontoFaltante > 0 ? "pendiente" : "completado")">
+                                    <div class="pago-label">Saldo Pendiente</div>
+                                    <div class="pago-value">@Model.MontoFaltante.ToString("C")</div>
+                                </div>
+                                <div class="pago-item metodo">
+                                    <div class="pago-label">Método de Pago</div>
+                                    <div class="pago-value">@Model.MetodoPago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <form asp-action="EntregarPedido" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="pedidoId" value="@Model.PedidoId" />
-                    <div class="form-group mb-3">
-                        <label for="metodoPago">Método de Pago</label>
 
-                        @if (Model.MontoFaltante == 0)
-                        {
-                            <input type="text" class="form-control" value="@Model.MetodoPago" readonly />
-                            <input type="hidden" name="metodoPago" value="@Model.MetodoPago" />
-                        }
-                        else
-                        {
-                            <select id="metodoPago" name="metodoPago" asp-items="@ViewBag.MetodosPago"
-                                    class="form-control" required>
-                                <option value="">Seleccione un método</option>
-                            </select>
-                        }
+            <!-- Formulario de Entrega -->
+            <div class="col-lg-6">
+                <div class="entrega-card">
+                    <div class="card-header-custom bg-primary">
+                        <i class="fas fa-clipboard-check me-2"></i>
+                        <h3>Confirmar Entrega</h3>
                     </div>
+                    <div class="card-body-custom">
+                        <form asp-action="EntregarPedido" method="post" class="entrega-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="pedidoId" value="@Model.PedidoId" />
 
+                            <!-- Método de Pago -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-credit-card me-2"></i>
+                                    Método de Pago
+                                </label>
 
-                    <div class="form-group mb-3">
-                        <label for="observaciones" class="form-label fw-bold">Observaciones de Entrega:</label>
-                        <textarea class="form-control" id="observaciones" name="observaciones"
-                                  rows="4" placeholder="Ingrese observaciones relevantes de la entrega..."
-                                  required>@Model.Observaciones</textarea>
-                        <div class="form-text">Ej: Estado del producto, incidencias, etc.</div>
+                                @if (Model.MontoFaltante == 0)
+                                {
+                                    <div class="input-disabled">
+                                        <input type="text" class="form-control-custom" value="@Model.MetodoPago" readonly />
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                    <input type="hidden" name="metodoPago" value="@Model.MetodoPago" />
+                                    <div class="form-hint text-success">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Pago completado, no se requiere pago adicional
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="input-group-custom">
+                                        <select id="metodoPago" name="metodoPago" asp-items="@ViewBag.MetodosPago"
+                                                class="form-control-custom" required>
+                                            <option value="">Seleccione un método de pago</option>
+                                        </select>
+                                        <i class="fas fa-chevron-down input-icon"></i>
+                                    </div>
+                                    <div class="form-hint">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        Seleccione el método para el saldo pendiente de @Model.MontoFaltante.ToString("C")
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Observaciones -->
+                            <div class="form-group-custom">
+                                <label for="observaciones" class="form-label-custom">
+                                    <i class="fas fa-sticky-note me-2"></i>
+                                    Observaciones de Entrega
+                                </label>
+                                <div class="input-group-custom">
+                                    <textarea class="form-control-custom" id="observaciones" name="observaciones"
+                                              rows="5" placeholder="Describa el estado del producto, incidencias durante la entrega, comentarios del cliente, etc..."
+                                              required>@Model.Observaciones</textarea>
+                                    <i class="fas fa-edit input-icon textarea-icon"></i>
+                                </div>
+                                <div class="form-hint">
+                                    <i class="fas fa-lightbulb me-1"></i>
+                                    Ej: Producto en buen estado, cliente satisfecho, detalles específicos, etc.
+                                </div>
+                            </div>
+
+                            <!-- Acciones -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn-confirmar-entrega">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Confirmar Entrega
+                                </button>
+                                <a href="javascript:history.back()" class="btn-cancelar">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    Volver Atrás
+                                </a>
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button type="submit" class="btn btn-success">Confirmar Entrega</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Validación del formulario
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.entrega-form');
+            const observaciones = document.getElementById('observaciones');
+
+            // Contador de caracteres para observaciones
+            const updateCharCount = () => {
+                const count = observaciones.value.length;
+                const counter = document.getElementById('charCount') || createCharCounter();
+                counter.textContent = `${count}/500 caracteres`;
+
+                if (count > 450) {
+                    counter.classList.add('text-warning');
+                } else {
+                    counter.classList.remove('text-warning');
+                }
+            };
+
+            const createCharCounter = () => {
+                const counter = document.createElement('div');
+                counter.id = 'charCount';
+                counter.className = 'char-count';
+                counter.style.fontSize = '0.8rem';
+                counter.style.color = '#666';
+                counter.style.marginTop = '5px';
+                observaciones.parentNode.appendChild(counter);
+                return counter;
+            };
+
+            observaciones.addEventListener('input', updateCharCount);
+            updateCharCount();
+
+            // Validación antes de enviar
+            form.addEventListener('submit', function(e) {
+                const metodoPago = document.getElementById('metodoPago');
+                const observacionesValue = observaciones.value.trim();
+
+                if (@Model.MontoFaltante > 0 && (!metodoPago || !metodoPago.value)) {
+                    e.preventDefault();
+                    showAlert('Por favor seleccione un método de pago para el saldo pendiente.', 'warning');
+                    return;
+                }
+
+                if (!observacionesValue) {
+                    e.preventDefault();
+                    showAlert('Por favor ingrese las observaciones de la entrega.', 'warning');
+                    return;
+                }
+
+                if (observacionesValue.length < 10) {
+                    e.preventDefault();
+                    showAlert('Las observaciones deben tener al menos 10 caracteres.', 'warning');
+                    return;
+                }
+            });
+
+            function showAlert(message, type) {
+                // Crear alerta temporal
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-dismissible fade show`;
+                alert.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                alert.style.position = 'fixed';
+                alert.style.top = '20px';
+                alert.style.right = '20px';
+                alert.style.zIndex = '9999';
+                alert.style.minWidth = '300px';
+
+                document.body.appendChild(alert);
+
+                // Auto-remover después de 5 segundos
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            }
+        });
+    </script>
+}

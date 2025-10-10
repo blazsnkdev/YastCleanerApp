@@ -1,0 +1,360 @@
+﻿/* ESTILOS ESPECÍFICOS PARA LISTA DE TRABAJADORES */
+.trabajadores-container {
+    padding: 20px;
+}
+
+.page-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.page-title {
+    color: #592af5;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 2.2rem;
+}
+
+/* Botón agregar */
+.btn-agregar {
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 25px;
+}
+
+    .btn-agregar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(89, 42, 245, 0.3);
+        color: white;
+    }
+
+/* Controles de paginación superior */
+.pagination-controls {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.registros-info {
+    color: #666;
+    font-weight: 500;
+}
+
+.tamanio-pagina {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tamanio-label {
+    color: #666;
+    font-weight: 500;
+    margin: 0;
+}
+
+.btn-tamanio {
+    padding: 6px 12px;
+    border: 2px solid #592af5;
+    background: white;
+    color: #592af5;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    .btn-tamanio.active {
+        background: #592af5;
+        color: white;
+    }
+
+    .btn-tamanio:hover:not(.active) {
+        background: #f8f9ff;
+        color: #592af5;
+    }
+
+/* Tabla personalizada */
+.tabla-trabajadores {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.tabla-header {
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    color: white;
+    padding: 20px;
+}
+
+    .tabla-header h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
+
+.tabla-contenido {
+    overflow-x: auto;
+}
+
+.tabla-custom {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+    .tabla-custom thead {
+        background: #f8f9ff;
+    }
+
+    .tabla-custom th {
+        padding: 15px 20px;
+        text-align: left;
+        font-weight: 600;
+        color: #592af5;
+        border-bottom: 2px solid #eaeaea;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tabla-custom td {
+        padding: 15px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        color: #555;
+    }
+
+    .tabla-custom tbody tr {
+        transition: all 0.3s ease;
+    }
+
+        .tabla-custom tbody tr:hover {
+            background: #f8f9ff;
+            transform: translateX(5px);
+        }
+
+/* Estilos específicos para trabajadores */
+.dni-trabajador {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #333;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #eaeaea;
+}
+
+.direccion-trabajador {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Botones de acción */
+.acciones-cell {
+    min-width: 150px;
+}
+
+.btn-accion {
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    margin: 2px;
+    width: 100%;
+}
+
+.btn-detalle {
+    background: #17a2b8;
+    color: white;
+}
+
+    .btn-detalle:hover {
+        background: #138496;
+        transform: translateY(-1px);
+        color: white;
+    }
+
+.btn-actualizar {
+    background: #ffc107;
+    color: #212529;
+}
+
+    .btn-actualizar:hover {
+        background: #e0a800;
+        transform: translateY(-1px);
+        color: #212529;
+    }
+
+/* Paginación inferior */
+.pagination-custom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-top: 30px;
+}
+
+.page-item-custom {
+    list-style: none;
+}
+
+.page-link-custom {
+    padding: 10px 15px;
+    border: 2px solid #eaeaea;
+    background: white;
+    color: #592af5;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 45px;
+    text-align: center;
+}
+
+    .page-link-custom:hover {
+        border-color: #592af5;
+        background: #f8f9ff;
+    }
+
+.page-item-custom.active .page-link-custom {
+    background: #592af5;
+    color: white;
+    border-color: #592af5;
+}
+
+.page-item-custom.disabled .page-link-custom {
+    background: #f8f9fa;
+    color: #6c757d;
+    border-color: #eaeaea;
+    cursor: not-allowed;
+}
+
+/* Estado vacío */
+.estado-vacio {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+    .estado-vacio i {
+        font-size: 4rem;
+        color: #592af5;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .estado-vacio h4 {
+        color: #592af5;
+        margin-bottom: 10px;
+    }
+
+    .estado-vacio p {
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .tabla-contenido {
+        font-size: 0.9rem;
+    }
+
+    .tabla-custom th,
+    .tabla-custom td {
+        padding: 12px 15px;
+    }
+}
+
+@media (max-width: 992px) {
+    .pagination-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tamanio-pagina {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .tabla-custom {
+        min-width: 900px;
+    }
+
+    .page-link-custom {
+        padding: 8px 12px;
+        min-width: 40px;
+        font-size: 0.9rem;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .trabajadores-container {
+        padding: 15px;
+    }
+
+    .pagination-custom {
+        flex-wrap: wrap;
+    }
+
+    .btn-agregar {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tabla-custom tbody tr {
+    animation: fadeIn 0.5s ease;
+}
+
+/* Efectos especiales para datos importantes */
+.tabla-custom td strong {
+    color: #592af5;
+    font-weight: 700;
+}

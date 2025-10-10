@@ -4,42 +4,162 @@
     ViewData["Title"] = "Cerrar Caja";
 }
 
-<h1>Trabajadores Hoy : @ViewBag.HoraActual</h1>
-<br />
-<div class="row">
-    @foreach (var item in Model.Items)
-    {
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm" style="width: 100%;">
-                <div class="card-body">
-                    <h5 class="card-title">@item.Nombre @item.Apellidos</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">DNI: @item.Dni</h6>
-                    <p class="card-text">
-                        <strong>Dirección:</strong> @item.Direccion <br />
-                        <strong>Email:</strong> @item.Email <br />
-                        <strong>Fecha Registro:</strong> @item.FechaRegistro.ToShortDateString()
-                    </p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/CerrarCaja.css" />
+}
 
-                    <p>
-                        @if (item.Registrado)
-                        {
-                            <span class="badge bg-success">Reporte registrado</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">Reporte no registrado</span>
-                        }
-                    </p>
+<div class="cierre-caja-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-cash-register me-3"></i>
+            Cierre de Caja - Trabajadores del Día
+        </h1>
+        <div class="hora-actual">
+            <i class="fas fa-clock me-2"></i>
+            @ViewBag.HoraActual
+        </div>
+    </div>
 
-                    <a asp-controller="Reporte" asp-action="Pedidos" asp-route-trabajadorId="@item.TrabajadorId" class="card-link btn btn-warning btn-sm">
-                        Pedidos
-                    </a>
-                    <a asp-controller="Reporte" asp-action="Registrar" asp-route-trabajadorId="@item.TrabajadorId" class="card-link btn btn-primary btn-sm">
-                        Cerrar Caja
-                    </a>
-                </div>
+    <!-- Estadísticas rápidas -->
+    <div class="estadisticas-caja">
+        <div class="estadistica-item">
+            <div class="estadistica-icono">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="estadistica-info">
+                <span class="estadistica-valor">@Model.TotalRegistros</span>
+                <span class="estadistica-label">Total Trabajadores</span>
             </div>
         </div>
-    }
+        <div class="estadistica-item">
+            <div class="estadistica-icono">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="estadistica-info">
+                <span class="estadistica-valor">@Model.Items.Count(i => i.Registrado)</span>
+                <span class="estadistica-label">Reportes Completados</span>
+            </div>
+        </div>
+        <div class="estadistica-item">
+            <div class="estadistica-icono">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="estadistica-info">
+                <span class="estadistica-valor">@Model.Items.Count(i => !i.Registrado)</span>
+                <span class="estadistica-label">Pendientes</span>
+            </div>
+        </div>
+    </div>
 
+    @if (Model.Items.Any())
+    {
+        <!-- Grid de trabajadores -->
+        <div class="trabajadores-grid">
+            @foreach (var item in Model.Items)
+            {
+                <div class="trabajador-card">
+                    <div class="card-header-trabajador">
+                        <div class="avatar-trabajador">
+                            <i class="fas fa-user-hard-hat"></i>
+                        </div>
+                        <div class="info-principal">
+                            <h3 class="nombre-trabajador">@item.Nombre @item.Apellidos</h3>
+                            <span class="dni-trabajador">DNI: @item.Dni</span>
+                        </div>
+                        <div class="estado-reporte @(item.Registrado ? "completado" : "pendiente")">
+                            <i class="fas @(item.Registrado ? "fa-check-circle" : "fa-clock")"></i>
+                            @(item.Registrado ? "Reporte Completado" : "Pendiente")
+                        </div>
+                    </div>
+
+                    <div class="card-body-trabajador">
+                        <div class="info-detalle">
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span class="text-truncate">@item.Direccion</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>@item.Email</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Registrado: @item.FechaRegistro.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            <a asp-controller="Reporte" asp-action="Pedidos" asp-route-trabajadorId="@item.TrabajadorId"
+                               class="btn-accion btn-pedidos">
+                                <i class="fas fa-clipboard-list me-2"></i>
+                                Ver Pedidos
+                            </a>
+                            <a asp-controller="Reporte" asp-action="Registrar" asp-route-trabajadorId="@item.TrabajadorId"
+                               class="btn-accion @(item.Registrado ? "btn-completado" : "btn-cerrar-caja")">
+                                <i class="fas @(item.Registrado ? "fa-eye" : "fa-cash-register") me-2"></i>
+                                @(item.Registrado ? "Ver Reporte" : "Cerrar Caja")
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Controles de paginación -->
+        <div class="pagination-caja">
+            <div class="pagination-info">
+                Mostrando @((Model.PaginaIndice - 1) * Model.TamanioPagina + 1) -
+                @Math.Min(Model.PaginaIndice * Model.TamanioPagina, Model.TotalRegistros) de
+                @Model.TotalRegistros trabajadores
+            </div>
+
+            <nav aria-label="Paginación de trabajadores">
+                <ul class="pagination-custom">
+                    <li class="page-item-custom @(!Model.TienePaginaAnterior ? "disabled" : "")">
+                        <a class="page-link-custom" asp-action="CerrarCaja" asp-route-pagina="1" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Primera">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item-custom @(!Model.TienePaginaAnterior ? "disabled" : "")">
+                        <a class="page-link-custom" asp-action="CerrarCaja" asp-route-pagina="@(Model.PaginaIndice - 1)" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Anterior">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+
+                    @{
+                        int inicio = Math.Max(1, Model.PaginaIndice - 2);
+                        int fin = Math.Min(Model.TotalPagias, Model.PaginaIndice + 2);
+                    }
+
+                    @for (int i = inicio; i <= fin; i++)
+                    {
+                        <li class="page-item-custom @(i == Model.PaginaIndice ? "active" : "")">
+                            <a class="page-link-custom" asp-action="CerrarCaja" asp-route-pagina="@i" asp-route-tamanioPagina="@Model.TamanioPagina">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item-custom @(!Model.TienePaginaSiguiente ? "disabled" : "")">
+                        <a class="page-link-custom" asp-action="CerrarCaja" asp-route-pagina="@(Model.PaginaIndice + 1)" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Siguiente">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item-custom @(!Model.TienePaginaSiguiente ? "disabled" : "")">
+                        <a class="page-link-custom" asp-action="CerrarCaja" asp-route-pagina="@Model.TotalPagias" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Última">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+    else
+    {
+        <!-- Estado vacío -->
+        <div class="estado-vacio">
+            <i class="fas fa-user-hard-hat"></i>
+            <h4>No hay trabajadores activos hoy</h4>
+            <p>No se encontraron trabajadores para realizar el cierre de caja en esta fecha.</p>
+        </div>
+    }
 </div>

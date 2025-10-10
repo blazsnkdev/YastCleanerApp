@@ -3,124 +3,168 @@
 @{
     ViewData["Title"] = "Modulo";
 }
+@section Styles {
+    <link rel="stylesheet" href="~/css/Modulo.css" />
+}
 
-<h1>Módulo de Servicios</h1>
+<div class="servicios-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <h1 class="page-title">Módulo de Servicios</h1>
+    </div>
 
-<p>
-    <a asp-action="RegistrarServicio" class="btn btn-success">Crear Nuevo Servicio</a>
-    <a asp-controller="Servicio" asp-action="Modulo" asp-route-estado="Inactivo" class="btn btn-warning">Ver servicios inactivos
-</a>
+    <!-- Botones de acción superiores -->
+    <div class="acciones-superiores">
+        <a asp-action="RegistrarServicio" class="btn-principal">
+            <i class="fas fa-plus-circle"></i> Crear Nuevo Servicio
+        </a>
+        <a asp-controller="Servicio" asp-action="Modulo" asp-route-estado="Inactivo" class="btn-secundario">
+            <i class="fas fa-eye"></i> Ver Servicios Inactivos
+        </a>
+    </div>
 
-</p>
+    @if (Model.Items.Any())
+    {
+        <!-- Controles de paginación superior -->
+        <div class="pagination-controls">
+            <div class="registros-info">
+                Mostrando @((Model.PaginaIndice - 1) * Model.TamanioPagina + 1) -
+                @Math.Min(Model.PaginaIndice * Model.TamanioPagina, Model.TotalRegistros) de
+                @Model.TotalRegistros servicios
+            </div>
 
-@if (Model.Items.Any())
-{
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="text-muted">
-            Mostrando @((Model.PaginaIndice - 1) * Model.TamanioPagina + 1) - @Math.Min(Model.PaginaIndice * Model.TamanioPagina, Model.TotalRegistros) de @Model.TotalRegistros servicios
-        </div>
-        <div>
-            <span class="me-2">Registros por página:</span>
-            <div class="btn-group btn-group-sm">
-                <a asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="5" class="btn btn-outline-primary @(Model.TamanioPagina == 5 ? "active" : "")">5</a>
-                <a asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="10" class="btn btn-outline-primary @(Model.TamanioPagina == 10 ? "active" : "")">10</a>
-                <a asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="15" class="btn btn-outline-primary @(Model.TamanioPagina == 15 ? "active" : "")">15</a>
-                <a asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="20" class="btn btn-outline-primary @(Model.TamanioPagina == 20 ? "active" : "")">20</a>
+            <div class="tamanio-pagina">
+                <span class="tamanio-label">Registros por página:</span>
+                <div>
+                    <a asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="5"
+                       class="btn-tamanio @(Model.TamanioPagina == 5 ? "active" : "")">5</a>
+                    <a asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="10"
+                       class="btn-tamanio @(Model.TamanioPagina == 10 ? "active" : "")">10</a>
+                    <a asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="15"
+                       class="btn-tamanio @(Model.TamanioPagina == 15 ? "active" : "")">15</a>
+                    <a asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="20"
+                       class="btn-tamanio @(Model.TamanioPagina == 20 ? "active" : "")">20</a>
+                </div>
             </div>
         </div>
-    </div>
 
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Descripción</th>
-                <th>Estado</th>
-                <th>Fecha de Registro</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Items)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Precio)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
-                    <td>
-                        <span class="badge @(item.Estado == "Disponible" ? "bg-success" : "bg-secondary")">
-                            @Html.DisplayFor(modelItem => item.Estado)
-                        </span>
-                    </td>
-                    <td>@Html.DisplayFor(modelItem => item.FechaRegistro)</td>
-                    <td>
-                        <form asp-action="ManipularEstado" method="post">
-                            <input type="hidden" name="servicioId" value="@item.ServicioId" />
+        <!-- Tabla de servicios -->
+        <div class="tabla-servicios">
+            <div class="tabla-header">
+                <h3><i class="fas fa-concierge-bell me-2"></i>Lista de Servicios</h3>
+            </div>
+            <div class="tabla-contenido">
+                <table class="tabla-custom">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Fecha de Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td><strong>@item.Nombre</strong></td>
+                                <td class="precio-servicio">S/. @item.Precio</td>
+                                <td>
+                                    <span class="descripcion-servicio" title="@item.Descripcion">
+                                        @item.Descripcion
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge-estado badge-@(item.Estado.ToLower().Replace(" ", "-"))">
+                                        @item.Estado
+                                    </span>
+                                </td>
+                                <td>@item.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                                <td class="acciones-cell">
+                                    <form asp-action="ManipularEstado" method="post" class="form-accion">
+                                        <input type="hidden" name="servicioId" value="@item.ServicioId" />
 
-                            @if (item.Estado == "Disponible")
-                            {
-                                <button type="submit" class="btn btn-warning btn-sm"
-                                onclick="return confirm('¿Seguro que desea Desactivar ese servicio?')"
-                                >Desactivar</button>
-                            }
-                            else
-                            {
-                                <button type="submit" class="btn btn-success btn-sm"
-                                onclick="return confirm('¿Seguro que desea Activar ese servicio?')"
-                                >Activar</button>
-                            }
-                        </form>
-                        <br />
-                        <a asp-action="Detalle" asp-route-servicioId="@item.ServicioId" class="btn btn-primary btn-sm">Ver Detalle</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                                        @if (item.Estado == "Disponible")
+                                        {
+                                            <button type="submit" class="btn-accion btn-desactivar"
+                                                    onclick="return confirm('¿Seguro que desea desactivar este servicio?')"
+                                                    title="Desactivar servicio">
+                                                <i class="fas fa-pause"></i> Desactivar
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn-accion btn-activar"
+                                                    onclick="return confirm('¿Seguro que desea activar este servicio?')"
+                                                    title="Activar servicio">
+                                                <i class="fas fa-play"></i> Activar
+                                            </button>
+                                        }
+                                    </form>
 
-    <!-- Controles de paginación -->
-    <nav aria-label="Paginación de servicios">
-        <ul class="pagination justify-content-center">
-            <li class="page-item @(!Model.TienePaginaAnterior ? "disabled" : "")">
-                <a class="page-link" asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Primera">
-                    <span aria-hidden="true">&laquo;&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item @(!Model.TienePaginaAnterior ? "disabled" : "")">
-                <a class="page-link" asp-action="Modulo" asp-route-pagina="@(Model.PaginaIndice - 1)" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Anterior">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
+                                    <a asp-action="Detalle" asp-route-servicioId="@item.ServicioId"
+                                       class="btn-accion btn-detalle" title="Ver detalles del servicio">
+                                        <i class="fas fa-search"></i> Ver Detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-            @{
-                int inicio = Math.Max(1, Model.PaginaIndice - 2);
-                int fin = Math.Min(Model.TotalPagias, Model.PaginaIndice + 2);
-            }
-
-            @for (int i = inicio; i <= fin; i++)
-            {
-                <li class="page-item @(i == Model.PaginaIndice ? "active" : "")">
-                    <a class="page-link" asp-action="Modulo" asp-route-pagina="@i" asp-route-tamanioPagina="@Model.TamanioPagina">@i</a>
+        <!-- Paginación inferior -->
+        <nav aria-label="Paginación de servicios">
+            <ul class="pagination-custom">
+                <li class="page-item-custom @(!Model.TienePaginaAnterior ? "disabled" : "")">
+                    <a class="page-link-custom" asp-action="Modulo" asp-route-pagina="1" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Primera">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
                 </li>
-            }
+                <li class="page-item-custom @(!Model.TienePaginaAnterior ? "disabled" : "")">
+                    <a class="page-link-custom" asp-action="Modulo" asp-route-pagina="@(Model.PaginaIndice - 1)" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Anterior">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
 
-            <li class="page-item @(!Model.TienePaginaSiguiente ? "disabled" : "")">
-                <a class="page-link" asp-action="Modulo" asp-route-pagina="@(Model.PaginaIndice + 1)" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Siguiente">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-            <li class="page-item @(!Model.TienePaginaSiguiente ? "disabled" : "")">
-                <a class="page-link" asp-action="Modulo" asp-route-pagina="@Model.TotalPagias" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Última">
-                    <span aria-hidden="true">&raquo;&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-}
-else
-{
-    <div class="alert alert-info mt-4" role="alert">
-        No hay servicios registrados en este momento.
-    </div>
-}
+                @{
+                    int inicio = Math.Max(1, Model.PaginaIndice - 2);
+                    int fin = Math.Min(Model.TotalPagias, Model.PaginaIndice + 2);
+                }
+
+                @for (int i = inicio; i <= fin; i++)
+                {
+                    <li class="page-item-custom @(i == Model.PaginaIndice ? "active" : "")">
+                        <a class="page-link-custom" asp-action="Modulo" asp-route-pagina="@i" asp-route-tamanioPagina="@Model.TamanioPagina">@i</a>
+                    </li>
+                }
+
+                <li class="page-item-custom @(!Model.TienePaginaSiguiente ? "disabled" : "")">
+                    <a class="page-link-custom" asp-action="Modulo" asp-route-pagina="@(Model.PaginaIndice + 1)" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Siguiente">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item-custom @(!Model.TienePaginaSiguiente ? "disabled" : "")">
+                    <a class="page-link-custom" asp-action="Modulo" asp-route-pagina="@Model.TotalPagias" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Última">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <!-- Estado vacío -->
+        <div class="estado-vacio">
+            <i class="fas fa-concierge-bell"></i>
+            <h4>No hay servicios registrados</h4>
+            <p>No se encontraron servicios en el sistema.</p>
+            <a asp-action="RegistrarServicio" class="btn-principal">
+                <i class="fas fa-plus-circle"></i> Crear Primer Servicio
+            </a>
+        </div>
+    }
+</div>

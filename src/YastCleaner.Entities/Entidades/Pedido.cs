@@ -24,11 +24,7 @@ namespace YastCleaner.Entities.Entidades
         public MetodoPago MetodoPago { get; set; }  
         public EstadoPedido Estado { get; set; }
         public DateTime FechaRegistro { get; set; }
-
-
         public ICollection<DetallePedido> DetallePedidos { get; set; } = new List<DetallePedido>();
-
-
         public PedidoEntregado PedidoEntregado { get; set; }
         public PedidoAnulado PedidoAnulado { get; set; }
     }

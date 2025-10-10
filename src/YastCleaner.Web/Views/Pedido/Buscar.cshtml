@@ -1,16 +1,68 @@
-﻿<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
-        <h1 class="text-center mb-4">Ingresar Código Pedido</h1>
+﻿@{
+    ViewData["Title"] = "Consultar Pedido";
+}
 
-        <form asp-controller="Pedido" asp-action="Consultar" method="get">
-            <div class="mb-3">
-                <label for="codigoPedido" class="form-label">Código Pedido</label>
-                <input type="text" id="codigoPedido" name="codigoPedido" class="form-control" required />
-            </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/ConsultarPedido.css" />
+}
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Consultar</button>
+<div class="consultar-container">
+    <div class="consultar-card">
+        <!-- Header de la tarjeta -->
+        <div class="card-header-custom">
+            <i class="fas fa-search me-2"></i>
+            <h1 class="card-title">Consultar Estado de Pedido</h1>
+        </div>
+
+        <!-- Contenido de la tarjeta -->
+        <div class="card-body-custom">
+            <p class="card-description">
+                Ingresa el código de tu pedido para consultar su estado actual y detalles del servicio.
+            </p>
+
+            <form asp-controller="Pedido" asp-action="Consultar" method="get" class="consultar-form">
+                <div class="form-group-custom">
+                    <label for="codigoPedido" class="form-label-custom">
+                        <i class="fas fa-barcode me-2"></i>Código del Pedido
+                    </label>
+                    <div class="input-group-custom">
+                        <input type="text"
+                               id="codigoPedido"
+                               name="codigoPedido"
+                               class="form-control-custom"
+                               placeholder="Ej: PED-123456"
+                               required
+                               autocomplete="off" />
+                        <i class="fas fa-clipboard-list input-icon"></i>
+                    </div>
+                    <div class="form-hint">
+                        El código del pedido se encuentra en tu comprobante de servicio
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-consultar">
+                        <i class="fas fa-search me-2"></i>
+                        Consultar Estado
+                    </button>
+                </div>
+            </form>
+
+            <!-- Información adicional -->
+            <div class="additional-info">
+                <div class="info-item">
+                    <i class="fas fa-info-circle text-primary"></i>
+                    <span>Consulta el estado de tu pedido en tiempo real</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock text-warning"></i>
+                    <span>Información actualizada del progreso</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-user-check text-success"></i>
+                    <span>Detalles del trabajador asignado</span>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>

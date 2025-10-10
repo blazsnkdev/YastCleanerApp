@@ -1,8 +1,204 @@
-﻿
-@{
-    ViewData["Title"] = "Confirmacion";
+﻿@{
+    ViewData["Title"] = "Confirmación";
 }
 
-<h1>Confirmacion</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Confirmacion.css" />
+}
 
-<h3>@TempData["Mensaje"]</h3>
+<div class="confirmacion-container">
+    <div class="confirmacion-card">
+        <!-- Icono de estado -->
+        <div class="confirmacion-icono">
+            @if (TempData["TipoMensaje"]?.ToString() == "error")
+            {
+                <i class="fas fa-times-circle"></i>
+            }
+            else if (TempData["TipoMensaje"]?.ToString() == "warning")
+            {
+                <i class="fas fa-exclamation-triangle"></i>
+            }
+            else
+            {
+                <i class="fas fa-check-circle"></i>
+            }
+        </div>
+
+        <!-- Título principal -->
+        <h1 class="confirmacion-titulo">
+            @if (TempData["TipoMensaje"]?.ToString() == "error")
+            {
+                <text>Operación No Completada</text>
+            }
+            else if (TempData["TipoMensaje"]?.ToString() == "warning")
+            {
+                <text>Atención Requerida</text>
+            }
+            else
+            {
+                <text>¡Operación Exitosa!</text>
+            }
+        </h1>
+
+        <!-- Mensaje principal -->
+        <div class="confirmacion-mensaje">
+            <p>@TempData["Mensaje"]</p>
+        </div>
+
+        <!-- Detalles adicionales -->
+        @if (TempData["Detalles"] != null)
+        {
+            <div class="confirmacion-detalles">
+                <i class="fas fa-info-circle me-2"></i>
+                <span>@TempData["Detalles"]</span>
+            </div>
+        }
+
+        <!-- Información de referencia -->
+        @if (TempData["CodigoReferencia"] != null)
+        {
+            <div class="referencia-codigo">
+                <label>Código de Referencia:</label>
+                <span class="codigo">@TempData["CodigoReferencia"]</span>
+            </div>
+        }
+
+        <!-- Tiempo de la operación -->
+        @if (TempData["TiempoOperacion"] != null)
+        {
+            <div class="tiempo-operacion">
+                <i class="fas fa-clock me-2"></i>
+                <span>@TempData["TiempoOperacion"]</span>
+            </div>
+        }
+
+        <!-- Acciones -->
+        <div class="confirmacion-acciones">
+            @if (TempData["UrlContinuar"] != null)
+            {
+                <a href="@TempData["UrlContinuar"]" class="btn-continuar">
+                    <i class="fas fa-arrow-right me-2"></i>
+                    @(TempData["TextoContinuar"] ?? "Continuar")
+                </a>
+            }
+
+            @if (TempData["UrlVolver"] != null)
+            {
+                <a href="@TempData["UrlVolver"]" class="btn-volver">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    @(TempData["TextoVolver"] ?? "Volver")
+                </a>
+            }
+            else
+            {
+                <a href="javascript:history.back()" class="btn-volver">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Volver Atrás
+                </a>
+            }
+
+            @if (TempData["UrlInicio"] != null)
+            {
+                <a href="@TempData["UrlInicio"]" class="btn-inicio">
+                    <i class="fas fa-home me-2"></i>
+                    Ir al Inicio
+                </a>
+            }
+        </div>
+
+        <!-- Información adicional -->
+        <div class="informacion-adicional">
+            <div class="info-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>@DateTime.Now.ToString("dd/MM/yyyy")</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <span>@DateTime.Now.ToString("hh:mm:ss tt")</span>
+            </div>
+            @if (TempData["Usuario"] != null)
+            {
+                <div class="info-item">
+                    <i class="fas fa-user"></i>
+                    <span>@TempData["Usuario"]</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Efectos visuales -->
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animación de entrada
+            const card = document.querySelector('.confirmacion-card');
+            card.style.animation = 'slideInUp 0.8s ease';
+
+            // Efectos de confetti para éxito
+            const tipoMensaje = '@TempData["TipoMensaje"]';
+            if (!tipoMensaje || tipoMensaje === 'success') {
+                crearConfetti();
+            }
+
+            // Auto-redirección si está configurada
+            const urlRedireccion = '@TempData["UrlRedireccion"]';
+            const tiempoRedireccion = '@TempData["TiempoRedireccion"]';
+
+            if (urlRedireccion && tiempoRedireccion) {
+                const tiempo = parseInt(tiempoRedireccion) || 5000;
+                setTimeout(() => {
+                    window.location.href = urlRedireccion;
+                }, tiempo);
+
+                // Mostrar contador
+                mostrarContadorRedireccion(tiempo);
+            }
+
+            function crearConfetti() {
+                const confettiElements = document.querySelectorAll('.confetti');
+                confettiElements.forEach((confetti, index) => {
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.animationDelay = (index * 0.2) + 's';
+                    confetti.style.background = getRandomColor();
+                });
+            }
+
+            function getRandomColor() {
+                const colors = [
+                    '#592af5', '#7b52ff', '#0abb87', '#ffa800',
+                    '#17a2b8', '#f64e60', '#ff6b9d', '#00c9ff'
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            function mostrarContadorRedireccion(tiempo) {
+                const contador = document.createElement('div');
+                contador.className = 'contador-redireccion';
+                contador.innerHTML = `
+                    <div class="contador-content">
+                        <i class="fas fa-clock me-2"></i>
+                        Redirigiendo en <span id="segundos">${tiempo/1000}</span> segundos...
+                    </div>
+                `;
+                document.querySelector('.confirmacion-acciones').appendChild(contador);
+
+                let segundos = tiempo / 1000;
+                const intervalo = setInterval(() => {
+                    segundos--;
+                    document.getElementById('segundos').textContent = segundos;
+
+                    if (segundos <= 0) {
+                        clearInterval(intervalo);
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+}
