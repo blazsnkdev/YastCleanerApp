@@ -1,0 +1,535 @@
+﻿/* ESTILOS ESPECÍFICOS PARA SELECCIÓN DE SERVICIO */
+.seleccionar-container {
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);
+}
+
+.seleccionar-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(89, 42, 245, 0.15);
+    overflow: hidden;
+    max-width: 900px;
+    width: 100%;
+}
+
+.card-header-custom {
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    color: white;
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+    .header-content i {
+        font-size: 2.5rem;
+        opacity: 0.9;
+    }
+
+.card-title {
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin: 0;
+}
+
+.card-subtitle {
+    opacity: 0.9;
+    margin: 5px 0 0 0;
+    font-size: 1.1rem;
+}
+
+.servicio-badge .badge-estado {
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-activo {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.badge-inactivo {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-body-custom {
+    padding: 40px;
+}
+
+/* Sección de información del servicio */
+.servicio-info-section {
+    margin-bottom: 40px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+    .section-header h3 {
+        color: #592af5;
+        font-weight: 600;
+        font-size: 1.4rem;
+        margin: 0;
+    }
+
+    .section-header i {
+        color: #592af5;
+        font-size: 1.2rem;
+    }
+
+.servicio-details {
+    display: grid;
+    gap: 20px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 25px;
+    background: #f8f9ff;
+    border-radius: 12px;
+    border-left: 4px solid #592af5;
+    transition: all 0.3s ease;
+}
+
+    .detail-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+.detail-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.detail-content {
+    flex: 1;
+}
+
+    .detail-content label {
+        display: block;
+        color: #666;
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+.detail-value {
+    display: block;
+    color: #333;
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.detail-price {
+    display: block;
+    color: #0abb87;
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+/* Formulario */
+.seleccionar-form {
+    margin-top: 30px;
+}
+
+.form-section {
+    margin-bottom: 40px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.form-group-custom {
+    margin-bottom: 0;
+}
+
+.form-label-custom {
+    display: block;
+    color: #592af5;
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+/* Control de cantidad mejorado */
+.cantidad-control-large {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fafafa;
+    border: 2px solid #eaeaea;
+    border-radius: 12px;
+    padding: 5px;
+    transition: all 0.3s ease;
+}
+
+    .cantidad-control-large.focused {
+        border-color: #592af5;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(89, 42, 245, 0.1);
+    }
+
+.btn-cantidad {
+    width: 50px;
+    height: 50px;
+    border: none;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    color: #592af5;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    .btn-cantidad:hover {
+        background: #592af5;
+        color: white;
+        transform: scale(1.05);
+    }
+
+.input-cantidad-large {
+    width: 80px;
+    height: 50px;
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    background: transparent;
+    color: #333;
+}
+
+    .input-cantidad-large:focus {
+        outline: none;
+        background: white;
+    }
+
+.form-hint {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Resumen del pedido */
+.resumen-pedido-card {
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);
+    border: 2px solid #eaeaea;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.resumen-header {
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .resumen-header h4 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+.resumen-body {
+    padding: 25px;
+}
+
+.resumen-linea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(89, 42, 245, 0.1);
+}
+
+    .resumen-linea:last-child {
+        border-bottom: none;
+    }
+
+    .resumen-linea.total {
+        border-top: 2px solid rgba(89, 42, 245, 0.2);
+        margin-top: 10px;
+        padding-top: 20px;
+        font-weight: 700;
+    }
+
+.resumen-valor {
+    font-weight: 600;
+    color: #333;
+}
+
+.total-pagar {
+    font-size: 1.5rem;
+    color: #0abb87;
+    font-weight: 700;
+}
+
+/* Botones de acción */
+.acciones-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 30px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.acciones-grupo {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-volver {
+    background: white;
+    color: #592af5;
+    border: 2px solid #592af5;
+    padding: 15px 25px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+    .btn-volver:hover {
+        background: #592af5;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+.btn-carrito {
+    background: #fff4e6;
+    color: #ffa800;
+    border: 2px solid #ffa800;
+    padding: 15px 25px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .btn-carrito:hover {
+        background: #ffa800;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+.carrito-badge {
+    background: #f64e60;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+}
+
+.btn-agregar-carrito {
+    background: linear-gradient(135deg, #0abb87 0%, #1cd1a1 100%);
+    color: white;
+    border: none;
+    padding: 18px 35px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .btn-agregar-carrito:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(10, 187, 135, 0.3);
+    }
+
+/* Animaciones */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.seleccionar-card {
+    animation: slideInUp 0.8s ease;
+}
+
+@keyframes pulseUpdate {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.updating {
+    animation: pulseUpdate 0.3s ease;
+}
+
+/* Notificación de error */
+.error-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #f64e60;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(246, 78, 96, 0.3);
+    z-index: 1000;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+    .error-notification.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .seleccionar-container {
+        padding: 15px;
+    }
+
+    .card-header-custom {
+        padding: 30px 25px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .card-body-custom {
+        padding: 30px 25px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .acciones-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .acciones-grupo {
+        justify-content: center;
+    }
+
+    .btn-volver, .btn-carrito, .btn-agregar-carrito {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-title {
+        font-size: 1.8rem;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .cantidad-control-large {
+        justify-content: center;
+    }
+
+    .resumen-linea {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+    }
+}
+
+/* Efectos de validación */
+.was-validated .input-cantidad-large:invalid {
+    border: 2px solid #f64e60;
+    background: #fff5f5;
+}
+
+.was-validated .input-cantidad-large:valid {
+    border: 2px solid #0abb87;
+    background: #f0fff8;
+}

@@ -4,101 +4,155 @@
     ViewData["Title"] = "Seleccionar Servicio";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="card-title mb-0 text-center">Seleccionar Servicio</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Seleccionar.css" />
+}
+
+<div class="seleccionar-container">
+    <div class="seleccionar-card">
+        <!-- Header de la tarjeta -->
+        <div class="card-header-custom">
+            <div class="header-content">
+                <i class="fas fa-concierge-bell me-3"></i>
+                <div>
+                    <h1 class="card-title">Seleccionar Servicio</h1>
+                    <p class="card-subtitle">Complete los detalles para agregar al carrito</p>
                 </div>
-                <div class="card-body">
-                    <!-- Información del Servicio -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h4 class="text-primary text-center">Información del Servicio</h4>
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <tbody>
-                                        <tr>
-                                            <th class="bg-light">Nombre</th>
-                                            <td>@Html.DisplayFor(model => model.Nombre)</td>
-                                        </tr>
-                                        <tr>
-                                            <th class="bg-light">Precio</th>
-                                            <td class="fw-bold text-success">S/ @Html.DisplayFor(model => model.Precio)</td>
-                                        </tr>
-                                        <tr>
-                                            <th class="bg-light">Descripción</th>
-                                            <td>@Html.DisplayFor(model => model.Descripcion)</td>
-                                        </tr>
-                                        <tr>
-                                            <th class="bg-light">Estado</th>
-                                            <td>
-                                                <span class="badge @(Model.Estado == "Activo" ? "bg-success" : "bg-warning")">
-                                                    @Html.DisplayFor(model => model.Estado)
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+            </div>
+            <div class="servicio-badge">
+                <span class="badge-estado @(Model.Estado == "Activo" ? "badge-activo" : "badge-inactivo")">
+                    @Model.Estado
+                </span>
+            </div>
+        </div>
+
+        <div class="card-body-custom">
+            <div class="seleccionar-content">
+                <!-- Información del Servicio -->
+                <div class="servicio-info-section">
+                    <div class="section-header">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <h3>Información del Servicio</h3>
+                    </div>
+
+                    <div class="servicio-details">
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-tag"></i>
+                            </div>
+                            <div class="detail-content">
+                                <label>Nombre del Servicio</label>
+                                <span class="detail-value">@Model.Nombre</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="detail-content">
+                                <label>Precio Unitario</label>
+                                <span class="detail-price">S/ @Model.Precio.ToString("N2")</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="detail-content">
+                                <label>Descripción</label>
+                                <span class="detail-value">@Model.Descripcion</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Selección -->
+                <form asp-controller="Servicio" asp-action="Seleccionar" method="post" class="seleccionar-form" id="seleccionarForm">
+                    @Html.Hidden("servicioId", Model.ServicioId)
+
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            <h3>Configurar Pedido</h3>
+                        </div>
+
+                        <div class="form-grid">
+                            <!-- Control de Cantidad -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-cubes me-2"></i>
+                                    Cantidad Requerida
+                                </label>
+                                <div class="cantidad-control-large">
+                                    <button type="button" class="btn-cantidad btn-decrement" onclick="modificarCantidad(-1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number"
+                                           id="cantidad"
+                                           name="cantidad"
+                                           value="1"
+                                           min="1"
+                                           max="30"
+                                           class="input-cantidad-large"
+                                           required
+                                           oninput="calcularTotal()" />
+                                    <button type="button" class="btn-cantidad btn-increment" onclick="modificarCantidad(1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="form-hint">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Mínimo: 1 unidad, Máximo: 30 unidades
+                                </div>
+                            </div>
+
+                            <!-- Resumen del Pedido -->
+                            <div class="resumen-pedido-card">
+                                <div class="resumen-header">
+                                    <i class="fas fa-receipt me-2"></i>
+                                    <h4>Resumen del Pedido</h4>
+                                </div>
+                                <div class="resumen-body">
+                                    <div class="resumen-linea">
+                                        <span>Precio unitario:</span>
+                                        <span class="resumen-valor">S/ <span id="precioUnitario">@Model.Precio.ToString("N2")</span></span>
+                                    </div>
+                                    <div class="resumen-linea">
+                                        <span>Cantidad:</span>
+                                        <span class="resumen-valor"><span id="cantidadDisplay">1</span> unidades</span>
+                                    </div>
+                                    <div class="resumen-linea total">
+                                        <span>Total a pagar:</span>
+                                        <span class="total-pagar">S/ <span id="totalCalculado">@Model.Precio.ToString("N2")</span></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Formulario de Selección -->
-                    <form asp-controller="Servicio" asp-action="Seleccionar" method="post" class="needs-validation" novalidate>
-                        @Html.Hidden("servicioId", Model.ServicioId)
+                    <!-- Botones de Acción -->
+                    <div class="acciones-section">
+                        <div class="acciones-grupo">
+                            <a asp-controller="Servicio" asp-action="Servicios" class="btn-volver">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver a Servicios
+                            </a>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="cantidad" class="form-label fw-bold">Cantidad:</label>
-                                    <div class="input-group">
-                                        <input type="number"
-                                               id="cantidad"
-                                               name="cantidad"
-                                               value="1"
-                                               min="1"
-                                               max="30"
-                                               class="form-control form-control-lg"
-                                               required
-                                               oninput="calcularTotal()" />
-                                        <span class="input-group-text">unidades</span>
-                                    </div>
-                                    <div class="form-text">Mínimo: 1, Máximo: 30 unidades</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="bg-light p-3 rounded">
-                                    <h5 class="mb-2">Resumen del Pedido</h5>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Precio unitario:</span>
-                                        <span class="fw-bold">S/ <span id="precioUnitario">@Model.Precio</span></span>
-                                    </div>
-                                    <div class="d-flex justify-content-between mt-2">
-                                        <span>Total:</span>
-                                        <span class="fw-bold fs-5 text-success">S/ <span id="totalCalculado">@Model.Precio</span></span>
-                                    </div>
-                                </div>
-                            </div>
+                            <a asp-controller="Pedido" asp-action="Temporal" class="btn-carrito">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                Ver Carrito
+                                <span class="carrito-badge" id="carritoCount">0</span>
+                            </a>
                         </div>
 
-                        <hr class="my-4" />
-
-                        <!-- Botones de Acción -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-controller="Servicio" asp-action="Servicios" class="btn btn-outline-secondary me-md-2">
-                                <i class="fas fa-arrow-left"></i> Volver a Servicios
-                            </a>
-                            <a asp-controller="Pedido" asp-action="Temporal" class="btn btn-info me-md-2">
-                                <i class="fas fa-shopping-cart"></i> Ver Carrito
-                            </a>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-cart-plus"></i> Agregar al Carrito
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                        <button type="submit" class="btn-agregar-carrito">
+                            <i class="fas fa-cart-plus me-2"></i>
+                            Agregar al Carrito
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -106,25 +160,96 @@
 
 @section Scripts {
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calcular total inicial
+            calcularTotal();
+
+            // Obtener cantidad actual del carrito (simulado)
+            actualizarContadorCarrito();
+
+            // Validación del formulario
+            const form = document.getElementById('seleccionarForm');
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mostrarError('Por favor complete todos los campos requeridos correctamente.');
+                }
+
+                form.classList.add('was-validated');
+            });
+        });
+
+        function modificarCantidad(cambio) {
+            const input = document.getElementById('cantidad');
+            let nuevaCantidad = parseInt(input.value) + cambio;
+
+            if (nuevaCantidad < 1) nuevaCantidad = 1;
+            if (nuevaCantidad > 30) nuevaCantidad = 30;
+
+            input.value = nuevaCantidad;
+            calcularTotal();
+        }
+
         function calcularTotal() {
-            const cantidad = document.getElementById('cantidad').value;
+            const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
             const precioUnitario = @Model.Precio;
             const total = cantidad * precioUnitario;
+
             document.getElementById('totalCalculado').textContent = total.toFixed(2);
+            document.getElementById('cantidadDisplay').textContent = cantidad;
+
+            // Efecto visual al cambiar cantidad
+            const totalElement = document.getElementById('totalCalculado');
+            totalElement.classList.add('updating');
+            setTimeout(() => totalElement.classList.remove('updating'), 300);
         }
-        (function () {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
+
+        function actualizarContadorCarrito() {
+            // Simular obtención del conteo del carrito
+            // En una implementación real, esto vendría de una API o ViewBag
+            const carritoCount = Math.floor(Math.random() * 5); // Simulado
+            const badge = document.getElementById('carritoCount');
+            badge.textContent = carritoCount;
+
+            if (carritoCount > 0) {
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function mostrarError(mensaje) {
+            // Crear notificación de error
+            const notification = document.createElement('div');
+            notification.className = 'error-notification';
+            notification.innerHTML = `
+                <i class="fas fa-exclamation-circle me-2"></i>
+                ${mensaje}
+            `;
+
+            document.body.appendChild(notification);
+
+            // Mostrar y luego remover
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Efectos de interacción
+        document.getElementById('cantidad').addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+
+        document.getElementById('cantidad').addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
     </script>
 }
