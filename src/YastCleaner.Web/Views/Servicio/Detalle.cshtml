@@ -1,58 +1,302 @@
 ﻿@model YastCleaner.Web.ViewModels.DetalleServicioViewModel
 
 @{
-    ViewData["Title"] = "Detalle";
+    ViewData["Title"] = "Detalle del Servicio";
 }
 
-<h1>Detalle</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/DetalleServicio.css" />
+}
 
-<div>
-    <h4>Servicio</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Precio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Precio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CantidadDetalles)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CantidadDetalles)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MontoGenerado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MontoGenerado)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Modulo" class="btn btn-secondary">Regresar</a> |
-    <form asp-action="Eliminar" asp-route-servicioId="@Model.ServicioId" method="post" onsubmit="return confirm('¿Está seguro?');">
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-    </form>
+<div class="detalle-servicio-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">
+                <i class="fas fa-concierge-bell me-3"></i>
+                Detalle del Servicio
+            </h1>
+            <div class="servicio-badge">
+                <span class="badge-estado @(Model.Estado == "Activo" ? "badge-activo" : "badge-inactivo")">
+                    @Model.Estado
+                </span>
+            </div>
+        </div>
+        <p class="page-subtitle">Información completa y estadísticas del servicio</p>
+    </div>
 
-    <a asp-action="EditarServicio" asp-route-servicioId="@Model.ServicioId" class="btn btn-warning"> Editar</a>
+    <div class="detalle-content">
+        <div class="row">
+            <!-- Información Principal -->
+            <div class="col-lg-8">
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <h3>Información del Servicio</h3>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Nombre del Servicio</label>
+                                    <span class="info-value">@Model.Nombre</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Descripción</label>
+                                    <span class="info-value">@Model.Descripcion</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Precio del Servicio</label>
+                                    <span class="info-price">S/ @Model.Precio.ToString("N2")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="col-lg-4">
+                <div class="stats-card">
+                    <div class="card-header-custom bg-primary">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        <h3>Estadísticas</h3>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <span class="stat-value">@Model.CantidadDetalles</span>
+                                    <span class="stat-label">Pedidos Realizados</span>
+                                </div>
+                            </div>
+
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <span class="stat-value">S/ @Model.MontoGenerado.ToString("N2")</span>
+                                    <span class="stat-label">Monto Generado</span>
+                                </div>
+                            </div>
+
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="stat-content">
+                                    @{
+                                        var promedioPedido = Model.CantidadDetalles > 0 ? Model.MontoGenerado / Model.CantidadDetalles : 0;
+                                    }
+                                    <span class="stat-value">S/ @promedioPedido.ToString("N2")</span>
+                                    <span class="stat-label">Promedio por Pedido</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Adicional -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="additional-info-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-chart-line me-2"></i>
+                        <h3>Rendimiento del Servicio</h3>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="performance-grid">
+                            <div class="performance-item">
+                                <div class="performance-icon success">
+                                    <i class="fas fa-trend-up"></i>
+                                </div>
+                                <div class="performance-content">
+                                    <span class="performance-value">@Model.CantidadDetalles</span>
+                                    <span class="performance-label">Total de Ventas</span>
+                                    <div class="performance-bar">
+                                        <div class="performance-fill" style="width: @(Math.Min(Model.CantidadDetalles * 10, 100))%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="performance-item">
+                                <div class="performance-icon warning">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                                <div class="performance-content">
+                                    <span class="performance-value">S/ @Model.MontoGenerado.ToString("N2")</span>
+                                    <span class="performance-label">Ingreso Total</span>
+                                    <div class="performance-bar">
+                                        <div class="performance-fill" style="width: @(Math.Min((Model.MontoGenerado / 1000) * 10, 100))%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="performance-item">
+                                <div class="performance-icon info">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                                <div class="performance-content">
+                                    <span class="performance-value">@(Model.CantidadDetalles > 0 ? "Alta" : "Baja")</span>
+                                    <span class="performance-label">Demanda</span>
+                                    <div class="performance-bar">
+                                        <div class="performance-fill" style="width: @(Model.CantidadDetalles > 10 ? 100 : Model.CantidadDetalles * 10)%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="acciones-section">
+            <div class="acciones-header">
+                <i class="fas fa-cogs me-2"></i>
+                <h3>Acciones del Servicio</h3>
+            </div>
+            <div class="acciones-grid">
+                <a asp-action="Modulo" class="btn-accion btn-volver">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Volver al Listado
+                </a>
+
+                <a asp-action="EditarServicio" asp-route-servicioId="@Model.ServicioId" class="btn-accion btn-editar">
+                    <i class="fas fa-edit me-2"></i>
+                    Editar Servicio
+                </a>
+
+                <div class="btn-group-eliminar">
+                    <form asp-action="Eliminar" asp-route-servicioId="@Model.ServicioId" method="post" class="d-inline eliminar-form">
+                        <button type="submit" class="btn-accion btn-eliminar" onclick="return confirmarEliminacion(this)">
+                            <i class="fas fa-trash me-2"></i>
+                            Eliminar Servicio
+                        </button>
+                    </form>
+                </div>
+
+                <a href="@Url.Action("Servicios", "Servicio")" class="btn-accion btn-comprar">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    Usar en Pedido
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Modal de Confirmación de Eliminación -->
+<div class="modal-confirmacion" id="modalEliminar">
+    <div class="modal-content">
+        <div class="modal-header warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <h3>Confirmar Eliminación</h3>
+            <button type="button" class="btn-cerrar" onclick="cerrarModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="advertencia-eliminacion">
+                <h4>¿Está seguro que desea eliminar este servicio?</h4>
+                <div class="detalles-eliminacion">
+                    <div class="detalle-item">
+                        <strong>Servicio:</strong> @Model.Nombre
+                    </div>
+                    <div class="detalle-item">
+                        <strong>Precio:</strong> S/ @Model.Precio.ToString("N2")
+                    </div>
+                    <div class="detalle-item">
+                        <strong>Pedidos realizados:</strong> @Model.CantidadDetalles
+                    </div>
+                </div>
+                <div class="advertencia-texto">
+                    <i class="fas fa-exclamation-circle text-warning me-2"></i>
+                    <span>Esta acción no se puede deshacer y afectará los registros asociados.</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal btn-cancelar" onclick="cerrarModal()">
+                <i class="fas fa-times me-2"></i>
+                Cancelar
+            </button>
+            <form asp-action="Eliminar" asp-route-servicioId="@Model.ServicioId" method="post" id="formEliminar">
+                <button type="submit" class="btn-modal btn-confirmar">
+                    <i class="fas fa-check me-2"></i>
+                    Sí, Eliminar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmarEliminacion(button) {
+            // Mostrar modal personalizado en lugar de confirm nativo
+            event.preventDefault();
+            document.getElementById('modalEliminar').style.display = 'flex';
+            return false;
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalEliminar').style.display = 'none';
+        }
+
+        // Confirmar eliminación desde el modal
+        document.querySelector('.btn-confirmar').addEventListener('click', function() {
+            document.getElementById('formEliminar').submit();
+        });
+
+        // Efectos visuales
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animación de las barras de progreso
+            const bars = document.querySelectorAll('.performance-fill');
+            bars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+
+            // Efecto hover en tarjetas
+            const cards = document.querySelectorAll('.info-card, .stats-card, .additional-info-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+
+        // Mostrar/ocultar detalles adicionales
+        function toggleDetalles() {
+            const detalles = document.querySelector('.additional-info-card');
+            detalles.classList.toggle('collapsed');
+        }
+    </script>
+}

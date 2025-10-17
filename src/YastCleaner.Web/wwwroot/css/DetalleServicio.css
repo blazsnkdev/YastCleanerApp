@@ -1,0 +1,854 @@
+﻿/* ESTILOS ESPECÍFICOS PARA DETALLE DE SERVICIO */
+.detalle-servicio-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.page-title {
+    color: #592af5;
+    font-weight: 700;
+    margin: 0;
+    font-size: 2.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.page-subtitle {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.servicio-badge .badge-estado {
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-activo {
+    background: #e6f7ee;
+    color: #0abb87;
+}
+
+.badge-inactivo {
+    background: #ffeaea;
+    color: #f64e60;
+}
+
+/* Tarjetas generales */
+.info-card, .stats-card, .additional-info-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card-header-custom {
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+    .card-header-custom.bg-primary {
+        background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%) !important;
+        color: white;
+    }
+
+    .card-header-custom h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.4rem;
+    }
+
+.card-body-custom {
+    padding: 30px;
+}
+
+/* Grid de información */
+.info-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 12px;
+    border-left: 4px solid #592af5;
+    transition: all 0.3s ease;
+}
+
+    .info-item:hover {
+        transform: translateX(5px);
+        background: #f8f9ff;
+    }
+
+.info-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+}
+
+    .info-content label {
+        display: block;
+        color: #666;
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+.info-value {
+    display: block;
+    color: #333;
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.info-price {
+    display: block;
+    color: #0abb87;
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+/* Estadísticas */
+.stats-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: #f8f9ff;
+    border-radius: 12px;
+    border: 2px solid #eaeaea;
+    transition: all 0.3s ease;
+}
+
+    .stat-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-color: #592af5;
+    }
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #592af5;
+    line-height: 1;
+}
+
+.stat-label {
+    color: #666;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Rendimiento */
+.performance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.performance-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    background: #fafafa;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+    .performance-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+.performance-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+    .performance-icon.success {
+        background: #e6f7ee;
+        color: #0abb87;
+    }
+
+    .performance-icon.warning {
+        background: #fff4e6;
+        color: #ffa800;
+    }
+
+    .performance-icon.info {
+        background: #e3f2fd;
+        color: #2196f3;
+    }
+
+.performance-content {
+    flex: 1;
+}
+
+.performance-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.performance-label {
+    color: #666;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.performance-bar {
+    width: 100%;
+    height: 6px;
+    background: #eaeaea;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.performance-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    border-radius: 3px;
+    transition: width 1s ease-in-out;
+}
+
+/* Sección de acciones */
+/*.acciones-section {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+    overflow: hidden;
+}*/
+
+.acciones-header {
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+    .acciones-header h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.4rem;
+        color: #592af5;
+    }
+
+.acciones-grid {
+    padding: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+/*.btn-accion {
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    min-height: 60px;
+}
+
+.btn-volver {
+    background: white;
+    color: #592af5;
+    border: 2px solid #592af5;
+}
+
+    .btn-volver:hover {
+        background: #592af5;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+.btn-editar {
+    background: #fff4e6;
+    color: #ffa800;
+    border: 2px solid #ffa800;
+}
+
+    .btn-editar:hover {
+        background: #ffa800;
+        color: white;
+        transform: translateY(-2px);
+    }*/
+/*
+.btn-eliminar {
+    background: #ffeaea;
+    color: #f64e60;
+    border: 2px solid #f64e60;
+}
+
+    .btn-eliminar:hover {
+        background: #f64e60;
+        color: white;
+        transform: translateY(-2px);
+    }*/
+
+/*.btn-comprar {
+    background: #e6f7ee;
+    color: #0abb87;
+    border: 2px solid #0abb87;
+}
+
+    .btn-comprar:hover {
+        background: #0abb87;
+        color: white;
+        transform: translateY(-2px);
+    }*/
+
+/* Modal de confirmación */
+.modal-confirmacion {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #eaeaea;
+}
+
+    .modal-header.warning {
+        background: #fffaf0;
+        border-bottom-color: #ffa800;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        color: #333;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+/*
+.btn-cerrar {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+    .btn-cerrar:hover {
+        color: #f64e60;
+    }*/
+
+.modal-body {
+    padding: 30px;
+}
+
+.advertencia-eliminacion h4 {
+    color: #f64e60;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.detalles-eliminacion {
+    background: #f8f9ff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 4px solid #592af5;
+}
+
+.detalle-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+    .detalle-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+    }
+
+.advertencia-texto {
+    background: #fff5f5;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    color: #f64e60;
+}
+
+.modal-footer {
+    padding: 20px 30px;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.btn-modal {
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+/*
+.btn-cancelar {
+    background: white;
+    color: #666;
+    border: 2px solid #666;
+}
+
+    .btn-cancelar:hover {
+        background: #666;
+        color: white;
+    }
+
+.btn-confirmar {
+    background: linear-gradient(135deg, #f64e60 0%, #ff6b9d 100%);
+    color: white;
+}
+
+    .btn-confirmar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(246, 78, 96, 0.3);
+    }*/
+
+/* Responsive */
+@media (max-width: 992px) {
+    .performance-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .acciones-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .detalle-servicio-container {
+        padding: 15px;
+    }
+
+    .page-header {
+        padding: 25px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .info-item, .stat-item, .performance-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .card-body-custom {
+        padding: 20px;
+    }
+
+    .acciones-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-title {
+        font-size: 1.8rem;
+    }
+
+    .btn-accion {
+        min-height: 50px;
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animaciones */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.detalle-content {
+    animation: slideInUp 0.6s ease;
+}
+
+@keyframes growWidth {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: var(--final-width);
+    }
+}
+
+
+/*.btn-group-eliminar {
+    display: inline-flex;
+}
+
+    .btn-group-eliminar .btn-accion {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px 20px;
+        font-weight: 600;
+        border-radius: 10px;
+        border: 2px solid #ff4b5c;
+        color: #ff4b5c;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-weight: 600;
+        text-align: center;
+    }*/
+
+/*.btn-accion {
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    min-height: 60px;
+}
+*/
+        /*.btn-group-eliminar .btn-accion:hover {
+            background-color: #ff4b5c;
+            color: white;
+        }
+
+    .btn-group-eliminar button {
+        all: unset;*/ /* ❗️Esto quita estilos por defecto del botón */
+        /*cursor: pointer;
+    }
+
+    .btn-group-eliminar form {
+        margin: 0;
+    }*/
+
+
+/* Sección de acciones - ESTILOS UNIFICADOS */
+.acciones-section {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+.acciones-header {
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%);
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+    .acciones-header h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.4rem;
+        color: #592af5;
+    }
+
+.acciones-grid {
+    padding: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+/* ESTILOS BASE UNIFICADOS PARA TODOS LOS BOTONES */
+.btn-accion {
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    cursor: pointer;
+    text-align: center;
+    min-height: 60px;
+    background: white;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Botón Volver */
+.btn-volver {
+    color: #592af5;
+    border-color: #592af5;
+    background: white;
+}
+
+    .btn-volver:hover {
+        background: #592af5;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(89, 42, 245, 0.3);
+    }
+
+/* Botón Editar */
+.btn-editar {
+    color: #ffa800;
+    border-color: #ffa800;
+    background: white;
+}
+
+    .btn-editar:hover {
+        background: #ffa800;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 168, 0, 0.3);
+    }
+
+/* Botón Eliminar - CORREGIDO */
+.btn-eliminar {
+    color: #f64e60;
+    border-color: #f64e60;
+    background: white;
+}
+
+    .btn-eliminar:hover {
+        background: #f64e60;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(246, 78, 96, 0.3);
+    }
+
+/* Botón Comprar */
+.btn-comprar {
+    color: #0abb87;
+    border-color: #0abb87;
+    background: white;
+}
+
+    .btn-comprar:hover {
+        background: #0abb87;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(10, 187, 135, 0.3);
+    }
+
+/* CORRECCIÓN ESPECÍFICA PARA EL BOTÓN ELIMINAR */
+.btn-group-eliminar {
+    display: flex;
+    width: 100%;
+}
+
+    .btn-group-eliminar form {
+        margin: 0;
+        width: 100%;
+        display: flex;
+    }
+
+    .btn-group-eliminar .btn-accion {
+        margin: 0;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-group-eliminar button {
+        all: unset;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        border: 2px solid #f64e60;
+        color: #f64e60;
+        background: white;
+        transition: all 0.3s ease;
+        min-height: 60px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+        .btn-group-eliminar button:hover {
+            background: #f64e60;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(246, 78, 96, 0.3);
+        }
+
+    /* Asegurar que todos los enlaces tengan la misma altura */
+    .acciones-grid a,
+    .btn-group-eliminar button {
+        min-height: 60px;
+        align-items: center;
+    }
+
+/* Responsive */
+@media (max-width: 992px) {
+    .acciones-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .acciones-grid {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+
+    .acciones-header {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn-accion,
+    .btn-group-eliminar button {
+        min-height: 50px;
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+}
