@@ -1,45 +1,350 @@
 ﻿@model YastCleaner.Web.ViewModels.EditarServicioViewModel
 
 @{
-    ViewData["Title"] = "EditarServicio";
+    ViewData["Title"] = "Editar Servicio";
 }
 
-<h1>EditarServicio</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/EditarServicio.css" />
+}
 
-<h4>ServicioViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-controller="Servicio" asp-action="EditarServicio" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ServicioId" class="control-label"></label>
-                <input asp-for="ServicioId" class="form-control" type="hidden"/>
-                <span asp-validation-for="ServicioId" class="text-danger"></span>
+<div class="editar-servicio-container">
+    <div class="editar-card">
+        <!-- Header de la tarjeta -->
+        <div class="card-header-custom">
+            <div class="header-content">
+                <i class="fas fa-edit me-3"></i>
+                <div>
+                    <h1 class="card-title">Editar Servicio</h1>
+                    <p class="card-subtitle">Actualice la información del servicio</p>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+            <div class="servicio-info">
+                <span class="servicio-id">ID: @Model.ServicioId</span>
             </div>
-            <div class="form-group">
-                <label asp-for="Precio" class="control-label"></label>
-                <input asp-for="Precio" class="form-control" />
-                <span asp-validation-for="Precio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+
+        <div class="card-body-custom">
+            <form asp-controller="Servicio" asp-action="EditarServicio" method="post" class="editar-form" id="editarForm">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <input asp-for="ServicioId" type="hidden" />
+
+                <div class="form-grid">
+                    <!-- Información Básica -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <h3>Información Básica</h3>
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label asp-for="Nombre" class="form-label-custom">
+                                <i class="fas fa-tag me-2"></i>
+                                Nombre del Servicio *
+                            </label>
+                            <div class="input-group-custom">
+                                <input asp-for="Nombre" class="form-control-custom"
+                                       placeholder="Ingrese el nombre del servicio"
+                                       required />
+                                <i class="fas fa-concierge-bell input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Nombre" class="validation-message"></span>
+                            <div class="form-hint">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Ej: Limpieza Residencial, Limpieza Comercial, etc.
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label asp-for="Precio" class="form-label-custom">
+                                <i class="fas fa-dollar-sign me-2"></i>
+                                Precio del Servicio *
+                            </label>
+                            <div class="input-group-custom precio-input">
+                                <span class="input-prefix">S/</span>
+                                <input asp-for="Precio" class="form-control-custom"
+                                       type="number"
+                                       step="0.01"
+                                       min="0"
+                                       placeholder="0.00"
+                                       required />
+                                <i class="fas fa-money-bill-wave input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Precio" class="validation-message"></span>
+                            <div class="form-hint">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Ingrese el precio en soles (S/)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fas fa-file-alt me-2"></i>
+                            <h3>Descripción del Servicio</h3>
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label asp-for="Descripcion" class="form-label-custom">
+                                <i class="fas fa-align-left me-2"></i>
+                                Descripción Detallada *
+                            </label>
+                            <div class="input-group-custom">
+                                <textarea asp-for="Descripcion" class="form-control-custom textarea-custom"
+                                          rows="6"
+                                          placeholder="Describa detalladamente el servicio, incluyendo características, beneficios y cualquier información relevante..."
+                                          required></textarea>
+                                <i class="fas fa-edit input-icon textarea-icon"></i>
+                            </div>
+                            <span asp-validation-for="Descripcion" class="validation-message"></span>
+                            <div class="form-hint">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Mínimo 20 caracteres. Esta descripción será visible para los clientes.
+                                <span id="charCount" class="char-count">0 caracteres</span>
+                            </div>
+                        </div>
+
+                        <!-- Vista Previa -->
+                        <div class="preview-section">
+                            <div class="preview-header">
+                                <i class="fas fa-eye me-2"></i>
+                                <h4>Vista Previa</h4>
+                            </div>
+                            <div class="preview-content">
+                                <div class="preview-card">
+                                    <h5 id="previewNombre">@Model.Nombre</h5>
+                                    <p id="previewPrecio" class="preview-precio">S/ @Model.Precio.ToString("N2")</p>
+                                    <p id="previewDescripcion" class="preview-descripcion">@Model.Descripcion</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información Adicional -->
+                <div class="info-adicional">
+                    <div class="info-item">
+                        <i class="fas fa-history text-info"></i>
+                        <span>Última actualización: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        <span>Los campos marcados con * son obligatorios</span>
+                    </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="acciones-section">
+                    <div class="acciones-grupo">
+                        <a asp-controller="Servicio" asp-action="Modulo" class="btn-cancelar">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Cancelar y Volver
+                        </a>
+
+                        <button type="button" class="btn-preview" onclick="mostrarCambios()">
+                            <i class="fas fa-eye me-2"></i>
+                            Ver Cambios
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn-guardar">
+                        <i class="fas fa-save me-2"></i>
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-controller="Servicio" asp-action="Servicios">Regresar</a>
+<!-- Modal de Confirmación de Cambios -->
+<div class="modal-confirmacion" id="modalCambios">
+    <div class="modal-content">
+        <div class="modal-header">
+            <i class="fas fa-clipboard-check text-primary me-2"></i>
+            <h3>Resumen de Cambios</h3>
+            <button type="button" class="btn-cerrar" onclick="cerrarModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="cambios-resumen">
+                <h4>Cambios a realizar:</h4>
+                <div class="cambio-item">
+                    <strong>Nombre:</strong>
+                    <span class="valor-antiguo">@Model.Nombre</span>
+                    <i class="fas fa-arrow-right text-muted mx-2"></i>
+                    <span class="valor-nuevo" id="cambioNombre"></span>
+                </div>
+                <div class="cambio-item">
+                    <strong>Precio:</strong>
+                    <span class="valor-antiguo">S/ @Model.Precio.ToString("N2")</span>
+                    <i class="fas fa-arrow-right text-muted mx-2"></i>
+                    <span class="valor-nuevo" id="cambioPrecio"></span>
+                </div>
+                <div class="cambio-item">
+                    <strong>Descripción:</strong>
+                    <div class="descripcion-comparacion">
+                        <div class="descripcion-antigua">
+                            <label>Antigua:</label>
+                            <p>@Model.Descripcion</p>
+                        </div>
+                        <div class="descripcion-nueva">
+                            <label>Nueva:</label>
+                            <p id="cambioDescripcion"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="advertencia-cambios">
+                <i class="fas fa-info-circle text-info me-2"></i>
+                <span>¿Está seguro que desea guardar estos cambios?</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal btn-cancelar" onclick="cerrarModal()">
+                <i class="fas fa-times me-2"></i>
+                Revisar Cambios
+            </button>
+            <button type="button" class="btn-modal btn-confirmar" onclick="confirmarGuardado()">
+                <i class="fas fa-check me-2"></i>
+                Sí, Guardar Cambios
+            </button>
+        </div>
+    </div>
 </div>
 
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nombreInput = document.getElementById('Nombre');
+            const precioInput = document.getElementById('Precio');
+            const descripcionInput = document.getElementById('Descripcion');
+            const charCount = document.getElementById('charCount');
+
+            // Actualizar vista previa en tiempo real
+            function actualizarVistaPrevia() {
+                document.getElementById('previewNombre').textContent = nombreInput.value || '@Model.Nombre';
+                document.getElementById('previewPrecio').textContent = 'S/ ' + (precioInput.value ? parseFloat(precioInput.value).toFixed(2) : '@Model.Precio.ToString("N2")');
+                document.getElementById('previewDescripcion').textContent = descripcionInput.value || '@Model.Descripcion';
+            }
+
+            // Contador de caracteres para descripción
+            function actualizarContador() {
+                const count = descripcionInput.value.length;
+                charCount.textContent = count + ' caracteres';
+
+                if (count < 20) {
+                    charCount.classList.add('text-danger');
+                    charCount.classList.remove('text-success');
+                } else {
+                    charCount.classList.remove('text-danger');
+                    charCount.classList.add('text-success');
+                }
+            }
+
+            // Event listeners
+            nombreInput.addEventListener('input', actualizarVistaPrevia);
+            precioInput.addEventListener('input', actualizarVistaPrevia);
+            descripcionInput.addEventListener('input', function() {
+                actualizarVistaPrevia();
+                actualizarContador();
+            });
+
+            // Formatear precio automáticamente
+            precioInput.addEventListener('blur', function() {
+                if (this.value) {
+                    this.value = parseFloat(this.value).toFixed(2);
+                }
+            });
+
+            // Validación del formulario
+            const form = document.getElementById('editarForm');
+            form.addEventListener('submit', function(e) {
+                const descripcion = descripcionInput.value.trim();
+
+                if (descripcion.length < 20) {
+                    e.preventDefault();
+                    mostrarError('La descripción debe tener al menos 20 caracteres.');
+                }
+            });
+
+            // Inicializar
+            actualizarVistaPrevia();
+            actualizarContador();
+        });
+
+        function mostrarCambios() {
+            const nombre = document.getElementById('Nombre').value;
+            const precio = document.getElementById('Precio').value;
+            const descripcion = document.getElementById('Descripcion').value;
+
+            // Validar antes de mostrar cambios
+            if (!nombre || !precio || !descripcion) {
+                mostrarError('Complete todos los campos antes de revisar los cambios.');
+                return;
+            }
+
+            if (descripcion.length < 20) {
+                mostrarError('La descripción debe tener al menos 20 caracteres.');
+                return;
+            }
+
+            document.getElementById('cambioNombre').textContent = nombre;
+            document.getElementById('cambioPrecio').textContent = 'S/ ' + parseFloat(precio).toFixed(2);
+            document.getElementById('cambioDescripcion').textContent = descripcion;
+
+            document.getElementById('modalCambios').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalCambios').style.display = 'none';
+        }
+
+        function confirmarGuardado() {
+            document.getElementById('editarForm').submit();
+        }
+
+        function mostrarError(mensaje) {
+            const notification = document.createElement('div');
+            notification.className = 'error-notification';
+            notification.innerHTML = `
+                <i class="fas fa-exclamation-circle me-2"></i>
+                ${mensaje}
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Detectar cambios no guardados
+        window.addEventListener('beforeunload', function(e) {
+            const form = document.getElementById('editarForm');
+            const formData = new FormData(form);
+            let hasChanges = false;
+
+            if (formData.get('Nombre') !== '@Model.Nombre' ||
+                formData.get('Precio') !== '@Model.Precio.ToString().Replace(",", ".")' ||
+                formData.get('Descripcion') !== '@Model.Descripcion') {
+                hasChanges = true;
+            }
+
+            if (hasChanges) {
+                e.preventDefault();
+                e.returnValue = 'Tiene cambios sin guardar. ¿Está seguro que desea salir?';
+            }
+        });
+    </script>
+}

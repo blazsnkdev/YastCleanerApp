@@ -1,57 +1,355 @@
 ﻿@model YastCleaner.Web.ViewModels.InsertarTrabajadorViewModel
 
 @{
-    ViewData["Title"] = "Actualizar";
+    ViewData["Title"] = "Actualizar Trabajador";
 }
 
-<h1>Actualizar</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/ActualizarTrabajador.css" />
+}
 
-<h4>InsertarTrabajadorViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-controller="Trabajador" asp-action="Actualizar" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="TrabajadorId" />
+<div class="actualizar-trabajador-container">
+    <div class="actualizar-card">
+        <!-- Header de la tarjeta -->
+        <div class="card-header-custom">
+            <div class="header-content">
+                <i class="fas fa-user-edit me-3"></i>
+                <div>
+                    <h1 class="card-title">Actualizar Trabajador</h1>
+                    <p class="card-subtitle">Modifique la información del trabajador</p>
+                </div>
+            </div>
+            <div class="trabajador-info">
+                <span class="trabajador-id">ID: @Model.TrabajadorId</span>
+            </div>
+        </div>
 
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ApellidoPaterno" class="control-label"></label>
-                <input asp-for="ApellidoPaterno" class="form-control" />
-                <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ApellidoMaterno" class="control-label"></label>
-                <input asp-for="ApellidoMaterno" class="form-control" />
-                <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Dni" class="control-label"></label>
-                <input asp-for="Dni" class="form-control" />
-                <span asp-validation-for="Dni" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Direccion" class="control-label"></label>
-                <input asp-for="Direccion" class="form-control" />
-                <span asp-validation-for="Direccion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        <div class="card-body-custom">
+            <form asp-controller="Trabajador" asp-action="Actualizar" method="post" class="actualizar-form" id="actualizarForm">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                
+                <input type="hidden" asp-for="TrabajadorId" />
+
+                <div class="form-grid">
+                    <!-- Información Personal -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fas fa-user me-2"></i>
+                            <h3>Información Personal</h3>
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label asp-for="Nombre" class="form-label-custom">
+                                <i class="fas fa-signature me-2"></i>
+                                Nombres *
+                            </label>
+                            <div class="input-group-custom">
+                                <input asp-for="Nombre" class="form-control-custom" 
+                                       placeholder="Ingrese los nombres del trabajador"
+                                       required />
+                                <i class="fas fa-user input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Nombre" class="validation-message"></span>
+                            <div class="form-hint">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Ej: Juan Carlos
+                            </div>
+                        </div>
+
+                        <div class="nombre-grid">
+                            <div class="form-group-custom">
+                                <label asp-for="ApellidoPaterno" class="form-label-custom">
+                                    <i class="fas fa-signature me-2"></i>
+                                    Apellido Paterno *
+                                </label>
+                                <div class="input-group-custom">
+                                    <input asp-for="ApellidoPaterno" class="form-control-custom" 
+                                           placeholder="Apellido paterno"
+                                           required />
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                                <span asp-validation-for="ApellidoPaterno" class="validation-message"></span>
+                            </div>
+
+                            <div class="form-group-custom">
+                                <label asp-for="ApellidoMaterno" class="form-label-custom">
+                                    <i class="fas fa-signature me-2"></i>
+                                    Apellido Materno *
+                                </label>
+                                <div class="input-group-custom">
+                                    <input asp-for="ApellidoMaterno" class="form-control-custom" 
+                                           placeholder="Apellido materno"
+                                           required />
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                                <span asp-validation-for="ApellidoMaterno" class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label asp-for="Dni" class="form-label-custom">
+                                <i class="fas fa-address-card me-2"></i>
+                                DNI *
+                            </label>
+                            <div class="input-group-custom">
+                                <input asp-for="Dni" class="form-control-custom" 
+                                       type="text"
+                                       maxlength="8"
+                                       placeholder="Ingrese el DNI (8 dígitos)"
+                                       pattern="[0-9]{8}"
+                                       required />
+                                <i class="fas fa-id-card input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Dni" class="validation-message"></span>
+                            <div class="form-hint">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Solo números, 8 dígitos
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Contacto -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fas fa-address-book me-2"></i>
+                            <h3>Información de Contacto</h3>
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label asp-for="Direccion" class="form-label-custom">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                Dirección Completa *
+                            </label>
+                            <div class="input-group-custom">
+                                <input asp-for="Direccion" class="form-control-custom" 
+                                       placeholder="Ingrese la dirección completa"
+                                       required />
+                                <i class="fas fa-home input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Direccion" class="validation-message"></span>
+                            <div class="form-hint">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Incluya distrito, ciudad y referencia
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label asp-for="Email" class="form-label-custom">
+                                <i class="fas fa-envelope me-2"></i>
+                                Correo Electrónico *
+                            </label>
+                            <div class="input-group-custom">
+                                <input asp-for="Email" class="form-control-custom" 
+                                       type="email"
+                                       placeholder="ejemplo@correo.com"
+                                       required />
+                                <i class="fas fa-at input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Email" class="validation-message"></span>
+                            <div class="form-hint">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Ingrese un correo electrónico válido
+                            </div>
+                        </div>
+
+                        <!-- Vista Previa -->
+                        <div class="preview-section">
+                            <div class="preview-header">
+                                <i class="fas fa-eye me-2"></i>
+                                <h4>Vista Previa</h4>
+                            </div>
+                            <div class="preview-content">
+                                <div class="preview-card">
+                                    <div class="preview-avatar">
+                                        <i class="fas fa-user-hard-hat"></i>
+                                    </div>
+                                    <div class="preview-info">
+                                        <h5 id="previewNombreCompleto">@Model.Nombre @Model.ApellidoPaterno @Model.ApellidoMaterno</h5>
+                                        <p class="preview-dni" id="previewDni">DNI: @Model.Dni</p>
+                                        <p class="preview-email" id="previewEmail">@Model.Email</p>
+                                        <p class="preview-direccion" id="previewDireccion">@Model.Direccion</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información Adicional -->
+                <div class="info-adicional">
+                    <div class="info-item">
+                        <i class="fas fa-history text-info"></i>
+                        <span>Última actualización: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        <span>Los campos marcados con * son obligatorios</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-shield-alt text-success"></i>
+                        <span>Toda la información se maneja de forma segura y confidencial</span>
+                    </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="acciones-section">
+                    <div class="acciones-grupo">
+                        <a asp-action="Trabajadores" class="btn-cancelar">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Cancelar y Volver
+                        </a>
+                        
+                        <button type="button" class="btn-limpiar" onclick="limpiarFormulario()">
+                            <i class="fas fa-broom me-2"></i>
+                            Limpiar Campos
+                        </button>
+                    </div>
+                    
+                    <button type="submit" class="btn-guardar">
+                        <i class="fas fa-save me-2"></i>
+                        Actualizar Trabajador
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Trabajadores">Regresar</a>
+<!-- Modal de Confirmación -->
+<div class="modal-confirmacion" id="modalConfirmacion">
+    <div class="modal-content">
+        <div class="modal-header">
+            <i class="fas fa-clipboard-check text-primary me-2"></i>
+            <h3>Confirmar Actualización</h3>
+            <button type="button" class="btn-cerrar" onclick="cerrarModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="confirmacion-resumen">
+                <h4>¿Está seguro que desea actualizar la información del trabajador?</h4>
+                <div class="resumen-datos">
+                    <div class="resumen-item">
+                        <strong>Nombre Completo:</strong>
+                        <span id="resumenNombreCompleto"></span>
+                    </div>
+                    <div class="resumen-item">
+                        <strong>DNI:</strong>
+                        <span id="resumenDni"></span>
+                    </div>
+                    <div class="resumen-item">
+                        <strong>Email:</strong>
+                        <span id="resumenEmail"></span>
+                    </div>
+                    <div class="resumen-item">
+                        <strong>Dirección:</strong>
+                        <span id="resumenDireccion"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal btn-cancelar" onclick="cerrarModal()">
+                <i class="fas fa-times me-2"></i>
+                Revisar Datos
+            </button>
+            <button type="button" class="btn-modal btn-confirmar" onclick="confirmarActualizacion()">
+                <i class="fas fa-check me-2"></i>
+                Sí, Actualizar
+            </button>
+        </div>
+    </div>
 </div>
 
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nombreInput = document.getElementById('Nombre');
+            const apellidoPaternoInput = document.getElementById('ApellidoPaterno');
+            const apellidoMaternoInput = document.getElementById('ApellidoMaterno');
+            const dniInput = document.getElementById('Dni');
+            const direccionInput = document.getElementById('Direccion');
+            const emailInput = document.getElementById('Email');
+
+            // Actualizar vista previa en tiempo real
+            function actualizarVistaPrevia() {
+                const nombreCompleto = `${nombreInput.value || ''} ${apellidoPaternoInput.value || ''} ${apellidoMaternoInput.value || ''}`.trim();
+                document.getElementById('previewNombreCompleto').textContent = nombreCompleto || '@Model.Nombre @Model.ApellidoPaterno @Model.ApellidoMaterno';
+                document.getElementById('previewDni').textContent = 'DNI: ' + (dniInput.value || '@Model.Dni');
+                document.getElementById('previewEmail').textContent = emailInput.value || '@Model.Email';
+                document.getElementById('previewDireccion').textContent = direccionInput.value || '@Model.Direccion';
+            }
+
+        function mostrarModalConfirmacion() {
+            document.getElementById('resumenNombreCompleto').textContent = 
+                `${document.getElementById('Nombre').value} ${document.getElementById('ApellidoPaterno').value} ${document.getElementById('ApellidoMaterno').value}`;
+            document.getElementById('resumenDni').textContent = document.getElementById('Dni').value;
+            document.getElementById('resumenEmail').textContent = document.getElementById('Email').value;
+            document.getElementById('resumenDireccion').textContent = document.getElementById('Direccion').value;
+
+            document.getElementById('modalConfirmacion').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalConfirmacion').style.display = 'none';
+        }
+
+        function confirmarActualizacion() {
+            document.getElementById('actualizarForm').submit();
+        }
+
+        function limpiarFormulario() {
+            if (confirm('¿Está seguro que desea limpiar todos los campos?')) {
+                document.getElementById('actualizarForm').reset();
+                // Restaurar valores originales en la vista previa
+                setTimeout(() => {
+                    const event = new Event('input');
+                    document.getElementById('Nombre').dispatchEvent(event);
+                    document.getElementById('ApellidoPaterno').dispatchEvent(event);
+                    document.getElementById('ApellidoMaterno').dispatchEvent(event);
+                }, 100);
+            }
+        }
+
+        function mostrarError(mensaje) {
+            const notification = document.createElement('div');
+            notification.className = 'error-notification';
+            notification.innerHTML = `
+                <i class="fas fa-exclamation-circle me-2"></i>
+                ${mensaje}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Auto-formateo de nombres (primera letra mayúscula)
+        document.getElementById('Nombre').addEventListener('blur', function() {
+            this.value = this.value.replace(/\w\S*/g, function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        });
+
+        document.getElementById('ApellidoPaterno').addEventListener('blur', function() {
+            this.value = this.value.replace(/\w\S*/g, function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        });
+
+        document.getElementById('ApellidoMaterno').addEventListener('blur', function() {
+            this.value = this.value.replace(/\w\S*/g, function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        });
+    </script>
+}
