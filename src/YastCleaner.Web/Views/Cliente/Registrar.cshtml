@@ -4,135 +4,186 @@
     ViewData["Title"] = "Registrar Nuevo Cliente";
 }
 
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-success text-white py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">
-                            <i class="fas fa-user-plus me-2"></i>Registrar Nuevo Cliente
-                        </h3>
-                    </div>
-                </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Temporal.css" />
+    <link rel="stylesheet" href="~/css/RegistrarCliente.css" />
+}
 
-                <div class="card-body p-4">
-                    @if (@ViewBag.Error != null)
-                    {
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i> @ViewBag.Error
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    }
+<div class="registro-cliente-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-user-plus me-3"></i>
+            Registrar Nuevo Cliente
+        </h1>
+    </div>
 
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i> Por favor, corrija los errores en el formulario.
-                    </div>
-
-                    <form asp-action="Registrar" asp-controller="Cliente" method="post" id="registrarForm">
-                        @Html.AntiForgeryToken()
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="section-header mb-4">
-                                    <h5 class="text-success">
-                                        <i class="fas fa-id-card me-2"></i>Información Personal
-                                    </h5>
-                                    <p class="text-muted small">Complete los datos personales del cliente</p>
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label asp-for="Nombre" class="form-label fw-bold">Nombre *</label>
-                                    <input asp-for="Nombre" class="form-control form-control-lg"
-                                           placeholder="Ingrese el nombre del cliente" />
-                                    <span asp-validation-for="Nombre" class="text-danger small"></span>
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label asp-for="ApellidoPaterno" class="form-label fw-bold">Apellido Paterno *</label>
-                                    <input asp-for="ApellidoPaterno" class="form-control form-control-lg"
-                                           placeholder="Ingrese el apellido paterno" />
-                                    <span asp-validation-for="ApellidoPaterno" class="text-danger small"></span>
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label asp-for="ApellidoMaterno" class="form-label fw-bold">Apellido Materno</label>
-                                    <input asp-for="ApellidoMaterno" class="form-control form-control-lg"
-                                           placeholder="Ingrese el apellido materno (opcional)" />
-                                    <span asp-validation-for="ApellidoMaterno" class="text-danger small"></span>
-                                </div>
-                            </div>
-
-                            <!-- Columna Derecha - Información de Contacto -->
-                            <div class="col-md-6">
-                                <div class="section-header mb-4">
-                                    <h5 class="text-success">
-                                        <i class="fas fa-address-book me-2"></i>Información de Contacto
-                                    </h5>
-                                    <p class="text-muted small">Datos de contacto del cliente</p>
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label asp-for="NumeroCelular" class="form-label fw-bold">Número de Celular *</label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text bg-light">+51</span>
-                                        <input asp-for="NumeroCelular" class="form-control"
-                                               placeholder="9XXXXXXXX" maxlength="9" />
-                                    </div>
-                                    <span asp-validation-for="NumeroCelular" class="text-danger small"></span>
-                                    <div class="form-text">Número peruano de 9 dígitos (comenzando con 9)</div>
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label asp-for="Email" class="form-label fw-bold">Correo Electrónico *</label>
-                                    <input asp-for="Email" class="form-control form-control-lg"
-                                           placeholder="cliente@ejemplo.com" type="email" />
-                                    <span asp-validation-for="Email" class="text-danger small"></span>
-                                    <div class="form-text">Ejemplo: nombre.apellido@dominio.com</div>
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label asp-for="Direccion" class="form-label fw-bold">Dirección *</label>
-                                    <textarea asp-for="Direccion" class="form-control" rows="3"
-                                              placeholder="Ingrese la dirección completa del cliente"></textarea>
-                                    <span asp-validation-for="Direccion" class="text-danger small"></span>
-                                    <div class="form-text">Dirección completa para envíos y contactos</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        @* @{
-                            bool hayPedido = ViewBag.HayPedido != null && (bool)ViewBag.HayPedido;
-                        } *@
-
-                        <!-- Botones de Acción -->
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <a asp-action="Activos" asp-controller="Cliente" class="btn btn-outline-secondary btn-lg">
-                                        <i class="fas fa-times me-2"></i>Cancelar
-                                    </a>
-
-                                    <div class="d-flex gap-2">
-                                        <button type="reset" class="btn btn-outline-warning btn-lg">
-                                            <i class="fas fa-broom me-2"></i>Limpiar
-                                        </button>
-
-                                        <button type="submit" name="accion" value="cliente" class="btn btn-success btn-lg px-4">
-                                            <i class="fas fa-save me-2"></i>Registrar Cliente
-                                        </button>
-                                        <button type="submit" name="accion" value="pedido" class="btn btn-success btn-lg px-4">
-                                            <i class="fas fa-shopping-cart me-2"></i>Realizar Pedido
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </form>
-                </div>
+    <div class="registro-cliente-grid">
+        <div class="formulario-cliente">
+            <div class="formulario-header">
+                <h3><i class="fas fa-id-card"></i> Información del Cliente</h3>
             </div>
+            <div class="formulario-body">
+                @if (@ViewBag.Error != null)
+                {
+                    <div class="alert-custom alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        @ViewBag.Error
+                    </div>
+                }
 
+                <div asp-validation-summary="ModelOnly" class="alert-custom alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Por favor, corrija los errores en el formulario.
+                </div>
+
+                <form asp-action="Registrar" asp-controller="Cliente" method="post" id="registrarForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-columns">
+                        <!-- Columna Izquierda - Información Personal -->
+                        <div class="form-columna">
+                            <div class="seccion-titulo">
+                                <i class="fas fa-user me-2"></i>
+                                <h4>Información Personal</h4>
+                            </div>
+                            <p class="seccion-descripcion">Complete los datos personales del cliente</p>
+
+                            <div class="form-group">
+                                <label asp-for="Nombre" class="form-label">Nombre *</label>
+                                <input asp-for="Nombre" class="form-control"
+                                       placeholder="Ingrese el nombre del cliente" />
+                                <span asp-validation-for="Nombre" class="text-validation"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ApellidoPaterno" class="form-label">Apellido Paterno *</label>
+                                <input asp-for="ApellidoPaterno" class="form-control"
+                                       placeholder="Ingrese el apellido paterno" />
+                                <span asp-validation-for="ApellidoPaterno" class="text-validation"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ApellidoMaterno" class="form-label">Apellido Materno</label>
+                                <input asp-for="ApellidoMaterno" class="form-control"
+                                       placeholder="Ingrese el apellido materno (opcional)" />
+                                <span asp-validation-for="ApellidoMaterno" class="text-validation"></span>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha - Información de Contacto -->
+                        <div class="form-columna">
+                            <div class="seccion-titulo">
+                                <i class="fas fa-address-book me-2"></i>
+                                <h4>Información de Contacto</h4>
+                            </div>
+                            <p class="seccion-descripcion">Datos de contacto del cliente</p>
+
+                            <div class="form-group">
+                                <label asp-for="NumeroCelular" class="form-label">Número de Celular *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+51</span>
+                                    <input asp-for="NumeroCelular" class="form-control"
+                                           placeholder="9XXXXXXXX" maxlength="9" />
+                                </div>
+                                <span asp-validation-for="NumeroCelular" class="text-validation"></span>
+                                <div class="form-text">Número peruano de 9 dígitos (comenzando con 9)</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email" class="form-label">Correo Electrónico *</label>
+                                <input asp-for="Email" class="form-control"
+                                       placeholder="cliente@ejemplo.com" type="email" />
+                                <span asp-validation-for="Email" class="text-validation"></span>
+                                <div class="form-text">Ejemplo: nombre.apellido@dominio.com</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Direccion" class="form-label">Dirección *</label>
+                                <textarea asp-for="Direccion" class="form-control" rows="3"
+                                          placeholder="Ingrese la dirección completa del cliente"></textarea>
+                                <span asp-validation-for="Direccion" class="text-validation"></span>
+                                <div class="form-text">Dirección completa para envíos y contactos</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="acciones-formulario">
+                        <div class="acciones-grupo">
+                            <a asp-action="Activos" asp-controller="Cliente" class="btn-formulario btn-cancelar">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar
+                            </a>
+                        </div>
+
+                        <div class="acciones-grupo">
+                            <button type="submit" name="accion" value="cliente" class="btn-formulario btn-registrar-cliente">
+                                <i class="fas fa-save me-2"></i>
+                                Registrar Cliente
+                            </button>
+                            <button type="submit" name="accion" value="pedido" class="btn-formulario btn-realizar-pedido">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                Realizar Pedido
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Validación personalizada del número celular
+            const numeroCelularInput = document.querySelector('input[name="NumeroCelular"]');
+            if (numeroCelularInput) {
+                numeroCelularInput.addEventListener('input', function() {
+                    const value = this.value.replace(/\D/g, '');
+                    this.value = value;
+
+                    // Validar que empiece con 9
+                    if (value.length > 0 && value[0] !== '9') {
+                        this.setCustomValidity('El número debe comenzar con 9');
+                    } else {
+                        this.setCustomValidity('');
+                    }
+                });
+            }
+
+            // Limpiar validaciones al hacer reset
+            const form = document.getElementById('registrarForm');
+            const resetButton = form.querySelector('button[type="reset"]');
+
+            if (resetButton) {
+                resetButton.addEventListener('click', function() {
+                    // Limpiar mensajes de validación
+                    const validationSpans = form.querySelectorAll('.text-validation');
+                    validationSpans.forEach(span => {
+                        span.textContent = '';
+                    });
+
+                    // Limpiar clases de error
+                    const inputs = form.querySelectorAll('.form-control');
+                    inputs.forEach(input => {
+                        input.classList.remove('input-error');
+                    });
+                });
+            }
+
+            // Agregar clases de error dinámicamente
+            const inputs = form.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (!this.validity.valid) {
+                        this.classList.add('input-error');
+                    } else {
+                        this.classList.remove('input-error');
+                    }
+                });
+            });
+        });
+    </script>
+}

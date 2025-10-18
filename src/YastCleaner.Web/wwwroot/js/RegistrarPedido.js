@@ -1,67 +1,150 @@
-﻿function calcularSaldo() {
-    // Obtener el total del dataset del formulario
-    let total = document.getElementById('pedidoForm').dataset.total;
-    total = total.replace(/[^\d.-]/g, '');
-    total = parseFloat(total) || 0;
+﻿document.addEventListener('DOMContentLoaded', function () {
+    // Cálculo del saldo pendiente
+    calcularSaldo();
 
-    const adelanto = parseFloat(document.getElementById('montoAdelanto').value) || 0;
-    const saldo = total - adelanto;
+    // Configuración de autocompletado para clientes
+    const clienteInput = document.getElementById('cliente');
+    const clienteIdInput = document.getElementById('clienteId');
+    const sugerenciasContainer = document.getElementById('sugerencias');
 
-    document.getElementById('adelantoMostrado').textContent = 'S/ ' + adelanto.toFixed(2);
-    document.getElementById('saldoPendiente').textContent = 'S/ ' + saldo.toFixed(2);
+    if (clienteInput) {
+        clienteInput.addEventListener('input', function () {
+            const query = this.value.trim();
 
-    // Validar que el adelanto no supere el total
-    if (adelanto > total) {
-        document.getElementById('montoAdelanto').classList.add('is-invalid');
-    } else {
-        document.getElementById('montoAdelanto').classList.remove('is-invalid');
+            if (query.length < 2) {
+                sugerenciasContainer.style.display = 'none';
+                return;
+            }
+
+            // LLAMADA REAL A TU ENDPOINT
+            buscarClientes(query);
+        });
+    }
+
+    function buscarClientes(query) {
+        fetch(`/Cliente/BuscarClienteJson?term=${encodeURIComponent(query)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                mostrarSugerencias(data);
+            })
+            .catch(error => {
+                console.error('Error al buscar clientes:', error);
+                sugerenciasContainer.innerHTML = '<div class="sugerencia-item text-danger">Error al cargar clientes</div>';
+            });
+    }
+
+    function mostrarSugerencias(clientes) {
+        sugerenciasContainer.innerHTML = '';
+
+        if (!clientes || clientes.length === 0) {
+            sugerenciasContainer.innerHTML = '<div class="sugerencia-item">No se encontraron clientes</div>';
+            return;
+        }
+
+        clientes.forEach(cliente => {
+            const item = document.createElement('div');
+            item.className = 'sugerencia-item';
+            item.textContent = cliente.label; // Usando 'label' de tu endpoint
+            item.dataset.id = cliente.value;  // Usando 'value' de tu endpoint
+
+            item.addEventListener('click', function () {
+                clienteInput.value = cliente.label;
+                clienteIdInput.value = cliente.value;
+                sugerenciasContainer.style.display = 'none';
+            });
+
+            sugerenciasContainer.appendChild(item);
+        });
+
+        sugerenciasContainer.style.display = 'block';
+    }
+
+    // Cerrar sugerencias al hacer clic fuera
+    document.addEventListener('click', function (e) {
+        if (clienteInput && !clienteInput.contains(e.target) && !sugerenciasContainer.contains(e.target)) {
+            sugerenciasContainer.style.display = 'none';
+        }
+    });
+
+    // Validación del formulario antes de enviar
+    const pedidoForm = document.getElementById('pedidoForm');
+    if (pedidoForm) {
+        pedidoForm.addEventListener('submit', function (e) {
+            const clienteId = document.getElementById('clienteId').value;
+            const metodoPago = document.getElementById('metodoPago').value;
+
+            if (!clienteId) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Cliente requerido',
+                    text: 'Por favor seleccione un cliente válido',
+                    icon: 'warning',
+                    confirmButtonColor: '#592af5'
+                });
+                return;
+            }
+
+            if (!metodoPago) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Método de pago requerido',
+                    text: 'Por favor seleccione un método de pago',
+                    icon: 'warning',
+                    confirmButtonColor: '#592af5'
+                });
+                return;
+            }
+        });
+    }
+});
+
+function calcularSaldo() {
+    const totalElement = document.getElementById('pedidoForm');
+    if (!totalElement) return;
+
+    const total = parseFloat(totalElement.dataset.total) || 0;
+    const montoAdelantoInput = document.getElementById('montoAdelanto');
+    const montoAdelanto = parseFloat(montoAdelantoInput.value) || 0;
+
+    // Validar que no exceda el total
+    if (montoAdelanto > total) {
+        montoAdelantoInput.value = total.toFixed(2);
+        montoAdelanto = total;
+    }
+
+    const saldoPendiente = total - montoAdelanto;
+
+    const adelantoMostrado = document.getElementById('adelantoMostrado');
+    const saldoPendienteElement = document.getElementById('saldoPendiente');
+
+    if (adelantoMostrado) {
+        adelantoMostrado.textContent = 'S/ ' + montoAdelanto.toFixed(2);
+    }
+
+    if (saldoPendienteElement) {
+        saldoPendienteElement.textContent = 'S/ ' + saldoPendiente.toFixed(2);
+
+        // Cambiar color si el saldo es cero
+        if (saldoPendiente === 0) {
+            saldoPendienteElement.className = 'fw-bold text-success';
+        } else {
+            saldoPendienteElement.className = 'fw-bold text-warning';
+        }
     }
 }
 
-// Validación del formulario
-function validarFormulario() {
-    document.getElementById('pedidoForm').addEventListener('submit', function (e) {
-        let total = document.getElementById('pedidoForm').dataset.total;
-        total = total.replace(/[^\d.-]/g, '');
-        total = parseFloat(total) || 0;
+// Función para limpiar el campo de cliente
+function limpiarCliente() {
+    const clienteInput = document.getElementById('cliente');
+    const clienteIdInput = document.getElementById('clienteId');
+    const sugerenciasContainer = document.getElementById('sugerencias');
 
-        const adelanto = parseFloat(document.getElementById('montoAdelanto').value) || 0;
-
-        if (adelanto > total) {
-            e.preventDefault();
-            alert('El monto adelantado no puede ser mayor al total del pedido.');
-        }
-    });
+    if (clienteInput) clienteInput.value = '';
+    if (clienteIdInput) clienteIdInput.value = '';
+    if (sugerenciasContainer) sugerenciasContainer.style.display = 'none';
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Limpiar y convertir el total una vez al cargar
-    let total = document.getElementById('pedidoForm').dataset.total;
-    total = total.replace(/[^\d.-]/g, '');
-    total = parseFloat(total) || 0;
-
-    // Actualizar el HTML para usar el valor numérico
-    document.getElementById('montoAdelanto').setAttribute('max', total);
-    document.querySelector('.form-text').textContent = 'Máximo permitido: S/ ' + total.toFixed(2);
-
-    calcularSaldo();
-    validarFormulario();
-
-    // Autocomplete
-    $("#cliente").autocomplete({
-        source: function (request, response) {
-            $.ajax({
-                url: '/Cliente/BuscarClienteJson',
-                data: { term: request.term },
-                success: function (data) {
-                    response(data);
-                }
-            });
-        },
-        select: function (event, ui) {
-            $("#cliente").val(ui.item.label);
-            $("#clienteId").val(ui.item.value);
-            return false;
-        }
-    });
-});
