@@ -1,8 +1,188 @@
-﻿
-@{
-    ViewData["Title"] = "AccessDenied";
+﻿@{
+    ViewData["Title"] = "Acceso Denegado";
 }
 
-<h1>Acceso Denegado</h1>
-<p>Mensaje: @TempData["Error"]</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Carrito.css" />
+    <link rel="stylesheet" href="~/css/AccessDenied.css" />
+}
 
+<div class="access-denied-container">
+    <div class="access-denied-content">
+        <!-- Icono de candado -->
+        <div class="error-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+
+        <!-- Mensaje principal -->
+        <div class="error-header">
+            <h1>Acceso Denegado</h1>
+            <p>No tienes los permisos necesarios para acceder a este recurso</p>
+        </div>
+
+        <!-- Mensaje dinámico -->
+        <div class="error-message">
+            <div class="message-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="message-content">
+                <p>@TempData["Error"]</p>
+            </div>
+        </div>
+
+        <!-- Información de seguridad -->
+        <div class="security-info">
+            <div class="security-item">
+                <i class="fas fa-user-shield"></i>
+                <div class="security-text">
+                    <strong>Autenticación Requerida</strong>
+                    <span>Credenciales insuficientes</span>
+                </div>
+            </div>
+            <div class="security-item">
+                <i class="fas fa-ban"></i>
+                <div class="security-text">
+                    <strong>Acceso Restringido</strong>
+                    <span>Recurso protegido</span>
+                </div>
+            </div>
+            <div class="security-item">
+                <i class="fas fa-clock"></i>
+                <div class="security-text">
+                    <strong>Registro Temporal</strong>
+                    <span>@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Niveles de acceso -->
+        <div class="access-levels">
+            <h4>Niveles de Acceso Requeridos</h4>
+            <div class="levels-grid">
+                <div class="level-item level-admin">
+                    <i class="fas fa-crown"></i>
+                    <span>Administrador</span>
+                </div>
+                <div class="level-item level-manager">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Gerente</span>
+                </div>
+                <div class="level-item level-user">
+                    <i class="fas fa-user"></i>
+                    <span>Usuario</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Soluciones sugeridas -->
+        <div class="solutions-section">
+            <h4>¿Qué puedes hacer?</h4>
+            <div class="solutions-grid">
+                <div class="solution-item">
+                    <div class="solution-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="solution-content">
+                        <h5>Solicitar Acceso</h5>
+                        <p>Contacta al administrador del sistema para solicitar los permisos necesarios</p>
+                    </div>
+                </div>
+                <div class="solution-item">
+                    <div class="solution-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <div class="solution-content">
+                        <h5>Cambiar Cuenta</h5>
+                        <p>Inicia sesión con una cuenta que tenga los privilegios requeridos</p>
+                    </div>
+                </div>
+                <div class="solution-item">
+                    <div class="solution-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="solution-content">
+                        <h5>Navegar Seguro</h5>
+                        <p>Regresa a áreas del sistema donde tengas permisos de acceso</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="error-actions">
+            <a href="javascript:history.back()" class="btn-error btn-back">
+                <i class="fas fa-arrow-left me-2"></i>
+                Volver Atrás
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn-error btn-home">
+                <i class="fas fa-home me-2"></i>
+                Página Principal
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn-error btn-login">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Cambiar Cuenta
+            </a>
+            <a href="mailto:admin@yastcleaner.com?subject=Solicitud de Acceso" class="btn-error btn-admin">
+                <i class="fas fa-envelope me-2"></i>
+                Contactar Admin
+            </a>
+        </div>
+
+        <!-- Información de auditoría -->
+        <div class="audit-info">
+            <div class="audit-item">
+                <i class="fas fa-id-card"></i>
+                <span>Usuario: @User.Identity?.Name</span>
+            </div>
+            <div class="audit-item">
+                <i class="fas fa-network-wired"></i>
+                <span>IP: <span id="userIp">Cargando...</span></span>
+            </div>
+            <div class="audit-item">
+                <i class="fas fa-code"></i>
+                <span>Código: 403 - Forbidden</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Elementos de fondo de seguridad -->
+    <div class="security-elements">
+        <div class="sec-element sec-element-1">
+            <i class="fas fa-shield"></i>
+        </div>
+        <div class="sec-element sec-element-2">
+            <i class="fas fa-lock"></i>
+        </div>
+        <div class="sec-element sec-element-3">
+            <i class="fas fa-fingerprint"></i>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto de aparición escalonada
+            const elements = document.querySelectorAll('.access-denied-content > *');
+            elements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Efecto de parpadeo en el candado
+            const lockIcon = document.querySelector('.error-icon');
+            setInterval(() => {
+                lockIcon.style.transform = 'scale(1.1)';
+                lockIcon.style.boxShadow = '0 0 30px rgba(220, 53, 69, 0.5)';
+                setTimeout(() => {
+                    lockIcon.style.transform = 'scale(1)';
+                    lockIcon.style.boxShadow = '0 15px 35px rgba(220, 53, 69, 0.3)';
+                }, 300);
+            }, 2000);
+
+            // Obtener IP del usuario (simulación)
+            setTimeout(() => {
+                document.getElementById('userIp').textContent = '192.168.1.1'; // IP simulada
+            }, 1000);
+        });
+    </script>
+}

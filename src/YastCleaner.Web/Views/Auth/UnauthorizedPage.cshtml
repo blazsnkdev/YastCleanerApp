@@ -1,7 +1,94 @@
-﻿
-@{
-    ViewData["Title"] = "UnauthorizedPage";
+﻿@{
+    ViewData["Title"] = "No Autorizado";
 }
 
-<h1>No Authorizado</h1>
-<p>Mensaje: @TempData["Error"]</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Carrito.css" />
+    <link rel="stylesheet" href="~/css/Unauthorized.css" />
+}
+
+<div class="unauthorized-container">
+    <div class="unauthorized-content">
+        <!-- Icono de error -->
+        <div class="error-icon">
+            <i class="fas fa-ban"></i>
+        </div>
+
+        <!-- Mensaje principal -->
+        <div class="error-header">
+            <h1>Acceso No Autorizado</h1>
+            <p>No tienes permisos para acceder a esta página</p>
+        </div>
+
+        <!-- Mensaje dinámico -->
+        <div class="error-message">
+            <div class="message-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="message-content">
+                <p>@TempData["Error"]</p>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="error-info">
+            <div class="info-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>Verificación de permisos requerida</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-user-lock"></i>
+                <span>Acceso restringido</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <span>@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="error-actions">
+            <a href="javascript:history.back()" class="btn-error btn-back">
+                <i class="fas fa-arrow-left me-2"></i>
+                Volver Atrás
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn-error btn-home">
+                <i class="fas fa-home me-2"></i>
+                Ir al Inicio
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn-error btn-login">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Iniciar Sesión
+            </a>
+        </div>
+
+        <!-- Código de error (opcional) -->
+        <div class="error-code">
+            <span>Código de Error: 403 - Forbidden</span>
+        </div>
+    </div>
+
+    <!-- Decoración de fondo -->
+    <div class="background-elements">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto de aparición escalonada
+            const elements = document.querySelectorAll('.unauthorized-content > *');
+            elements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.2}s`;
+            });
+
+            // Redirección automática opcional después de 10 segundos
+            setTimeout(() => {
+                // window.location.href = '@Url.Action("Index", "Home")';
+            }, 10000);
+        });
+    </script>
+}

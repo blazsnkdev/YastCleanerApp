@@ -52,10 +52,10 @@ namespace YastCleaner.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "No se pudo actualizar el trabajador. Verifica los datos.");
+                ModelState.AddModelError(string.Empty, "No se pudo actualizar el trabajador. Verifica los datos.");
                 return View(viewModel);
             }
-            string password = _trabajadorService.GenerarPassword(viewModel.Nombre, viewModel.ApellidoPaterno, viewModel.ApellidoMaterno);
+            string password = _trabajadorService.GenerarPassword(viewModel.ApellidoPaterno);
             var trabajadorDto = new TrabajadorDto()
             {
                 Nombre = viewModel.Nombre,

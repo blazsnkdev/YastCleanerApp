@@ -1,8 +1,123 @@
-﻿
-@{
-    ViewData["Title"] = "NotFoundPage";
+﻿@{
+    ViewData["Title"] = "Página No Encontrada";
 }
 
-<h1>No Encontrado</h1>
-<p>Mensaje: @TempData["Error"]</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Carrito.css" />
+    <link rel="stylesheet" href="~/css/NotFound.css" />
+}
 
+<div class="notfound-container">
+    <div class="notfound-content">
+        <!-- Icono de búsqueda -->
+        <div class="error-icon">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <!-- Mensaje principal -->
+        <div class="error-header">
+            <h1>Página No Encontrada</h1>
+            <p>Lo sentimos, la página que buscas no existe</p>
+        </div>
+
+        <!-- Mensaje dinámico -->
+        <div class="error-message">
+            <div class="message-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="message-content">
+                <p>@TempData["Error"]</p>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="error-info">
+            <div class="info-item">
+                <i class="fas fa-compass"></i>
+                <span>Recurso no disponible</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-link"></i>
+                <span>Enlace posiblemente roto</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <span>@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+        </div>
+
+        <!-- Búsqueda (opcional) -->
+        <div class="search-suggestions">
+            <h4>¿Qué puedes hacer?</h4>
+            <div class="suggestions-grid">
+                <div class="suggestion-item">
+                    <i class="fas fa-home"></i>
+                    <span>Ir a la página de inicio</span>
+                </div>
+                <div class="suggestion-item">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Volver a la página anterior</span>
+                </div>
+                <div class="suggestion-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>Contactar al soporte técnico</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="error-actions">
+            <a href="javascript:history.back()" class="btn-error btn-back">
+                <i class="fas fa-arrow-left me-2"></i>
+                Volver Atrás
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn-error btn-home">
+                <i class="fas fa-home me-2"></i>
+                Ir al Inicio
+            </a>
+            <a href="mailto:soporte@yastcleaner.com" class="btn-error btn-support">
+                <i class="fas fa-life-ring me-2"></i>
+                Soporte
+            </a>
+        </div>
+
+        <!-- Código de error -->
+        <div class="error-code">
+            <span>Código de Error: 404 - Not Found</span>
+        </div>
+    </div>
+
+    <!-- Elementos decorativos -->
+    <div class="background-elements">
+        <div class="bg-element bg-element-1">
+            <i class="fas fa-question-circle"></i>
+        </div>
+        <div class="bg-element bg-element-2">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div class="bg-element bg-element-3">
+            <i class="fas fa-map-signs"></i>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto de aparición escalonada
+            const elements = document.querySelectorAll('.notfound-content > *');
+            elements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.15}s`;
+            });
+
+            // Efecto de búsqueda en el icono
+            const searchIcon = document.querySelector('.error-icon');
+            setInterval(() => {
+                searchIcon.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    searchIcon.style.transform = 'scale(1)';
+                }, 500);
+            }, 3000);
+        });
+    </script>
+}

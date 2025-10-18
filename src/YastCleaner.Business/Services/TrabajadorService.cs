@@ -65,15 +65,13 @@ namespace YastCleaner.Business.Services
             await _UoW.SaveChangesAsync();
             return Result.Ok();
         }
-        public string GenerarPassword(string nombre, string apellidoPaterno, string apellidoMaterno)
+        public string GenerarPassword(string apellidoPaterno)
         {
             var fechaHoraActual = _dateTimeProvider.DateTimeActual().ToString("yyyyMMddHHmmss");
-            string parteNombre = !string.IsNullOrEmpty(nombre) ? nombre.Substring(0, 1) : "";
             string parteApePat = !string.IsNullOrEmpty(apellidoPaterno) ? apellidoPaterno.Substring(0, 1) : "";
-            string parteApeMat = !string.IsNullOrEmpty(apellidoMaterno) ? apellidoMaterno.Substring(0, 1) : "";
             Random rnd = new Random();
             string numerosAleatorios = rnd.Next(100, 999).ToString();
-            return $"{parteNombre}{parteApePat}{parteApeMat}{numerosAleatorios}{fechaHoraActual}";
+            return $"{parteApePat}{numerosAleatorios}{fechaHoraActual}";
         }
 
         public async Task<Result> ActualizarTrabajador(TrabajadorDto dto)
