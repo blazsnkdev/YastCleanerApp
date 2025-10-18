@@ -1,0 +1,431 @@
+﻿/* ESTILOS ESPECÍFICOS PARA LA VISTA DE PEDIDOS */
+.pedidos-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Botón agregar */
+.btn-agregar {
+    background: linear-gradient(135deg, #0abb87 0%, #1cd1a1 100%);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 25px;
+    border: none;
+    cursor: pointer;
+}
+
+    .btn-agregar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(10, 187, 135, 0.3);
+        color: white;
+    }
+
+/* Controles de paginación superior */
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+}
+
+.registros-info {
+    color: #666;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.tamanio-pagina {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.tamanio-label {
+    color: #666;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.btn-tamanio {
+    padding: 6px 12px;
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+    .btn-tamanio:hover {
+        background: #f8f9ff;
+        color: #592af5;
+        border-color: #592af5;
+    }
+
+    .btn-tamanio.active {
+        background: #592af5;
+        color: white;
+        border-color: #592af5;
+    }
+
+/* Tabla de Pedidos */
+.tabla-pedidos {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.tabla-header {
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    color: white;
+    padding: 25px;
+}
+
+    .tabla-header h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.4rem;
+    }
+
+.tabla-contenido {
+    overflow-x: auto;
+}
+
+.tabla-custom {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+    .tabla-custom thead {
+        background: #f8f9ff;
+    }
+
+    .tabla-custom th {
+        padding: 20px;
+        text-align: left;
+        font-weight: 600;
+        color: #592af5;
+        border-bottom: 2px solid #eaeaea;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tabla-custom td {
+        padding: 20px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+    }
+
+    .tabla-custom tbody tr {
+        transition: all 0.3s ease;
+    }
+
+        .tabla-custom tbody tr:hover {
+            background: #f8f9ff;
+        }
+
+/* Estilos específicos de celdas */
+.codigo-pedido {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #592af5;
+}
+
+.fecha-pedido {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #333;
+}
+
+.hora-pedido {
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 2px;
+}
+
+.cliente-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cliente-nombre {
+    font-weight: 600;
+    color: #333;
+}
+
+.cliente-contacto {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.monto {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+    .monto.adelanto {
+        color: #0abb87;
+    }
+
+    .monto.faltante {
+        color: #ffa800;
+    }
+
+    .monto.total {
+        color: #592af5;
+        font-size: 1.1rem;
+    }
+
+/* Badges */
+.badge-metodo, .badge-estado {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+    .badge-metodo.metodo-efectivo {
+        background: #e6f7ee;
+        color: #0abb87;
+    }
+
+    .badge-metodo.metodo-tarjeta {
+        background: #e6f0ff;
+        color: #592af5;
+    }
+
+    .badge-metodo.metodo-transferencia {
+        background: #fff4e6;
+        color: #ffa800;
+    }
+
+    .badge-estado.estado-completado {
+        background: #e6f7ee;
+        color: #0abb87;
+    }
+
+    .badge-estado.estado-pendiente {
+        background: #fff4e6;
+        color: #ffa800;
+    }
+
+    .badge-estado.estado-en-proceso {
+        background: #e6f0ff;
+        color: #592af5;
+    }
+
+    .badge-estado.estado-cancelado {
+        background: #ffeaea;
+        color: #f64e60;
+    }
+
+/* Acciones */
+.acciones-cell {
+    white-space: nowrap;
+}
+
+.btn-accion {
+    padding: 8px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+    margin: 2px;
+}
+
+.btn-detalle {
+    background: #e6f0ff;
+    color: #592af5;
+    border: 1px solid #592af5;
+}
+
+    .btn-detalle:hover {
+        background: #592af5;
+        color: white;
+    }
+
+.btn-actualizar {
+    background: #fff4e6;
+    color: #ffa800;
+    border: 1px solid #ffa800;
+}
+
+    .btn-actualizar:hover {
+        background: #ffa800;
+        color: white;
+    }
+
+/* Paginación inferior */
+.pagination-custom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+}
+
+.page-item-custom {
+    margin: 0;
+}
+
+.page-link-custom {
+    padding: 10px 15px;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+    .page-link-custom:hover {
+        background: #f8f9ff;
+        color: #592af5;
+        border-color: #592af5;
+    }
+
+.page-item-custom.active .page-link-custom {
+    background: #592af5;
+    color: white;
+    border-color: #592af5;
+}
+
+.page-item-custom.disabled .page-link-custom {
+    background: #f8f9fa;
+    color: #6c757d;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Estado vacío */
+.estado-vacio {
+    text-align: center;
+    padding: 80px 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+}
+
+    .estado-vacio i {
+        font-size: 5rem;
+        color: #592af5;
+        margin-bottom: 30px;
+        opacity: 0.5;
+    }
+
+    .estado-vacio h4 {
+        color: #592af5;
+        margin-bottom: 15px;
+        font-size: 1.8rem;
+    }
+
+    .estado-vacio p {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+/* Responsive */
+@media (max-width: 992px) {
+    .pagination-controls {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .tamanio-pagina {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .pedidos-container {
+        padding: 15px;
+    }
+
+    .tabla-custom {
+        min-width: 1000px;
+    }
+
+    .btn-accion {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .page-link-custom {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .pagination-custom {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .page-link-custom {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .btn-agregar {
+        width: 100%;
+        justify-content: center;
+        padding: 15px 20px;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pagination-controls, .tabla-pedidos, .pagination-custom {
+    animation: fadeInUp 0.6s ease;
+}

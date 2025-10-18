@@ -1,71 +1,214 @@
-﻿@model IEnumerable<YastCleaner.Web.ViewModels.PedidoViewModel>
-
+﻿@model YastCleaner.Web.Utils.PaginaResult<YastCleaner.Web.ViewModels.PedidoViewModel>
 @{
     ViewData["Title"] = "Pedidos";
+    var trabajadorNombre = Model.Items.FirstOrDefault()?.Trabajador.Nombre ?? "Trabajador";
 }
 
-<h1>Pedidos por el trabajador: @Model.FirstOrDefault()?.Trabajador.Nombre</h1>
-
-<p>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Código Pedido
-            </th>
-            <th>
-                Fecha Entrega
-            </th>
-            <th>
-                Cliente
-            </th>
-            <th>
-                Adelanto
-            </th>
-            <th>
-                Faltante
-            </th>
-            <th>
-                Total
-            </th>
-            <th>
-                Metodo de Pago
-            </th>
-            <th>
-                Estado
-            </th>
-            
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CodigoPedido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fecha)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cliente.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MontoAdelantado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MontoFaltante)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MontoTotal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MetodoPago)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-        </tr>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Carrito.css" />
+    <link rel="stylesheet" href="~/css/PedidosTrabajador.css" />
 }
-    </tbody>
-</table>
+
+<div class="pedidos-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-clipboard-list me-3"></i>
+            Pedidos del Trabajador
+        </h1>
+        <div class="pedidos-estado">
+            <span class="badge-estado badge-activo">@Model.Items.Count() pedidos encontrados</span>
+        </div>
+    </div>
+
+    <!-- Botón agregar -->
+    <a asp-controller="Pedido" asp-action="Temporal" class="btn-agregar">
+        <i class="fas fa-plus-circle"></i> Nuevo Pedido
+    </a>
+
+    @if (Model.Items.Any())
+    {
+        <!-- Controles de paginación superior -->
+        <div class="pagination-controls">
+            <div class="registros-info">
+                Mostrando @((Model.PaginaIndice - 1) * Model.TamanioPagina + 1) -
+                @Math.Min(Model.PaginaIndice * Model.TamanioPagina, Model.TotalRegistros) de
+                @Model.TotalRegistros registros
+            </div>
+
+            <div class="tamanio-pagina">
+                <span class="tamanio-label">Registros por página:</span>
+                <div>
+                    <a asp-action="Index" asp-route-pagina="1" asp-route-tamanioPagina="5"
+                       class="btn-tamanio @(Model.TamanioPagina == 5 ? "active" : "")">5</a>
+                    <a asp-action="Index" asp-route-pagina="1" asp-route-tamanioPagina="10"
+                       class="btn-tamanio @(Model.TamanioPagina == 10 ? "active" : "")">10</a>
+                    <a asp-action="Index" asp-route-pagina="1" asp-route-tamanioPagina="25"
+                       class="btn-tamanio @(Model.TamanioPagina == 25 ? "active" : "")">25</a>
+                    <a asp-action="Index" asp-route-pagina="1" asp-route-tamanioPagina="50"
+                       class="btn-tamanio @(Model.TamanioPagina == 50 ? "active" : "")">50</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de pedidos -->
+        <div class="tabla-pedidos">
+            <div class="tabla-header">
+                <h3><i class="fas fa-list me-2"></i>Lista de Pedidos</h3>
+            </div>
+            <div class="tabla-contenido">
+                <table class="tabla-custom">
+                    <thead>
+                        <tr>
+                            <th>Código Pedido</th>
+                            <th>Fecha Entrega</th>
+                            <th>Cliente</th>
+                            <th class="text-end">Adelanto</th>
+                            <th class="text-end">Faltante</th>
+                            <th class="text-end">Total</th>
+                            <th>Método de Pago</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="codigo-pedido">
+                                        <i class="fas fa-hashtag me-2"></i>
+                                        <strong>@item.CodigoPedido</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fecha-pedido">
+                                        <i class="far fa-calendar me-2"></i>
+                                        @item.Fecha.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <div class="hora-pedido">
+                                        @item.Fecha.ToString("hh:mm tt")
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cliente-info">
+                                        <div class="cliente-nombre">@item.Cliente.Nombre</div>
+                                        <div class="cliente-contacto">
+                                            <i class="fas fa-phone"></i>
+                                            @item.Cliente.NumeroCelular
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <span class="monto adelanto">S/ @item.MontoAdelantado.ToString("N2")</span>
+                                </td>
+                                <td class="text-end">
+                                    <span class="monto faltante">S/ @item.MontoFaltante.ToString("N2")</span>
+                                </td>
+                                <td class="text-end">
+                                    <span class="monto total">S/ @item.MontoTotal.ToString("N2")</span>
+                                </td>
+                                <td>
+                                    <span class="badge-metodo metodo-@item.MetodoPago?.ToLower()">
+                                        <i class="fas @(item.MetodoPago == "Efectivo" ? "fa-money-bill" :
+                                                                                                 item.MetodoPago == "Tarjeta" ? "fa-credit-card" :
+                                                                                                 "fa-university") me-1"></i>
+                                @item.MetodoPago
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge-estado estado-@item.Estado?.ToLower().Replace(" ", "-")">
+                                @item.Estado
+                            </span>
+                        </td>
+                        <td class="acciones-cell">
+                            <a asp-controller="Pedido" asp-action="DetallePedido" asp-route-pedidoId="@item.PedidoId"
+                               class="btn-accion btn-detalle">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                            <a asp-controller="Pedido" asp-action="Entregar" asp-route-pedidoId="@item.PedidoId"
+                               class="btn-accion btn-actualizar">
+                                <i class="fas fa-edit"></i> Entregar
+                            </a>
+                        </td>
+                    </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Paginación inferior -->
+        <nav aria-label="Paginación de pedidos">
+            <ul class="pagination-custom">
+                <li class="page-item-custom @(!Model.TienePaginaAnterior ? "disabled" : "")">
+                    <a class="page-link-custom" asp-action="Index" asp-route-pagina="1" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Primera">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item-custom @(!Model.TienePaginaAnterior ? "disabled" : "")">
+                    <a class="page-link-custom" asp-action="Index" asp-route-pagina="@(Model.PaginaIndice - 1)" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Anterior">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+
+                @{
+                    int inicio = Math.Max(1, Model.PaginaIndice - 2);
+                    int fin = Math.Min(Model.TotalPagias, Model.PaginaIndice + 2);
+                }
+
+                @for (int i = inicio; i <= fin; i++)
+                {
+                    <li class="page-item-custom @(i == Model.PaginaIndice ? "active" : "")">
+                        <a class="page-link-custom" asp-action="Index" asp-route-pagina="@i" asp-route-tamanioPagina="@Model.TamanioPagina">@i</a>
+                    </li>
+                }
+
+                <li class="page-item-custom @(!Model.TienePaginaSiguiente ? "disabled" : "")">
+                    <a class="page-link-custom" asp-action="Index" asp-route-pagina="@(Model.PaginaIndice + 1)" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Siguiente">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item-custom @(!Model.TienePaginaSiguiente ? "disabled" : "")">
+                    <a class="page-link-custom" asp-action="Index" asp-route-pagina="@Model.TotalPagias" asp-route-tamanioPagina="@Model.TamanioPagina" aria-label="Última">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <!-- Estado vacío -->
+        <div class="estado-vacio">
+            <i class="fas fa-clipboard-list"></i>
+            <h4>No hay pedidos registrados</h4>
+            <p>No se encontraron pedidos para este trabajador.</p>
+            <a asp-controller="Pedido" asp-action="Temporal" class="btn-agregar">
+                <i class="fas fa-plus-circle"></i> Crear Primer Pedido
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filtros dinámicos (si los agregas después)
+            const filtroEstado = document.getElementById('filtroEstado');
+            const filtroMetodoPago = document.getElementById('filtroMetodoPago');
+
+            if (filtroEstado) {
+                filtroEstado.addEventListener('change', aplicarFiltros);
+            }
+            if (filtroMetodoPago) {
+                filtroMetodoPago.addEventListener('change', aplicarFiltros);
+            }
+
+            function aplicarFiltros() {
+                // Lógica de filtrado aquí
+                console.log('Aplicando filtros...');
+            }
+        });
+    </script>
+}

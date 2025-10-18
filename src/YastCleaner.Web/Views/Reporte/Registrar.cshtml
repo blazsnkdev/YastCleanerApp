@@ -1,34 +1,209 @@
 ﻿@model YastCleaner.Web.ViewModels.RegistrarReporteViewModel
 
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Registrar Reporte";
 }
 
-<div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="card shadow-lg p-4" style="width: 28rem; border-radius: 15px;">
-        <div class="card-body text-center">
-            <h2 class="card-title mb-3 text-primary">Registrar Reporte</h2>
-            <h6 class="card-subtitle mb-4 text-muted">Cierre de caja del trabajador</h6>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Temporal.css" />
+    <link rel="stylesheet" href="~/css/RegistrarReporte.css" />
+}
 
-            <form asp-controller="Reporte" asp-action="Registrar" method="post">
-                <input asp-for="TrabajadorId" type="hidden" />
+<div class="registro-reporte-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-file-invoice-dollar me-3"></i>
+            Registrar Reporte
+        </h1>
+        <div class="reporte-estado">
+            <span class="badge-estado badge-activo">Cierre de Caja</span>
+        </div>
+    </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="MontoTotal" class="form-label fw-bold"></label>
-                    <input asp-for="MontoTotal" class="form-control text-center" readonly />
-                    <span asp-validation-for="MontoTotal" class="text-danger"></span>
+    <div class="registro-reporte-grid">
+        <!-- Tarjeta Principal -->
+        <div class="formulario-reporte">
+            <div class="formulario-header">
+                <h3><i class="fas fa-cash-register"></i> Cierre de Caja del Trabajador</h3>
+            </div>
+            <div class="formulario-body">
+                <div class="reporte-info">
+                    <div class="info-icono">
+                        <i class="fas fa-user-hard-hat"></i>
+                    </div>
+                    <div class="info-details">
+                        <h4>Reporte de Cierre</h4>
+                        <p>Confirme el monto total para registrar el cierre de caja</p>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">Registrar</button>
-            </form>
+                <form asp-controller="Reporte" asp-action="Registrar" method="post" id="reporteForm">
+                    <input asp-for="TrabajadorId" type="hidden" />
 
-            <div class="mt-4">
-                <h5 class="text-muted">Pedidos: @ViewBag.Pedidos</h5>
+                    <div class="form-group">
+                        <label asp-for="MontoTotal" class="form-label">
+                            <i class="fas fa-money-bill-wave me-2"></i>Monto Total
+                        </label>
+                        <div class="monto-input-container">
+                            <span class="monto-prefijo">S/</span>
+                            <input asp-for="MontoTotal" class="form-control monto-input" readonly />
+                        </div>
+                        <span asp-validation-for="MontoTotal" class="text-validation"></span>
+                        <div class="form-text">Monto total calculado de los pedidos del día</div>
+                    </div>
+
+                    <!-- Resumen de Información -->
+                    <div class="resumen-reporte">
+                        <div class="resumen-header">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            <h5>Resumen del Día</h5>
+                        </div>
+                        <div class="resumen-body">
+                            <div class="resumen-item">
+                                <div class="resumen-icono">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <div class="resumen-info">
+                                    <span class="resumen-valor">@ViewBag.Pedidos</span>
+                                    <span class="resumen-label">Total Pedidos</span>
+                                </div>
+                            </div>
+                            <div class="resumen-item">
+                                <div class="resumen-icono">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                                <div class="resumen-info">
+                                    <span class="resumen-valor">S/ @Model.MontoTotal.ToString("N2")</span>
+                                    <span class="resumen-label">Ingreso Total</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="acciones-formulario">
+                        <a asp-action="CerrarCaja" class="btn-formulario btn-cancelar">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Regresar
+                        </a>
+                        <button type="button" class="btn-formulario btn-registrar" id="btnRegistrar">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Registrar Cierre
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <div class="card-footer text-center bg-white border-0 mt-3">
-            <a asp-action="CerrarCaja" class="btn btn-link">← Regresar</a>
+        <!-- Panel Informativo -->
+        <div class="info-panel">
+            <div class="info-header">
+                <h4><i class="fas fa-info-circle me-2"></i>Información Importante</h4>
+            </div>
+            <div class="info-body">
+                <div class="info-item">
+                    <div class="info-icono success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Verificación Completa</h5>
+                        <p>El monto total ha sido calculado automáticamente basado en todos los pedidos registrados.</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icono warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Confirmación Requerida</h5>
+                        <p>Al registrar el cierre, el sistema generará un reporte oficial que no podrá ser modificado.</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icono primary">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Reporte PDF</h5>
+                        <p>Podrá descargar el reporte en formato PDF después del registro.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-footer">
+                <div class="alert-custom alert-info">
+                    <i class="fas fa-clock me-2"></i>
+                    <strong>Hora del cierre:</strong> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <!-- Incluir SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('reporteForm');
+            const btnRegistrar = document.getElementById('btnRegistrar');
+
+            btnRegistrar.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Verificar si SweetAlert2 está cargado
+                if (typeof Swal === 'undefined') {
+                    console.error('SweetAlert2 no está cargado');
+                    // Fallback: enviar formulario directamente
+                    form.submit();
+                    return;
+                }
+
+                Swal.fire({
+                    title: '¿Confirmar cierre de caja?',
+                    html: `
+                        <div class="text-start">
+                            <p><strong>Monto total:</strong> S/ @Model.MontoTotal.ToString("N2")</p>
+                            <p><strong>Pedidos registrados:</strong> @ViewBag.Pedidos</p>
+                            <p><strong>Fecha:</strong> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0abb87',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, registrar cierre',
+                    cancelButtonText: 'Cancelar',
+                    customClass: {
+                        popup: 'swal-custom'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Mostrar loading
+                        btnRegistrar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registrando...';
+                        btnRegistrar.disabled = true;
+
+                        // Enviar formulario
+                        form.submit();
+                    }
+                });
+            });
+
+            // Fallback si SweetAlert2 no carga
+            setTimeout(function() {
+                if (typeof Swal === 'undefined') {
+                    console.warn('SweetAlert2 no cargado, usando confirm nativo');
+                    btnRegistrar.addEventListener('click', function(e) {
+                        if (!confirm('¿Está seguro de registrar el cierre de caja?')) {
+                            e.preventDefault();
+                        }
+                    });
+                }
+            }, 1000);
+        });
+    </script>
+}

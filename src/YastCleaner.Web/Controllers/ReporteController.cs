@@ -83,7 +83,7 @@ namespace YastCleaner.Web.Controllers
 
 
         [RoleAuthorize(Rol.Administrador)]
-        public async Task<IActionResult> Pedidos(int trabajadorId)
+        public async Task<IActionResult> Pedidos(int trabajadorId,int pagina = 1, int tamanioPagina = 10)
         {
             try
             {
@@ -125,7 +125,8 @@ namespace YastCleaner.Web.Controllers
                         FechaRegistro = p.Cliente.FechaRegistro
                     },
                 });
-                return View(viewModel);
+                var paginacion = PaginacionHelper.Paginacion(viewModel, pagina, tamanioPagina);
+                return View(paginacion);
 
             }
             catch (UnauthorizedAccessException)
