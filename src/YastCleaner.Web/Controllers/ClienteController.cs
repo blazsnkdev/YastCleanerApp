@@ -233,6 +233,10 @@ namespace YastCleaner.Web.Controllers
                         TrabajadorId = p.Trabajador.TrabajadorId,
                         Nombre = p.Trabajador.Nombre,
                         Apellidos = p.Trabajador.ApellidoPaterno + " " + p.Trabajador.ApellidoMaterno,
+                    },
+                    Cliente = new ClienteViewModel
+                    {
+                        Nombre = p.Cliente.Nombre
                     }
                 }).ToList();
                 var paginacion = PaginacionHelper.Paginacion(pedidosViewModel, pagina, tamanioPagina);
