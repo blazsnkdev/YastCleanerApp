@@ -67,7 +67,7 @@ namespace YastCleaner.Web.Controllers
                     Email = viewModel.Email
                 };
                 Result result;
-                if (accion == "pedido")//presionamos el boton de ir a pedidos
+                if (accion == "pedido")
                 {
                     var pedidosTemporal = _pedidoService.ObtenerPedidosTemporal();
                     if (pedidosTemporal.Any())

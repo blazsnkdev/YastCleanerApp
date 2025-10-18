@@ -4,112 +4,261 @@
     ViewData["Title"] = "Detalle del Cliente";
 }
 
-<style>
-    .form-control-plaintext {
-        min-height: 2.5rem;
-        padding: 0.375rem 0;
-    }
+@section Styles {
+    <link rel="stylesheet" href="~/css/DetalleCliente.css" />
+}
 
-    .border-bottom {
-        border-color: #dee2e6 !important;
-    }
-
-    .card {
-        border: none;
-        border-radius: 10px;
-    }
-
-    .btn-lg {
-        padding: 0.75rem 1.5rem;
-    }
-</style>
-<div class="container-fluid">
-    <!-- Header con navegación -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <a asp-action="Activos" asp-controller="Cliente" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left"></i> Volver a Clientes
-            </a>
+<div class="detalle-cliente-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="cliente-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="cliente-info">
+                <h1 class="page-title">@Model.Nombre @Model.ApellidoPaterno @Model.ApellidoMaterno</h1>
+                <p class="page-subtitle">Información completa del cliente</p>
+                <div class="cliente-meta">
+                    <span class="meta-item">
+                        <i class="fas fa-phone"></i>
+                        @Model.NumeroCelular
+                    </span>
+                    <span class="meta-item">
+                        <i class="fas fa-envelope"></i>
+                        @Model.Email
+                    </span>
+                    <span class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        Registrado: @Model.FechaRegistro.ToString("dd/MM/yyyy")
+                    </span>
+                </div>
+            </div>
         </div>
-        <h2 class="text-primary mb-0">Detalle del Cliente</h2>
-        <div>
-            <a asp-action="Actualizar" asp-controller="Cliente" asp-route-clienteId="@Model.ClienteId" class="btn btn-warning">
-                <i class="fas fa-edit"></i> Editar
-            </a>
+        <div class="header-actions">
+            <span class="estado-cliente @(Model.Estado == "Activo" ? "activo" : "inactivo")">
+                <i class="fas fa-circle"></i>
+                @Model.Estado
+            </span>
         </div>
     </div>
 
-    <!-- Mensajes de TempData -->
+    <!-- Alertas -->
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert-error-custom">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>@TempData["Error"]</span>
+            <button type="button" class="btn-cerrar-alerta" onclick="cerrarAlerta(this)">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     }
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle"></i> @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert-success-custom">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["Success"]</span>
+            <button type="button" class="btn-cerrar-alerta" onclick="cerrarAlerta(this)">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     }
 
-    <div class="row">
-        <!-- Información Principal del Cliente -->
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="card-title mb-0">
-                        <i class="fas fa-user"></i> Información del Cliente
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold text-muted">Nombre Completo</label>
-                                <p class="form-control-plaintext border-bottom pb-2">@Model.Nombre @Model.ApellidoPaterno @Model.ApellidoMaterno</p>
+    <div class="detalle-content">
+        <div class="row">
+            <!-- Información Principal -->
+            <div class="col-lg-8">
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-user me-2"></i>
+                        <h3>Información Personal</h3>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>ID del Cliente</label>
+                                    <span class="info-value">@Model.ClienteId</span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold text-muted">Número de Celular</label>
-                                <p class="form-control-plaintext border-bottom pb-2">
-                                    <i class="fas fa-phone text-primary"></i> @Model.NumeroCelular
-                                </p>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-signature"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Nombres</label>
+                                    <span class="info-value">@Model.Nombre</span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold text-muted">Correo Electrónico</label>
-                                <p class="form-control-plaintext border-bottom pb-2">
-                                    <i class="fas fa-envelope text-primary"></i> @Model.Email
-                                </p>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-signature"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Apellido Paterno</label>
+                                    <span class="info-value">@Model.ApellidoPaterno</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-signature"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Apellido Materno</label>
+                                    <span class="info-value">@Model.ApellidoMaterno</span>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold text-muted">Dirección</label>
-                                <p class="form-control-plaintext border-bottom pb-2">
-                                    <i class="fas fa-map-marker-alt text-primary"></i> @Model.Direccion
-                                </p>
+                <div class="info-card mt-4">
+                    <div class="card-header-custom bg-primary">
+                        <i class="fas fa-address-book me-2"></i>
+                        <h3>Información de Contacto</h3>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Número de Celular</label>
+                                    <span class="info-contacto">@Model.NumeroCelular</span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold text-muted">Estado</label>
-                                <p>
-                                    <span class="badge @(Model.Estado == "Activo" ? "bg-success" : "bg-secondary") fs-6">
-                                        @Model.Estado
-                                    </span>
-                                </p>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Correo Electrónico</label>
+                                    <span class="info-email">@Model.Email</span>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold text-muted">Fecha de Registro</label>
-                                <p class="form-control-plaintext border-bottom pb-2">
-                                    <i class="fas fa-calendar text-primary"></i> @Model.FechaRegistro.ToString("dd/MM/yyyy")
-                                </p>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Dirección</label>
+                                    <span class="info-value">@Model.Direccion</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-plus"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Fecha de Registro</label>
+                                    <span class="info-value">@Model.FechaRegistro.ToString("dd/MM/yyyy")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Lateral -->
+            <div class="col-lg-4">
+                <!-- Acciones Rápidas -->
+                <div class="actions-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-bolt me-2"></i>
+                        <h3>Acciones Rápidas</h3>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="actions-grid">
+                            <a asp-action="Actualizar" asp-controller="Cliente" asp-route-clienteId="@Model.ClienteId"
+                               class="btn-action btn-editar">
+                                <i class="fas fa-edit"></i>
+                                <span>Editar Cliente</span>
+                            </a>
+
+                            <a asp-action="Pedidos" asp-controller="Cliente" asp-route-clienteId="@Model.ClienteId"
+                               class="btn-action btn-pedidos">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Ver Pedidos</span>
+                            </a>
+
+                            <a href="mailto:@Model.Email" class="btn-action btn-email">
+                                <i class="fas fa-envelope"></i>
+                                <span>Enviar Email</span>
+                            </a>
+
+                            <a href="tel:@Model.NumeroCelular" class="btn-action btn-llamar">
+                                <i class="fas fa-phone"></i>
+                                <span>Llamar Cliente</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Estado -->
+                <div class="status-card mt-4">
+                    <div class="card-header-custom @(Model.Estado == "Activo" ? "bg-success" : "bg-secondary")">
+                        <i class="fas fa-user-shield me-2"></i>
+                        <h3>Gestión de Estado</h3>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="status-content">
+                            <div class="status-indicator @(Model.Estado == "Activo" ? "activo" : "inactivo")">
+                                <i class="fas fa-circle"></i>
+                                <span>Cliente @Model.Estado</span>
+                            </div>
+
+                            @if (Model.Estado == "Activo")
+                            {
+                                <form asp-action="Desactivar" asp-controller="Cliente" asp-route-clienteId="@Model.ClienteId" method="post" class="mt-3">
+                                    <button type="submit" class="btn-status btn-desactivar" onclick="return confirmarDesactivacion()">
+                                        <i class="fas fa-user-slash me-2"></i>
+                                        Desactivar Cliente
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="Activar" asp-controller="Cliente" asp-route-clienteId="@Model.ClienteId" method="post" class="mt-3">
+                                    <button type="submit" class="btn-status btn-activar" onclick="return confirmarActivacion()">
+                                        <i class="fas fa-user-check me-2"></i>
+                                        Activar Cliente
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estadísticas -->
+                <div class="stats-card mt-4">
+                    <div class="card-header-custom">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        <h3>Estadísticas</h3>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-content">
+                                    @{
+                                        var diasRegistrado = (DateTime.Now - Model.FechaRegistro).Days;
+                                    }
+                                    <span class="stat-value">@diasRegistrado</span>
+                                    <span class="stat-label">Días como Cliente</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -117,65 +266,132 @@
             </div>
         </div>
 
-        <!-- Panel de Acciones -->
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-info text-white">
-                    <h5 class="card-title mb-0"><i class="fas fa-cogs"></i> Acciones</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <!-- Botón de Pedidos -->
-                        <a asp-action="Pedidos" asp-controller="Cliente" asp-route-clienteId="@Model.ClienteId"
-                           class="btn btn-warning btn-lg">
-                            <i class="fas fa-shopping-cart"></i> Ver Pedidos
-                        </a>
-
-                        <!-- Botón de Desactivar/Activar -->
-                        @if (Model.Estado == "Activo")
-                        {
-                            <form asp-action="Desactivar" asp-controller="Cliente" asp-route-clienteId="@Model.ClienteId" method="post" class="d-grid">
-                                <button type="submit" class="btn btn-danger btn-lg"
-                                        onclick="return confirm('¿Está seguro de desactivar este cliente?')">
-                                    <i class="fas fa-user-slash"></i> Desactivar Cliente
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <form asp-action="Activar" asp-controller="Cliente" asp-route-clienteId="@Model.ClienteId" method="post" class="d-grid">
-                                <button type="submit" class="btn btn-success btn-lg"
-                                        onclick="return confirm('¿Está seguro de activar este cliente?')">
-                                    <i class="fas fa-user-check"></i> Activar Cliente
-                                </button>
-                            </form>
-                        }
-
-                        <!-- Botón de Contactar -->
-                        <a href="mailto:@Model.Email" class="btn btn-outline-primary">
-                            <i class="fas fa-envelope"></i> Enviar Email
-                        </a>
-
-                        <!-- Botón de Llamar -->
-                        <a href="tel:@Model.NumeroCelular" class="btn btn-outline-success">
-                            <i class="fas fa-phone"></i> Llamar al Cliente
-                        </a>
+        <!-- Información Adicional -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="additional-info-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <h3>Información Adicional</h3>
                     </div>
-                </div>
-            </div>
+                    <div class="card-body-custom">
+                        <div class="additional-grid">
+                            <div class="additional-item">
+                                <i class="fas fa-user-clock text-info"></i>
+                                <div>
+                                    <label>Tiempo como Cliente</label>
+                                    <span>@diasRegistrado días (@((diasRegistrado / 30)) meses aproximadamente)</span>
+                                </div>
+                            </div>
 
-            <!-- Información Adicional -->
-            <div class="card shadow-sm mt-3">
-                <div class="card-header bg-light">
-                    <h6 class="card-title mb-0"><i class="fas fa-info-circle"></i> Información Adicional</h6>
-                </div>
-                <div class="card-body">
-                    <small class="text-muted">
-                        <i class="fas fa-clock"></i> Cliente registrado hace
-                        @((DateTime.Now - Model.FechaRegistro).Days) días
-                    </small>
+                            <div class="additional-item">
+                                <i class="fas fa-star text-warning"></i>
+                                <div>
+                                    <label>Cliente Frecuente</label>
+                                    <span>@(diasRegistrado > 90 ? "Sí" : "No")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal de Confirmación -->
+<div class="modal-confirmacion" id="modalConfirmacion">
+    <div class="modal-content">
+        <div class="modal-header warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <h3>Confirmar Acción</h3>
+            <button type="button" class="btn-cerrar" onclick="cerrarModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="confirmacion-resumen">
+                <h4 id="modalTitulo"></h4>
+                <div class="resumen-datos">
+                    <div class="resumen-item">
+                        <strong>Cliente:</strong>
+                        <span>@Model.Nombre @Model.ApellidoPaterno @Model.ApellidoMaterno</span>
+                    </div>
+                    <div class="resumen-item">
+                        <strong>Estado Actual:</strong>
+                        <span>@Model.Estado</span>
+                    </div>
+                </div>
+                <div class="advertencia-texto" id="modalMensaje"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal btn-cancelar" onclick="cerrarModal()">
+                <i class="fas fa-times me-2"></i>
+                Cancelar
+            </button>
+            <form id="formAccion" method="post" class="d-inline">
+                <button type="submit" class="btn-modal btn-confirmar" id="btnConfirmar">
+                    <i class="fas fa-check me-2"></i>
+                    <span id="btnTexto"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmarDesactivacion() {
+            document.getElementById('modalTitulo').textContent = '¿Desactivar Cliente?';
+            document.getElementById('modalMensaje').innerHTML = `
+                <i class="fas fa-exclamation-circle text-warning me-2"></i>
+                <span>El cliente no podrá realizar nuevos pedidos hasta que sea activado nuevamente.</span>
+            `;
+            document.getElementById('btnTexto').textContent = 'Sí, Desactivar';
+            document.getElementById('formAccion').action = '@Url.Action("Desactivar", "Cliente", new { clienteId = Model.ClienteId })';
+            document.getElementById('modalConfirmacion').style.display = 'flex';
+            return false;
+        }
+
+        function confirmarActivacion() {
+            document.getElementById('modalTitulo').textContent = '¿Activar Cliente?';
+            document.getElementById('modalMensaje').innerHTML = `
+                <i class="fas fa-info-circle text-info me-2"></i>
+                <span>El cliente podrá realizar nuevos pedidos en el sistema.</span>
+            `;
+            document.getElementById('btnTexto').textContent = 'Sí, Activar';
+            document.getElementById('formAccion').action = '@Url.Action("Activar", "Cliente", new { clienteId = Model.ClienteId })';
+            document.getElementById('modalConfirmacion').style.display = 'flex';
+            return false;
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalConfirmacion').style.display = 'none';
+        }
+
+        function cerrarAlerta(element) {
+            element.parentElement.style.display = 'none';
+        }
+
+        // Efectos visuales
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animación de las tarjetas
+            const cards = document.querySelectorAll('.info-card, .actions-card, .status-card, .stats-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Efecto hover en botones de acción
+            const actionButtons = document.querySelectorAll('.btn-action');
+            actionButtons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+}
