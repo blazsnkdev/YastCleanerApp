@@ -1,55 +1,268 @@
 ﻿@model YastCleaner.Web.ViewModels.InsertarTrabajadorViewModel
 
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Registrar Trabajador";
 }
 
-<h1>Registrar</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Carrito.css" />
+    <link rel="stylesheet" href="~/css/RegistrarTrabajador.css" />
+}
 
-<h4>RegistrarTrabajadorViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Registrar">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+<div class="registro-trabajador-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-user-plus me-3"></i>
+            Registrar Trabajador
+        </h1>
+        <div class="trabajador-estado">
+            <span class="badge-estado badge-activo">Nuevo Registro</span>
+        </div>
+    </div>
+
+    <div class="registro-trabajador-grid">
+        <!-- Formulario Principal -->
+        <div class="formulario-trabajador">
+            <div class="formulario-header">
+                <h3><i class="fas fa-id-card"></i> Información del Trabajador</h3>
             </div>
-            <div class="form-group">
-                <label asp-for="ApellidoPaterno" class="control-label"></label>
-                <input asp-for="ApellidoPaterno" class="form-control" />
-                <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
+            <div class="formulario-body">
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert-custom alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        @ViewBag.Error
+                    </div>
+                }
+
+                <div asp-validation-summary="ModelOnly" class="alert-custom alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Por favor, corrija los errores en el formulario.
+                </div>
+
+                <form asp-action="Registrar" method="post" id="registrarForm">
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="form-columns">
+                        <!-- Columna Izquierda - Información Personal -->
+                        <div class="form-columna">
+                            <div class="seccion-titulo">
+                                <i class="fas fa-user me-2"></i>
+                                <h4>Información Personal</h4>
+                            </div>
+                            <p class="seccion-descripcion">Complete los datos personales del trabajador</p>
+
+                            <div class="form-group">
+                                <label asp-for="Nombre" class="form-label">
+                                    <i class="fas fa-signature me-2"></i>Nombre *
+                                </label>
+                                <input asp-for="Nombre" class="form-control" 
+                                       placeholder="Ingrese el nombre del trabajador" />
+                                <span asp-validation-for="Nombre" class="text-validation"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ApellidoPaterno" class="form-label">
+                                    <i class="fas fa-user-tag me-2"></i>Apellido Paterno *
+                                </label>
+                                <input asp-for="ApellidoPaterno" class="form-control" 
+                                       placeholder="Ingrese el apellido paterno" />
+                                <span asp-validation-for="ApellidoPaterno" class="text-validation"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ApellidoMaterno" class="form-label">
+                                    <i class="fas fa-user-tag me-2"></i>Apellido Materno
+                                </label>
+                                <input asp-for="ApellidoMaterno" class="form-control" 
+                                       placeholder="Ingrese el apellido materno (opcional)" />
+                                <span asp-validation-for="ApellidoMaterno" class="text-validation"></span>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha - Información de Contacto -->
+                        <div class="form-columna">
+                            <div class="seccion-titulo">
+                                <i class="fas fa-address-card me-2"></i>
+                                <h4>Información de Contacto</h4>
+                            </div>
+                            <p class="seccion-descripcion">Datos de contacto y ubicación</p>
+
+                            <div class="form-group">
+                                <label asp-for="Dni" class="form-label">
+                                    <i class="fas fa-id-card me-2"></i>DNI *
+                                </label>
+                                <input asp-for="Dni" class="form-control" 
+                                       placeholder="Ingrese el número de DNI"
+                                       maxlength="8" />
+                                <span asp-validation-for="Dni" class="text-validation"></span>
+                                <div class="form-text">Número de 8 dígitos sin espacios</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email" class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>Correo Electrónico *
+                                </label>
+                                <input asp-for="Email" class="form-control" 
+                                       placeholder="trabajador@ejemplo.com" 
+                                       type="email" />
+                                <span asp-validation-for="Email" class="text-validation"></span>
+                                <div class="form-text">Ejemplo: nombre.apellido@yastcleaner.com</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Direccion" class="form-label">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Dirección *
+                                </label>
+                                <textarea asp-for="Direccion" class="form-control" rows="3"
+                                          placeholder="Ingrese la dirección completa del trabajador"></textarea>
+                                <span asp-validation-for="Direccion" class="text-validation"></span>
+                                <div class="form-text">Dirección completa para contactos y envíos</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="acciones-formulario">
+                        <a asp-action="Trabajadores" class="btn-formulario btn-cancelar">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Regresar
+                        </a>
+                        <button type="reset" class="btn-formulario btn-limpiar">
+                            <i class="fas fa-broom me-2"></i>
+                            Limpiar
+                        </button>
+                        <button type="submit" class="btn-formulario btn-registrar">
+                            <i class="fas fa-save me-2"></i>
+                            Registrar Trabajador
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="ApellidoMaterno" class="control-label"></label>
-                <input asp-for="ApellidoMaterno" class="form-control" />
-                <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
+        </div>
+
+        <!-- Panel Informativo -->
+        <div class="info-panel">
+            <div class="info-header">
+                <h4><i class="fas fa-info-circle me-2"></i>Información Importante</h4>
             </div>
-            <div class="form-group">
-                <label asp-for="Dni" class="control-label"></label>
-                <input asp-for="Dni" class="form-control" />
-                <span asp-validation-for="Dni" class="text-danger"></span>
+            <div class="info-body">
+                <div class="info-item">
+                    <div class="info-icono primary">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Verificación de Datos</h5>
+                        <p>Asegúrese de que toda la información proporcionada sea correcta y esté actualizada.</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icono warning">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>DNI Válido</h5>
+                        <p>El número de DNI debe ser válido y corresponder al trabajador registrado.</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icono success">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Correo Activo</h5>
+                        <p>Utilice un correo electrónico activo para notificaciones y comunicaciones.</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icono info">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Dirección Precisa</h5>
+                        <p>Proporcione una dirección completa para facilitar la logística de trabajo.</p>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Direccion" class="control-label"></label>
-                <input asp-for="Direccion" class="form-control" />
-                <span asp-validation-for="Direccion" class="text-danger"></span>
+            
+            <div class="info-footer">
+                <div class="stats-panel">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number">+50</span>
+                            <span class="stat-label">Trabajadores Registrados</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Trabajadores">Regresar</a>
-</div>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Validación del DNI (solo números, 8 dígitos)
+            const dniInput = document.querySelector('input[name="Dni"]');
+            if (dniInput) {
+                dniInput.addEventListener('input', function() {
+                    // Remover caracteres no numéricos
+                    this.value = this.value.replace(/\D/g, '');
+                    
+                    // Limitar a 8 dígitos
+                    if (this.value.length > 8) {
+                        this.value = this.value.slice(0, 8);
+                    }
+                });
+            }
 
+            // Efectos de validación en tiempo real
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (!this.validity.valid) {
+                        this.classList.add('input-error');
+                    } else {
+                        this.classList.remove('input-error');
+                    }
+                });
+
+                input.addEventListener('input', function() {
+                    if (this.validity.valid) {
+                        this.classList.remove('input-error');
+                    }
+                });
+            });
+
+            // Confirmación antes de limpiar
+            const btnLimpiar = document.querySelector('.btn-limpiar');
+            if (btnLimpiar) {
+                btnLimpiar.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    if (confirm('¿Está seguro de que desea limpiar todos los campos del formulario?')) {
+                        document.getElementById('registrarForm').reset();
+                        
+                        // Limpiar clases de error
+                        inputs.forEach(input => {
+                            input.classList.remove('input-error');
+                        });
+                        
+                        // Limpiar mensajes de validación
+                        const validationSpans = document.querySelectorAll('.text-validation');
+                        validationSpans.forEach(span => {
+                            span.textContent = '';
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+}

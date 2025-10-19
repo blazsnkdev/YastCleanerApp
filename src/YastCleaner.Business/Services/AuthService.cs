@@ -12,7 +12,6 @@ namespace YastCleaner.Business.Services
     public class AuthService : IAuthService
     {
         private readonly IUnitOfWork _UoW;
-
         public AuthService(IUnitOfWork uoW)
         {
             _UoW = uoW;
@@ -22,8 +21,7 @@ namespace YastCleaner.Business.Services
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
-
-        public async Task<SesionDto?> LoginAsync(string email, string password)
+        public async Task<SesionDto?> LoginAsync(string email, string password)//TODO: aqui esto se puedo mejorar usando el patron Result para formatear y no regresar null
         {
             var usuario = await _UoW.UsuarioRepository.GetByEmail(email);
             var passwordValido= ValidarPassword(password, usuario?.Password ?? "");
@@ -37,7 +35,6 @@ namespace YastCleaner.Business.Services
                 Rol = usuario.Rol
             };
         }
-
         private bool ValidarPassword(string passwordIngresada, string passwordHasheadaBD)
         {
             return BCrypt.Net.BCrypt.Verify(passwordIngresada, passwordHasheadaBD);

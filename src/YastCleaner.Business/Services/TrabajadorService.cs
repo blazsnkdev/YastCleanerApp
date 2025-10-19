@@ -46,7 +46,9 @@ namespace YastCleaner.Business.Services
         {
             var existe = await _UoW.UsuarioRepository.UsuarioDniExiste(dto.Dni);
             if (existe)
+            {
                 return Result.Fail("El dni Ya existe");
+            }
             string encriptado = _authService.HashPassword(dto.Password);//esto ya llega del viewModel
             var trabajador = new Usuario()
             {
@@ -59,7 +61,7 @@ namespace YastCleaner.Business.Services
                 Email = dto.Email,
                 Password = encriptado,
                 Rol = Rol.Trabajador,
-                FechaRegistro = _dateTimeProvider.DateTimeActual()//asignar el trabajador
+                FechaRegistro = _dateTimeProvider.DateTimeActual()
             };
             await _UoW.UsuarioRepository.AddAsync(trabajador);
             await _UoW.SaveChangesAsync();
