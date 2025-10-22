@@ -71,29 +71,69 @@
         }
     });
 
-    // Validación del formulario antes de enviar
+    // Referencias
     const pedidoForm = document.getElementById('pedidoForm');
+    const inputFecha = document.getElementById('fecha');
+
+    if (inputFecha) {
+        // Establecer fecha mínima (no se puede elegir una anterior al momento actual)
+        const ahora = new Date();
+        const zonaLocal = new Date(ahora.getTime() - (ahora.getTimezoneOffset() * 60000));
+        inputFecha.min = zonaLocal.toISOString().slice(0, 16);
+
+        // Validar al cambiar la fecha
+        inputFecha.addEventListener('change', function () {
+            const seleccionada = new Date(this.value);
+            if (seleccionada < new Date()) {
+                Swal.fire({
+                    title: 'Fecha inválida',
+                    text: 'La fecha y hora no pueden ser anteriores al momento actual.',
+                    icon: 'error',
+                    confirmButtonColor: '#592af5'
+                });
+                this.value = '';
+            }
+        });
+    }
+
     if (pedidoForm) {
         pedidoForm.addEventListener('submit', function (e) {
             const clienteId = document.getElementById('clienteId').value;
             const metodoPago = document.getElementById('metodoPago').value;
+            const fecha = inputFecha.value;
 
+            // Validar cliente
             if (!clienteId) {
                 e.preventDefault();
                 Swal.fire({
                     title: 'Cliente requerido',
-                    text: 'Por favor seleccione un cliente válido',
+                    text: 'Por favor seleccione un cliente válido.',
                     icon: 'warning',
                     confirmButtonColor: '#592af5'
                 });
                 return;
             }
 
+            // Validar fecha
+            const ahora = new Date();
+            const seleccionada = new Date(fecha);
+            if (!fecha || seleccionada < ahora) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Fecha inválida',
+                    text: 'Por favor seleccione una fecha y hora válida (no en el pasado).',
+                    icon: 'error',
+                    confirmButtonColor: '#592af5'
+                });
+                return;
+            }
+
+            // Validar método de pago
             if (!metodoPago) {
                 e.preventDefault();
                 Swal.fire({
                     title: 'Método de pago requerido',
-                    text: 'Por favor seleccione un método de pago',
+                    text: 'Por favor seleccione un método de pago.',
                     icon: 'warning',
                     confirmButtonColor: '#592af5'
                 });
@@ -101,6 +141,9 @@
             }
         });
     }
+
+
+
 });
 
 function calcularSaldo() {
