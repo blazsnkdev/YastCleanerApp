@@ -1,41 +1,348 @@
 ﻿@model YastCleaner.Web.ViewModels.RegistrarServicioViewModel
 
 @{
-    ViewData["Title"] = "RegistrarServicio";
+    ViewData["Title"] = "Registrar Servicio";
 }
 
-<h1>RegistrarServicio</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Carrito.css" />
+    <link rel="stylesheet" href="~/css/RegistrarServicio.css" />
+}
 
-<h4>ServicioViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="RegistrarServicio">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+<div class="registro-servicio-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-plus-circle me-3"></i>
+            Registrar Nuevo Servicio
+        </h1>
+        <div class="servicio-estado">
+            <span class="badge-estado badge-activo">Nuevo Servicio</span>
+        </div>
+    </div>
+
+    <div class="registro-servicio-grid">
+        <!-- Formulario Principal -->
+        <div class="formulario-servicio">
+            <div class="formulario-header">
+                <h3><i class="fas fa-concierge-bell"></i> Información del Servicio</h3>
             </div>
-            <div class="form-group">
-                <label asp-for="Precio" class="control-label"></label>
-                <input asp-for="Precio" class="form-control" />
-                <span asp-validation-for="Precio" class="text-danger"></span>
+            <div class="formulario-body">
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert-custom alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        @ViewBag.Error
+                    </div>
+                }
+
+                <div asp-validation-summary="ModelOnly" class="alert-custom alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Por favor, corrija los errores en el formulario.
+                </div>
+
+                <form asp-action="RegistrarServicio" method="post" id="registrarForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-sections">
+                        <!-- Información Básica -->
+                        <div class="form-section">
+                            <div class="seccion-titulo">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <h4>Información Básica</h4>
+                            </div>
+                            <p class="seccion-descripcion">Complete los datos principales del servicio</p>
+
+                            <div class="form-group">
+                                <label asp-for="Nombre" class="form-label">
+                                    <i class="fas fa-tag me-2"></i>Nombre del Servicio *
+                                </label>
+                                <input asp-for="Nombre" class="form-control"
+                                       placeholder="Ingrese el nombre del servicio"
+                                       maxlength="100" />
+                                <span asp-validation-for="Nombre" class="text-validation"></span>
+                                <div class="form-text">Nombre descriptivo y atractivo para el cliente</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Precio" class="form-label">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Precio (S/) *
+                                </label>
+                                <div class="precio-input-container">
+                                    <span class="precio-prefijo">S/</span>
+                                    <input asp-for="Precio" class="form-control precio-input"
+                                           type="number"
+                                           step="0.01"
+                                           min="0"
+                                           placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="Precio" class="text-validation"></span>
+                                <div class="form-text">Precio en soles peruanos</div>
+                            </div>
+                        </div>
+
+                        <!-- Descripción Detallada -->
+                        <div class="form-section">
+                            <div class="seccion-titulo">
+                                <i class="fas fa-align-left me-2"></i>
+                                <h4>Descripción del Servicio</h4>
+                            </div>
+                            <p class="seccion-descripcion">Detalles y características del servicio</p>
+
+                            <div class="form-group">
+                                <label asp-for="Descripcion" class="form-label">
+                                    <i class="fas fa-file-alt me-2"></i>Descripción *
+                                </label>
+                                <textarea asp-for="Descripcion" class="form-control descripcion-textarea"
+                                          rows="5"
+                                          placeholder="Describa detalladamente el servicio, incluyendo características, beneficios y cualquier información relevante para el cliente..."
+                                          maxlength="500"></textarea>
+                                <span asp-validation-for="Descripcion" class="text-validation"></span>
+                                <div class="form-text">
+                                    <span id="contador-caracteres">0</span>/500 caracteres
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen de Precios -->
+                    <div class="resumen-precio">
+                        <div class="resumen-header">
+                            <i class="fas fa-calculator me-2"></i>
+                            <h5>Resumen de Precio</h5>
+                        </div>
+                        <div class="resumen-body">
+                            <div class="precio-item">
+                                <span>Precio Base:</span>
+                                <span id="precio-base">S/ 0.00</span>
+                            </div>
+                            <div class="precio-item">
+                                <span>IGV (18%):</span>
+                                <span id="igv-calculado">S/ 0.00</span>
+                            </div>
+                            <div class="precio-item total">
+                                <span>Precio al Cliente:</span>
+                                <span id="precio-total">S/ 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="acciones-formulario">
+                        <a asp-controller="Servicio" asp-action="Servicios" class="btn-formulario btn-cancelar">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Regresar
+                        </a>
+                        <button type="reset" class="btn-formulario btn-limpiar">
+                            <i class="fas fa-broom me-2"></i>
+                            Limpiar
+                        </button>
+                        <button type="submit" class="btn-formulario btn-registrar">
+                            <i class="fas fa-save me-2"></i>
+                            Registrar Servicio
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
+        </div>
+
+        <!-- Panel Informativo -->
+        <div class="info-panel">
+            <div class="info-header">
+                <h4><i class="fas fa-lightbulb me-2"></i>Consejos para Servicios</h4>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="info-body">
+                <div class="info-item">
+                    <div class="info-icono primary">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Nombre Atractivo</h5>
+                        <p>Use nombres claros y descriptivos que resalten los beneficios del servicio.</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icono success">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Precio Competitivo</h5>
+                        <p>Investigue precios del mercado para ofrecer tarifas competitivas y justas.</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icono warning">
+                        <i class="fas fa-list-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Descripción Detallada</h5>
+                        <p>Incluya todos los detalles relevantes que el cliente necesita conocer.</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icono info">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Enfoque al Cliente</h5>
+                        <p>Piense en las necesidades del cliente al describir el servicio.</p>
+                    </div>
+                </div>
             </div>
-        </form>
+
+            <div class="info-footer">
+                <div class="preview-servicio">
+                    <h5>Vista Previa</h5>
+                    <div class="preview-card">
+                        <div class="preview-nombre" id="preview-nombre">Nombre del Servicio</div>
+                        <div class="preview-precio" id="preview-precio">S/ 0.00</div>
+                        <div class="preview-descripcion" id="preview-descripcion">Descripción del servicio aparecerá aquí...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-controller="Servicio" asp-action="Servicios">Regresar</a>
-</div>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nombreInput = document.querySelector('input[name="Nombre"]');
+            const precioInput = document.querySelector('input[name="Precio"]');
+            const descripcionTextarea = document.querySelector('textarea[name="Descripcion"]');
+            const contadorCaracteres = document.getElementById('contador-caracteres');
 
+            // Elementos de preview
+            const previewNombre = document.getElementById('preview-nombre');
+            const previewPrecio = document.getElementById('preview-precio');
+            const previewDescripcion = document.getElementById('preview-descripcion');
+
+            // Elementos de cálculo de precio
+            const precioBase = document.getElementById('precio-base');
+            const igvCalculado = document.getElementById('igv-calculado');
+            const precioTotal = document.getElementById('precio-total');
+
+            // Contador de caracteres para descripción
+            if (descripcionTextarea && contadorCaracteres) {
+                descripcionTextarea.addEventListener('input', function() {
+                    const longitud = this.value.length;
+                    contadorCaracteres.textContent = longitud;
+
+                    // Actualizar preview
+                    previewDescripcion.textContent = this.value || 'Descripción del servicio aparecerá aquí...';
+
+                    // Cambiar color si se acerca al límite
+                    if (longitud > 450) {
+                        contadorCaracteres.style.color = '#f64e60';
+                    } else if (longitud > 400) {
+                        contadorCaracteres.style.color = '#ffa800';
+                    } else {
+                        contadorCaracteres.style.color = '#666';
+                    }
+                });
+
+                // Inicializar contador
+                contadorCaracteres.textContent = descripcionTextarea.value.length;
+            }
+
+            // Actualizar preview del nombre
+            if (nombreInput) {
+                nombreInput.addEventListener('input', function() {
+                    previewNombre.textContent = this.value || 'Nombre del Servicio';
+                });
+            }
+
+            // Cálculo de precios y actualización de preview
+            if (precioInput) {
+                precioInput.addEventListener('input', function() {
+                    const precio = parseFloat(this.value) || 0;
+
+                    // Actualizar preview
+                    previewPrecio.textContent = `S/ ${precio.toFixed(2)}`;
+
+                    // Calcular IGV y total
+                    const igv = precio * 0.18;
+                    const total = precio + igv;
+
+                    // Actualizar elementos de cálculo
+                    precioBase.textContent = `S/ ${precio.toFixed(2)}`;
+                    igvCalculado.textContent = `S/ ${igv.toFixed(2)}`;
+                    precioTotal.textContent = `S/ ${total.toFixed(2)}`;
+                });
+
+                // Inicializar cálculos
+                const precioInicial = parseFloat(precioInput.value) || 0;
+                precioInput.dispatchEvent(new Event('input'));
+            }
+
+            // Validación del precio (no negativo)
+            if (precioInput) {
+                precioInput.addEventListener('blur', function() {
+                    if (this.value < 0) {
+                        this.value = 0;
+                        this.dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+
+            // Efectos de validación en tiempo real
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (!this.validity.valid) {
+                        this.classList.add('input-error');
+                    } else {
+                        this.classList.remove('input-error');
+                    }
+                });
+
+                input.addEventListener('input', function() {
+                    if (this.validity.valid) {
+                        this.classList.remove('input-error');
+                    }
+                });
+            });
+
+            // Confirmación antes de limpiar
+            const btnLimpiar = document.querySelector('.btn-limpiar');
+            if (btnLimpiar) {
+                btnLimpiar.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    if (confirm('¿Está seguro de que desea limpiar todos los campos del formulario?')) {
+                        document.getElementById('registrarForm').reset();
+
+                        // Limpiar clases de error
+                        inputs.forEach(input => {
+                            input.classList.remove('input-error');
+                        });
+
+                        // Limpiar mensajes de validación
+                        const validationSpans = document.querySelectorAll('.text-validation');
+                        validationSpans.forEach(span => {
+                            span.textContent = '';
+                        });
+
+                        // Resetear contador
+                        if (contadorCaracteres) {
+                            contadorCaracteres.textContent = '0';
+                        }
+
+                        // Resetear preview
+                        previewNombre.textContent = 'Nombre del Servicio';
+                        previewPrecio.textContent = 'S/ 0.00';
+                        previewDescripcion.textContent = 'Descripción del servicio aparecerá aquí...';
+
+                        // Resetear cálculos de precio
+                        precioBase.textContent = 'S/ 0.00';
+                        igvCalculado.textContent = 'S/ 0.00';
+                        precioTotal.textContent = 'S/ 0.00';
+                    }
+                });
+            }
+        });
+    </script>
+}
