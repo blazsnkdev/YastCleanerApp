@@ -1,8 +1,391 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome - Chambeador</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Temporal.css" />
+    <link rel="stylesheet" href="~/css/Dashboard.css" />
+}
+
+<div class="dashboard-container">
+    <!-- Header del Dashboard -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-tachometer-alt me-3"></i>
+            Panel de Control
+        </h1>
+        <div class="dashboard-estado">
+            <span class="badge-estado badge-activo" id="estado-tiempo-real">Tiempo Real</span>
+            <span class="last-update" id="ultima-actualizacion">Actualizado: @DateTime.Now.ToString("HH:mm")</span>
+        </div>
+    </div>
+
+    <!-- Filtros Rápidos -->
+    <div class="filtros-dashboard">
+        <div class="filtros-header">
+            <h4><i class="fas fa-filter me-2"></i>Filtros</h4>
+        </div>
+        <div class="filtros-body">
+            <div class="filtro-grupo">
+                <label class="filtro-label">Rango de Tiempo:</label>
+                <select class="filtro-select" id="filtroRango">
+                    <option value="hoy">Hoy</option>
+                    <option value="semana">Esta Semana</option>
+                    <option value="mes">Este Mes</option>
+                    <option value="anio">Este Año</option>
+                </select>
+            </div>
+            <button class="btn-actualizar" id="btnActualizar">
+                <i class="fas fa-sync-alt me-2"></i>Actualizar
+            </button>
+        </div>
+    </div>
+
+    <!-- Tarjetas de Métricas Principales -->
+    <div class="metricas-grid">
+        <div class="metrica-card">
+            <div class="metrica-icono">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="metrica-info">
+                <h3 class="metrica-titulo">Total Pedidos</h3>
+                <div class="metrica-valor" id="totalPedidos">0</div>
+                <div class="metrica-tendencia" id="tendenciaPedidos">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>0% vs ayer</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metrica-card">
+            <div class="metrica-icono entregados">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="metrica-info">
+                <h3 class="metrica-titulo">Pedidos Entregados</h3>
+                <div class="metrica-valor" id="totalPedidosEntregados">0</div>
+                <div class="metrica-tasa" id="tasaEntrega">
+                    <span class="tasa-valor">0%</span>
+                    <span class="tasa-label">Tasa de entrega</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metrica-card">
+            <div class="metrica-icono ingresos">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="metrica-info">
+                <h3 class="metrica-titulo">Ingresos Totales</h3>
+                <div class="metrica-valor" id="montoTotal">S/ 0.00</div>
+                <div class="metrica-tendencia" id="tendenciaIngresos">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>0% vs ayer</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="metrica-card">
+            <div class="metrica-icono clientes">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="metrica-info">
+                <h3 class="metrica-titulo">Clientes Activos</h3>
+                <div class="metrica-valor" id="totalClientes">0</div>
+                <div class="metrica-variacion" id="variacionClientes">
+                    <span>+0 este mes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos y Visualizaciones -->
+    <div class="graficos-grid">
+        <!-- Gráfico Principal -->
+        <div class="grafico-card principal">
+            <div class="grafico-header">
+                <h4><i class="fas fa-chart-bar me-2"></i>Resumen de Pedidos</h4>
+                <div class="grafico-leyenda">
+                    <div class="leyenda-item">
+                        <span class="leyenda-color total"></span>
+                        <span>Total Pedidos</span>
+                    </div>
+                    <div class="leyenda-item">
+                        <span class="leyenda-color entregados"></span>
+                        <span>Entregados</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grafico-body">
+                <canvas id="pedidosChart" height="250"></canvas>
+            </div>
+        </div>
+
+        <!-- Métricas Secundarias -->
+        <div class="metricas-secundarias">
+            <div class="metrica-secundaria">
+                <div class="secundaria-icono">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="secundaria-info">
+                    <span class="secundaria-valor" id="pedidosPendientes">0</span>
+                    <span class="secundaria-label">Pendientes</span>
+                </div>
+            </div>
+            <div class="metrica-secundaria">
+                <div class="secundaria-icono">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="secundaria-info">
+                    <span class="secundaria-valor" id="pedidosProceso">0</span>
+                    <span class="secundaria-label">En Proceso</span>
+                </div>
+            </div>
+            <div class="metrica-secundaria">
+                <div class="secundaria-icono">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="secundaria-info">
+                    <span class="secundaria-valor" id="tasaConversion">0%</span>
+                    <span class="secundaria-label">Tasa Conversión</span>
+                </div>
+            </div>
+            <div class="metrica-secundaria">
+                <div class="secundaria-icono">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="secundaria-info">
+                    <span class="secundaria-valor" id="satisfaccion">0%</span>
+                    <span class="secundaria-label">Satisfacción</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información Adicional -->
+    <div class="info-adicional-grid">
+        <!-- Últimos Pedidos -->
+        <div class="info-card">
+            <div class="info-header">
+                <h4><i class="fas fa-list-alt me-2"></i>Últimos Pedidos</h4>
+                <a href="@Url.Action("Index", "Pedido")" class="btn-ver-todos">Ver todos</a>
+            </div>
+            <div class="info-body" id="ultimosPedidos">
+                <div class="estado-carga">Cargando últimos pedidos...</div>
+            </div>
+        </div>
+
+        <!-- Métricas por Servicio -->
+        <div class="info-card">
+            <div class="info-header">
+                <h4><i class="fas fa-concierge-bell me-2"></i>Servicios Populares</h4>
+            </div>
+            <div class="info-body" id="serviciosPopulares">
+                <div class="estado-carga">Cargando servicios populares...</div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let pedidosChart = null;
+            let intervaloActualizacion = null;
+
+            // Inicializar dashboard
+            cargarDashboard();
+
+            // Configurar actualización automática cada 2 minutos
+            intervaloActualizacion = setInterval(cargarDashboard, 120000);
+
+            // Event listeners
+            document.getElementById('filtroRango').addEventListener('change', cargarDashboard);
+            document.getElementById('btnActualizar').addEventListener('click', function() {
+                cargarDashboard();
+                mostrarFeedbackActualizacion();
+            });
+
+            function cargarDashboard() {
+                const rango = document.getElementById('filtroRango').value;
+
+                mostrarEstadoCarga();
+
+                $.ajax({
+                    url: '@Url.Action("PedidosDashboard")',
+                    method: 'GET',
+                    data: { rango: rango },
+                    success: function (response) {
+                        if (response && response.success) {
+                            const data = response.value;
+                            actualizarMetricas(data);
+                            renderChart(data);
+                            actualizarUltimaActualizacion();
+                        } else {
+                            console.error('Error en respuesta:', response);
+                            mostrarError('Error al cargar los datos del dashboard');
+                        }
+                    },
+                    error: function (err) {
+                        console.error('Error AJAX:', err);
+                        mostrarError('Error de conexión al cargar el dashboard');
+                    }
+                });
+            }
+
+            function actualizarMetricas(data) {
+                // Métricas principales
+                document.getElementById('totalPedidos').textContent = data.totalPedidos || 0;
+                document.getElementById('totalPedidosEntregados').textContent = data.totalPedidosEntregados || 0;
+                document.getElementById('montoTotal').textContent = `S/ ${(data.montoTotal || 0).toFixed(2)}`;
+                document.getElementById('totalClientes').textContent = data.totalClientes || 0;
+
+                // Métricas secundarias
+                document.getElementById('pedidosPendientes').textContent = data.pedidosPendientes || 0;
+                document.getElementById('pedidosProceso').textContent = data.pedidosProceso || 0;
+                document.getElementById('tasaConversion').textContent = `${(data.tasaConversion || 0).toFixed(1)}%`;
+                document.getElementById('satisfaccion').textContent = `${(data.satisfaccion || 0).toFixed(1)}%`;
+
+                // Tendencias
+                actualizarTendencia('tendenciaPedidos', data.tendenciaPedidos);
+                actualizarTendencia('tendenciaIngresos', data.tendenciaIngresos);
+
+                // Tasa de entrega
+                const tasaEntrega = data.totalPedidos > 0 ?
+                    (data.totalPedidosEntregados / data.totalPedidos * 100) : 0;
+                document.getElementById('tasaEntrega').innerHTML = `
+                    <span class="tasa-valor">${tasaEntrega.toFixed(1)}%</span>
+                    <span class="tasa-label">Tasa de entrega</span>
+                `;
+            }
+
+            function actualizarTendencia(elementId, tendencia) {
+                const elemento = document.getElementById(elementId);
+                if (tendencia > 0) {
+                    elemento.innerHTML = `<i class="fas fa-arrow-up"></i><span>+${tendencia}% vs ayer</span>`;
+                    elemento.className = 'metrica-tendencia positiva';
+                } else if (tendencia < 0) {
+                    elemento.innerHTML = `<i class="fas fa-arrow-down"></i><span>${tendencia}% vs ayer</span>`;
+                    elemento.className = 'metrica-tendencia negativa';
+                } else {
+                    elemento.innerHTML = `<i class="fas fa-minus"></i><span>0% vs ayer</span>`;
+                    elemento.className = 'metrica-tendencia neutral';
+                }
+            }
+
+            function renderChart(data) {
+                const ctx = document.getElementById('pedidosChart').getContext('2d');
+
+                // Destruir gráfico anterior si existe
+                if (pedidosChart) {
+                    pedidosChart.destroy();
+                }
+
+                pedidosChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Total Pedidos', 'Entregados', 'Pendientes', 'En Proceso'],
+                        datasets: [{
+                            label: 'Cantidad de Pedidos',
+                            data: [
+                                data.totalPedidos || 0,
+                                data.totalPedidosEntregados || 0,
+                                data.pedidosPendientes || 0,
+                                data.pedidosProceso || 0
+                            ],
+                            backgroundColor: [
+                                '#592af5',
+                                '#0abb87',
+                                '#ffa800',
+                                '#17a2b8'
+                            ],
+                            borderColor: [
+                                '#592af5',
+                                '#0abb87',
+                                '#ffa800',
+                                '#17a2b8'
+                            ],
+                            borderWidth: 1,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#592af5',
+                                borderWidth: 1
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#666'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#666'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function mostrarEstadoCarga() {
+                document.querySelectorAll('.metrica-valor').forEach(el => {
+                    el.innerHTML = '<div class="carga-skeleton"></div>';
+                });
+            }
+
+            function actualizarUltimaActualizacion() {
+                const ahora = new Date();
+                document.getElementById('ultima-actualizacion').textContent =
+                    `Actualizado: ${ahora.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })}`;
+            }
+
+            function mostrarFeedbackActualizacion() {
+                const btn = document.getElementById('btnActualizar');
+                const originalHtml = btn.innerHTML;
+
+                btn.innerHTML = '<i class="fas fa-check me-2"></i>Actualizado';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                }, 2000);
+            }
+
+            function mostrarError(mensaje) {
+                // Aquí podrías implementar un sistema de notificaciones
+                console.error(mensaje);
+            }
+
+            // Cleanup al salir de la página
+            window.addEventListener('beforeunload', function() {
+                if (intervaloActualizacion) {
+                    clearInterval(intervaloActualizacion);
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,508 @@
+﻿/* ESTILOS ESPECÍFICOS PARA EL DASHBOARD */
+.dashboard-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header del Dashboard */
+.dashboard-estado {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.last-update {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Filtros */
+.filtros-dashboard {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.filtros-header {
+    background: #f8f9ff;
+    padding: 20px 25px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+    .filtros-header h4 {
+        margin: 0;
+        color: #592af5;
+        font-weight: 600;
+    }
+
+.filtros-body {
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.filtro-grupo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filtro-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.filtro-select {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    background: white;
+    min-width: 150px;
+}
+
+.btn-actualizar {
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+    .btn-actualizar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(89, 42, 245, 0.3);
+    }
+
+    .btn-actualizar:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+/* Métricas Principales */
+.metricas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.metrica-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+    border-left: 4px solid #592af5;
+}
+
+    .metrica-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+.metrica-icono {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #592af5 0%, #7b52ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8rem;
+}
+
+    .metrica-icono.entregados {
+        background: linear-gradient(135deg, #0abb87 0%, #1cd1a1 100%);
+    }
+
+    .metrica-icono.ingresos {
+        background: linear-gradient(135deg, #ffa800 0%, #ffc107 100%);
+    }
+
+    .metrica-icono.clientes {
+        background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+    }
+
+.metrica-info {
+    flex: 1;
+}
+
+.metrica-titulo {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metrica-valor {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #592af5;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.metrica-tendencia, .metrica-tasa, .metrica-variacion {
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+    .metrica-tendencia.positiva {
+        color: #0abb87;
+    }
+
+    .metrica-tendencia.negativa {
+        color: #f64e60;
+    }
+
+    .metrica-tendencia.neutral {
+        color: #666;
+    }
+
+.tasa-valor {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0abb87;
+}
+
+.tasa-label {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+/* Gráficos */
+.graficos-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.grafico-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+    .grafico-card.principal {
+        grid-column: 1;
+    }
+
+.grafico-header {
+    background: #f8f9ff;
+    padding: 20px 25px;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .grafico-header h4 {
+        margin: 0;
+        color: #592af5;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+.grafico-leyenda {
+    display: flex;
+    gap: 20px;
+}
+
+.leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.leyenda-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+    .leyenda-color.total {
+        background: #592af5;
+    }
+
+    .leyenda-color.entregados {
+        background: #0abb87;
+    }
+
+.grafico-body {
+    padding: 25px;
+    height: 300px;
+}
+
+/* Métricas Secundarias */
+.metricas-secundarias {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.metrica-secundaria {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+    .metrica-secundaria:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+.secundaria-icono {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: #f8f9ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #592af5;
+    font-size: 1.3rem;
+}
+
+.secundaria-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.secundaria-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #592af5;
+    line-height: 1;
+}
+
+.secundaria-label {
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Información Adicional */
+.info-adicional-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.info-header {
+    background: #f8f9ff;
+    padding: 20px 25px;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .info-header h4 {
+        margin: 0;
+        color: #592af5;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+.btn-ver-todos {
+    color: #592af5;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-ver-todos:hover {
+        color: #7b52ff;
+    }
+
+.info-body {
+    padding: 25px;
+    min-height: 200px;
+}
+
+.estado-carga {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+/* Skeleton Loading */
+.carga-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 4px;
+    height: 40px;
+    width: 100px;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .graficos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .metricas-secundarias {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .metricas-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .info-adicional-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filtros-body {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filtro-grupo {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 15px;
+    }
+
+    .metricas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .metricas-secundarias {
+        grid-template-columns: 1fr;
+    }
+
+    .grafico-body {
+        padding: 15px;
+        height: 250px;
+    }
+
+    .metrica-card {
+        padding: 25px;
+    }
+
+    .metrica-valor {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .dashboard-estado {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .grafico-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .grafico-leyenda {
+        align-self: flex-start;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.metrica-card, .grafico-card, .info-card, .filtros-dashboard {
+    animation: fadeInUp 0.6s ease;
+}
+
+/* Efectos de actualización */
+@keyframes highlight {
+    0% {
+        background-color: rgba(10, 187, 135, 0.1);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.metrica-card.updated {
+    animation: highlight 1s ease;
+}

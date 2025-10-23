@@ -24,10 +24,15 @@ namespace YastCleaner.Business.Services
         public async Task<SesionDto?> LoginAsync(string email, string password)//TODO: aqui esto se puedo mejorar usando el patron Result para formatear y no regresar null
         {
             var usuario = await _UoW.UsuarioRepository.GetByEmail(email);
-            var passwordValido= ValidarPassword(password, usuario?.Password ?? "");
-            if (usuario == null || !passwordValido)
+            if(usuario is null)
+            {
                 return null;
-
+            }
+            var passwordValido= ValidarPassword(password, usuario?.Password ?? "");
+            if (!passwordValido)
+            {
+                return null;
+            }
             return new SesionDto
             {
                 UsuarioId = usuario!.UsuarioId,

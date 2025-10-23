@@ -24,6 +24,13 @@ namespace YastCleaner.Web.Controllers
         {
             return View();
         }
+        //[HttpGet("Pedidos-Hoy")]
+        [HttpGet]
+        public IActionResult PedidosDashboard()
+        {
+            var data = _dashboardService.GetDashboardHoy();
+            return Json(data);
+        }
 
 
 

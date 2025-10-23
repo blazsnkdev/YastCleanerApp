@@ -26,11 +26,5 @@ namespace YastCleaner.Web.Controllers
             var data = _dashboardService.GetDashboardHoy();
             return Json(data);
         }
-
-        [RoleAuthorize(Rol.Administrador)]
-        public IActionResult Trabajadores()
-        {
-            return View();
-        }
     }
 }

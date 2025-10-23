@@ -246,9 +246,12 @@ namespace YastCleaner.Business.Services
             var clientes = await _UoW.ClienteRepository.GetAllAsync();
 
             var filtrado = clientes
-                .Where(c => c.Nombre.Contains(term ?? "", StringComparison.OrdinalIgnoreCase) ||
-                           c.ApellidoPaterno.Contains(term ?? "", StringComparison.OrdinalIgnoreCase) ||
-                           c.ApellidoMaterno.Contains(term ?? "", StringComparison.OrdinalIgnoreCase))
+                .Where(c =>c.Estado == EstadoCliente.Activo &&
+                (
+                    c.Nombre.Contains(term ?? "", StringComparison.OrdinalIgnoreCase) ||
+                    c.ApellidoPaterno.Contains(term ?? "", StringComparison.OrdinalIgnoreCase) ||
+                    c.ApellidoMaterno.Contains(term ?? "", StringComparison.OrdinalIgnoreCase)
+                ))
                 .Select(c => new ClienteAutoCompletadoDto
                 {
                     ClienteId = c.ClienteId,

@@ -37,10 +37,7 @@ namespace YastCleaner.Web.Controllers
                 return View(viewModel);
             }
             SessionHelper.SetUsuario(HttpContext, sesionDto);
-            if (sesionDto.Rol == Rol.Administrador)//TODO : si agrego otro rol, esto tengo que modificar a un if else
-                return RedirectToAction("Index", "Admin");
-            else
-                return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
 
 

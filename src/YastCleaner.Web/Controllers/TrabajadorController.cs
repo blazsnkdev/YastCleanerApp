@@ -16,8 +16,6 @@ namespace YastCleaner.Web.Controllers
     {
         private readonly ITrabajadorService _trabajadorService;
         private readonly IEnviarCorreoSmtp _enviarCorreo;
-        
-
         public TrabajadorController(ITrabajadorService trabajadorService, IEnviarCorreoSmtp enviarCorreo)
         {
             _trabajadorService = trabajadorService;
