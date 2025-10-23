@@ -69,7 +69,7 @@ namespace YastCleaner.Business.Services
         }
         public string GenerarPassword(string apellidoPaterno)
         {
-            var fechaHoraActual = _dateTimeProvider.DateTimeActual().ToString("yyyyMMddHHmmss");
+            var fechaHoraActual = _dateTimeProvider.DateTimeActual().ToString("mmss");
             string parteApePat = !string.IsNullOrEmpty(apellidoPaterno) ? apellidoPaterno.Substring(0, 1) : "";
             Random rnd = new Random();
             string numerosAleatorios = rnd.Next(100, 999).ToString();

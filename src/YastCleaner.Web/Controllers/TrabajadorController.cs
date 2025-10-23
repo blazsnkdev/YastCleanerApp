@@ -32,7 +32,7 @@ namespace YastCleaner.Web.Controllers
             {
                 TrabajadorId = t.TrabajadorId,
                 Nombre = t.Nombre,
-                Apellidos = t.ApellidoPaterno+" "+t.ApellidoPaterno,
+                Apellidos = t.ApellidoPaterno+" "+t.ApellidoMaterno,
                 Dni = t.Dni,
                 Direccion = t.Direccion,
                 Email = t.Email,
