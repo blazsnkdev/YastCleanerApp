@@ -30,4 +30,26 @@ Permite administrar pedidos, clientes, trabajadores y el flujo operativo desde l
   - Capa de Presentación (MVC)
   - Capa de Negocio
   - Capa de Acceso a Datos
-  - Ca
+  - Capa de Entidades
+
+- 🛠️ **Servicios**
+  - Servicios de pedidos
+  - Servicios de usuarios
+  - Servicios de caja
+
+---
+
+## 🧰 Tecnologías utilizadas
+
+- C#
+- ASP.NET Core MVC
+- Razor (vistas HTML)
+- Entity Framework Core
+- SQL Server
+- HTML5
+- CSS3
+- JavaScript
+- Bootstrap
+- Arquitectura N-Capas
+- Patrón Repository
+- Inyección de Dependencias
